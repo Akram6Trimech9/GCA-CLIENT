@@ -1,0 +1,80 @@
+<!-- ===============================*****Début de l'en-tête*****=============================== -->
+<header>
+    <div class="top-nav">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-12">
+                    <div class="logo">
+                        <h1>CGA</h1>
+                    </div>
+                </div>
+                <div class="col-md-8 col-12">
+                    <div class="top-sec-main">
+                        <div class="top-sec">
+                            <ol>
+                                <li>
+                                    <i class="far fa-clock"></i>
+                                    <span>ouvert du lun-ven</span>8:00-19:00
+                                </li>
+                                <li>
+                                    <i class="fa fa-headphones"></i>
+                                    <span>appel pour consultation</span>123.456.789
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="top-sec-2">
+                            <ol>
+                                <li><i class="fab fa-facebook-square"></i></li>
+                                <li><i class="fab fa-twitter"></i></li>
+                                <li class="last"><i class="fas fa-search"></i></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="_main_nav">
+        <div class="container">
+            <div class="row">
+                <div class="nav">
+                    <div class="logo-01">
+                        <h1>CGA</h1>
+                    </div>
+                    <div class="menu-toggle"></div>
+                    <div class="my-nav">
+                        <div class="menu">
+                            <ul>
+                                <li><a routerLink="/client/home" routerLinkActive="active">Accueil</a></li>
+                                <li><a routerLink="/client/about" routerLinkActive="active">À propos de nous</a></li>
+                                <li><a routerLink="/client/service" routerLinkActive="active">Services</a></li>
+                                <li><a routerLink="/client/blog" routerLinkActive="active">Blog</a></li>
+                                <li><a routerLink="/client/contact" routerLinkActive="active">Nous contacter</a></li>
+
+                                <!-- Dropdown for logged-in user -->
+                           
+                            </ul>
+                        </div>
+                    </div>
+
+                    <a *ngIf="currentUser"  class="icon ml-2 mr-2 " routerLink="/client/profile" routerLinkActive="active">
+                        <i class="bi bi-person icon"></i> <!-- Profile Icon -->
+                    </a>
+                    <a  *ngIf="currentUser"   class="icon ml-2 mr-2 " routerLink="/client/settings" routerLinkActive="active">
+                        <i class="bi bi-gear icon"></i> <!-- Settings Icon -->
+                    </a>
+                    <a *ngIf="currentUser"   class="icon ml-2 mr-2 "  routerLink="/client/notifications" routerLinkActive="active">
+                        <i class="bi bi-bell icon"></i> <!-- Notifications Icon -->
+                    </a>
+                    <a *ngIf="currentUser" (click)="logout()"   class="icon ml-2 mr-2 "  routerLink="/client/notifications" routerLinkActive="active">
+                        <i class="bi bi-box-arrow-right"></i>                      </a>
+                    <!-- Guest view -->
+                         <li class="link-01">
+                            <a *ngIf="!currentUser"  routerLink="/client/login" routerLinkActive="loginActive">Se Connecter</a>
+                        </li>
+                 </div>
+            </div>
+        </div>
+    </div>
+</header>

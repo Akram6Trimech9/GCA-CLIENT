@@ -1,0 +1,38 @@
+ 
+    <div class="container">
+        <div class="form-container">
+            <h1 class="title">CGA ADMIN</h1>
+                 <form [formGroup]="loginForm" (ngSubmit)="login()" class="form">
+                    <div class="input-group">
+                        <label for="email">Email</label>
+                        <input type="text" id="email" formControlName="email" required>
+                         <div  *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+                            <small style="color: red;" *ngIf="loginForm.get('email')?.hasError('required')">Email is required</small>
+                            <small style="color: red;" *ngIf="loginForm.get('email')?.hasError('email')">Invalid email format</small>
+                        </div>
+                    </div>
+    
+                    <div class="input-group">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" formControlName="password" required>
+                         <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+                            <small style="color: red;" *ngIf="loginForm.get('password')?.hasError('required')">Password is required</small>
+                            <small  style="color: red;" *ngIf="loginForm.get('password')?.hasError('minlength')">Password must be at least 6 characters</small>
+                        </div>
+                    </div>
+                
+                    <div class="forgot">
+                        <a href="#">Mot de passe oublié ?</a>
+                    </div> 
+
+                <button type="submit" class="sign-in">Se connecter</button>
+
+                <div class="line mt-5"></div>
+
+                <p class="sign-up">Vous n'avez pas de compte ?
+                    <a routerLink="/authAdmin/adminstratorRegister" routerLinkActive="router-link-active">S'inscrire</a>
+                </p>
+            </form>
+         </div>
+    </div>
+ 

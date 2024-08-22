@@ -1,0 +1,30 @@
+<div id="warraper">
+    <div id="logo"><span>CGA</span></div>
+    <span id="show-label-menu">using only small screen</span>
+    <div id="left-menu">
+        <ul>
+          <li><a routerLink="/administrator/Dashboard" routerLinkActive="active"><i class="bi bi-house-door"></i><span>Tableau de bord</span></a></li>
+          <li><a    routerLink="/administrator/calendar" routerLinkActive="active"><i class="bi bi-calendar-check"></i><span>Gestion des disponibilités</span></a></li>
+          <li><a routerLink="/administrator/folder" routerLinkActive="active"><i class="bi bi-folder2"></i><span>Gestion des dossiers</span></a></li>
+          <li><a routerLink="/administrator/rdv" routerLinkActive="active"><i class="bi bi-archive icon-size"></i><span> Gestion de Rendez-Vous</span></a></li>
+
+          <li><a   routerLink="" ><i class="bi bi-file-earmark-text"></i><span>Gestion des affaires</span></a></li>
+          <li  ><a   routerLink="" ><i class="bi bi-person"></i><span>Utilisateurs</span></a></li>
+          <li><a   routerLink="" ><i class="bi bi-gear"></i><span>Paramètres</span></a></li>
+
+          
+        </ul>
+      </div>
+     <!-- // Gestion de Rendez-Vous -->
+    <div id="top-header">
+        <i class="bi bi-person float-right"></i>
+        <i class="bi bi-chat-left-text float-right"></i>
+        <i id="toggle-menu" class="bi bi-list float-left"></i>
+    <i  (click)="logout()" class="bi bi-box-arrow-right float-right"></i>
+
+
+    </div>
+    <div id="main-content">
+        <router-outlet />
+    </div>
+</div>

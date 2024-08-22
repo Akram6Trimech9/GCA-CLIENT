@@ -1,0 +1,67 @@
+ 
+  .custom-modal{
+ display: flex;
+ flex-direction: column;
+  }
+  
+  .custom-modal .modal-header {
+    background-color: #2d384a; /* Dark blue-gray header */
+    color: #e1ad3d; /* Gold text */
+    border-bottom: none;
+    width: 100%;
+  }
+  
+  .custom-modal .modal-body {
+    background-color: #f7f7f7; /* Light background to contrast with the dark header */
+  }
+  
+  .custom-modal .modal-footer {
+    background-color: #2d384a; /* Dark blue-gray footer */
+    border-top: none;
+  }
+  
+  .custom-modal .modal-footer .btn-secondary {
+    background-color: #e1ad3d; /* Gold background for the save button */
+    color: #2d384a; /* Dark blue-gray text */
+    border: none;
+  }
+  
+  .custom-modal .modal-footer .btn-secondary:hover {
+    background-color: #2d384a; /* Reverse colors on hover */
+    color: #e1ad3d;
+  }
+  
+  .btn-close {
+    color: #e1ad3d; /* Gold close button */
+    opacity: 1;
+  }
+  
+  .input-group .form-control {
+    border: 1px solid #2d384a; /* Dark blue-gray border */
+  }
+  
+  .input-group .btn-outline-secondary {
+    border-color: #2d384a;
+    color: #2d384a;
+  }
+  
+  .input-group .btn-outline-secondary:hover {
+    background-color: #2d384a;
+    color: #e1ad3d;
+  }
+  
+  a{
+    text-decoration: none; 
+  }
+  .custom-day.available {
+    background-color: #106123;  
+    padding: 5px;
+    color: white;
+    width: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .custom-day.focused {
+    background-color: #c3e6cb;
+  }

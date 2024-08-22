@@ -1,0 +1,122 @@
+
+  
+  
+  <div role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
+    <div  class="head mb-5 ">
+        <div class="title ">
+          Gestion des audiance
+         </div>
+        
+      </div>
+      <div  class="crud-offer">
+        <div class="projects mb-4">
+          <div class="projects-inner">
+            <header class="projects-header">
+              <div>
+                <div class="title">Gestion des AUDIANCES</div>
+                <div class="count">| Audiances</div>
+                <i class="zmdi zmdi-download"></i>
+              </div>
+              <div style="cursor: pointer;" (click)="openModal(addAudianceModal)"   >
+                <i class="bi bi-plus-circle"></i> Ajouter une nouvelle audiance
+              </div>
+            </header>
+  
+            <table class="projects-table">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Date</th>
+                   <th>Description </th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+          
+                <tr *ngFor="let item of audiances">
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.date }}</td>
+                    <td>{{ item.description }}</td>
+                    <td class="btns">
+                      <button class="btn btn-sm btn-action" >Modifier</button>
+                      <button *ngIf="item.id" class="btn btn-sm btn-danger" (click)="deleteAudiance(item.id)">Supprimer</button>
+                    </td>
+                  </tr>
+              </tbody>
+            </table>
+  
+            <nav aria-label="Page navigation" class="mt-4">
+              <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                  <span class="page-link">Previous</span>
+                </li>
+                <li class="page-item active" aria-current="page">
+                  <span class="page-link">1</span>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#">2</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#">3</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="#">Next</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
+  
+      </div>
+      <ng-template #addAudianceModal let-modal>
+        <div class="modal-header">
+          <h5 class="modal-title">Ajouter une nouvelle audiance</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="audianceForm">
+            <div class="form-group">
+              <label for="date">Date</label>
+              <input type="date" id="date" class="form-control" formControlName="date" />
+              <div *ngIf="audianceForm.get('date')?.invalid && audianceForm.get('date')?.touched" class="text-danger">
+                Date is required
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <input type="text" id="description" class="form-control" formControlName="description" />
+              <div *ngIf="audianceForm.get('description')?.invalid && audianceForm.get('description')?.touched" class="text-danger">
+                Description is required
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel')">Annuler</button>
+          <button type="button" class="btn btn-primary" (click)="modal.close()">Ajouter</button>
+        </div>
+      </ng-template>
+    
+       <!-- <ng-template #editAudianceModal let-modal>
+        <div class="modal-header">
+          <h5 class="modal-title">Modifier audiance</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form #audianceForm="ngForm">
+            <div class="form-group">
+              <label for="date">Date</label>
+              <input type="date" id="date" class="form-control" [(ngModel)]="audiance.date" name="date" required />
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              <input type="text" id="description" class="form-control" [(ngModel)]="audiance.description" name="description" required />
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel')">Annuler</button>
+          <button type="button" class="btn btn-primary" (click)="modal.close({ action: 'edit', audiance })">Modifier</button>
+        </div>
+      </ng-template> -->

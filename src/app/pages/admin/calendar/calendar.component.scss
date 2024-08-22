@@ -1,0 +1,81 @@
+
+
+.container{
+  width: 85%;
+  margin-left: 13%;
+  margin-right: 5%;
+}
+
+/* Styling Général des Cartes */
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0;
+}
+
+.calendar td {
+  height: 100px;
+  vertical-align: top;
+  background-color: #f7f7f7;
+}
+
+.calendar td span {
+  display: block;
+  padding: 5px;
+  font-weight: bold;
+  color: #465a6e;
+}
+
+.calendar .availability {
+  margin-top: 5px;
+  font-size: 0.8em;
+  color: white;
+  background-color: #e1ad3d;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.head{
+  width: 100%;
+  background-color: #465a6e;
+  color: white;
+   padding: 10px;
+  display: flex;
+
+}
+/* Style Responsive */
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    margin-left: 0;
+  }
+  .calendar td {
+    height: 80px;
+  }
+  .card-header {
+    font-size: 14px;
+  }
+  .card-body {
+    padding: 10px;
+  }
+  .calendar .availability {
+    font-size: 0.6em;
+  }
+}
+
+@media (max-width: 576px) {
+  .calendar td {
+    height: 60px;
+  }
+  .card-header {
+    font-size: 12px;
+  }
+  .card-body {
+    padding: 5px;
+  }
+  .calendar .availability {
+    font-size: 0.5em;
+  }
+}

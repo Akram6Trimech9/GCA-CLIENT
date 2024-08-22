@@ -1,0 +1,95 @@
+<section class="slider">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="slider-content-main">
+                    <ol>
+                        <li><i class="fas fa-shield-alt"></i></li>
+                    </ol>
+                    <h2>Les Meilleurs Avocats de Défense</h2>
+                    <p>affaires<span>-</span>politique<span>-</span>Actualité<span>-</span>En Vedette<span>-</span>technologie<span>-</span>article</p>
+                    <div class="btn-01">
+                        <a  >contactez-nous maintenant</a>
+                        <a  (click)="open(content)">Rendez-vous direct</a> <!-- Changed this button text -->
+                        <a  (click)="open(content)">Conseil par mail</a> <!-- Changed this button text -->
+                        <a  (click)="open(content)">Conseil par téléphone</a> <!-- Changed this button text -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<ng-template #content let-modal>
+    <div class=" custom-modal">
+         <div class="modal-header">
+          <h4 class="modal-title" id="modal-basic-title">Prise de rendez-vous</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="mb-3">
+                    <label for="consultantSelect">Choisir un consultant</label>
+                    <select
+                      id="consultantSelect"
+                      class="form-control"
+                      [(ngModel)]="selectedConsultant"
+                      (change)="onConsultantChange()"
+                      name="consultant"   
+                    >
+                      <option *ngFor="let consultant of admins" [ngValue]="consultant">
+                        {{ consultant.username }} {{ consultant.lastname }}
+                      </option>
+                    </select>
+                  </div>
+
+            </form>
+
+            <div *ngIf="availabilities.length > 0" class="mb-3">
+                <label for="availabilitySelect">Disponibilité</label>
+                <select
+                  id="availabilitySelect"
+                  class="form-control"
+                  [(ngModel)]="selectedTime"
+                >
+                  <option *ngFor="let time of availabilities" [value]="time.id">
+                  {{time.date |date}}  From :  {{ time.startTime }} To {{time.endTime}}
+                  </option>
+                </select>
+              </div>
+
+                <div *ngIf="selectedTime">
+                  <label for="availabilitySelect">Time</label>
+
+                  <input   type="time"   [min]="selectedTime.startTime" [max]="selectedTime.endTime"  [(ngModel)]="reservationTime" name="reservation" class="form-control" />
+              </div>
+        </div>
+        <ngb-datepicker *ngIf="availabilities.length > 0"
+        #dp
+        [displayMonths]="displayMonths"
+        [navigation]="navigation"
+        [showWeekNumbers]="showWeekNumbers"
+        [outsideDays]="outsideDays"
+        [dayTemplate]="t"
+      ></ngb-datepicker>
+      
+      <ng-template #t let-date let-focused="focused">
+        <span class="custom-day"
+              [class.focused]="focused"
+              [class.available]="isAvailable(date)"
+              [attr.title]="getTooltip(date)"
+              (click)="onDateClick(date)"
+        >
+          {{ date.day }}
+        </span>
+      </ng-template>
+ 
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger"  (click)="modal.close('Save click')">Cancel</button>
+
+          <button type="button" class="btn btn-outline-secondary"  (click)="submit()">Save</button>
+
+        </div>
+     </div>
+  </ng-template>
+  

@@ -1,0 +1,142 @@
+<div role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
+  <div [ngClass]="{'d-flex justify-content-between align-items-center': selectedFolder, 'mb-5': true}" class="head">
+    <div class="title">
+      Gestion des dossiers
+      <span *ngIf="selectedFolder"> - {{selectedFolder.client.username}}</span>
+    </div>
+    <div *ngIf="selectedFolder">
+      <span class="back" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Back to folders
+      </span>
+    </div>
+  </div>
+
+  <div class="folder-container" id="folderContainer">
+    <div *ngIf="!selectedFolder">
+      <div class="folder" *ngFor="let item of dossiers; trackBy: trackByFn" (click)="openFolder(item)">
+        <div class="folder-icon">📁</div>
+        <div class="folder-name">{{ item.client.username }} {{ item.client.lastname }}</div>
+        <!-- <input type="checkbox" /> -->
+      </div>
+    </div>
+
+    <div *ngIf="selectedFolder" class="crud-offer">
+      <div class="projects mb-4">
+        <div class="projects-inner">
+          <header class="projects-header">
+            <div>
+              <div class="title">Gestion de AFFAIRES</div>
+              <div class="count">| Offres</div>
+              <i class="zmdi zmdi-download"></i>
+            </div>
+            <div style="cursor: pointer;" (click)="openModal()">
+              <i class="bi bi-plus-circle"></i> Ajouter une nouvelle affaire
+            </div>
+          </header>
+
+          <table class="projects-table">
+            <thead>
+              <tr>
+                <th>Numéro d'Affaire</th>
+                <th>Nature d'Affaire</th>
+                <th>Date Audience</th>
+                <th>Aboutissement</th>
+                <th>audiences </th>
+
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let affaire of affaires">
+                <td>{{ affaire.numeroAffaire }}</td>
+                <td>{{ affaire.natureAffaire }}</td>
+                <td>{{ affaire.dateAudience }}</td>
+                <td>{{ affaire.aboutissement ? 'Aboutie' : 'Non aboutie' }}</td>
+                <td style="cursor: pointer;" [routerLink]="['/administrator/audiance', affaire.id]">
+                  <i class="bi bi-eye"></i>
+                </td>
+                <td class="btns">
+                  <button class="btn  btn-sm btn-action" (click)="editAffaire(affaire)">Modifier</button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteAffaire(affaire.id)">Supprimer</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+              <li class="page-item disabled">
+                <span class="page-link">Previous</span>
+              </li>
+              <li class="page-item active" aria-current="page">
+                <span class="page-link">1</span>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">2</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">3</a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addAffaireModal" tabindex="-1" aria-labelledby="addAffaireModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAffaireModalLabel">Ajouter une nouvelle affaire</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="affaireForm" (ngSubmit)="affaireToEdit ? updateAffaire() : addNewAffaire()">
+
+          <div class="form-group">
+            <label for="numeroAffaire">Numéro d'Affaire</label>
+            <input type="text" class="form-control" id="numeroAffaire" formControlName="numeroAffaire">
+            <div *ngIf="affaireForm.get('numeroAffaire')?.invalid && affaireForm.get('numeroAffaire')?.touched"
+              class="text-danger">
+              Numéro d'Affaire est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="natureAffaire">Nature d'Affaire</label>
+            <input type="text" class="form-control" id="natureAffaire" formControlName="natureAffaire">
+            <div *ngIf="affaireForm.get('natureAffaire')?.invalid && affaireForm.get('natureAffaire')?.touched"
+              class="text-danger">
+              Nature d'Affaire est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="dateAudience">Date d'Audience</label>
+            <input type="date" class="form-control" id="dateAudience" formControlName="dateAudience">
+            <div *ngIf="affaireForm.get('dateAudience')?.invalid && affaireForm.get('dateAudience')?.touched"
+              class="text-danger">
+              Date d'Audience est requis
+            </div>
+          </div>
+
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="aboutissement" formControlName="aboutissement">
+            <label class="form-check-label" for="aboutissement">Aboutie</label>
+          </div>
+
+          
+          <button type="submit" class="btn btn-primary mr-2" [disabled]="affaireForm.invalid">
+            {{ affaireToEdit ? 'Enregistrer les modifications' : 'Enregistrer' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Annuler</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

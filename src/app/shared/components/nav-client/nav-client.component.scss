@@ -1,0 +1,28 @@
+.active{
+    color: #e1ad3d;
+    border-bottom: 3px solid #e1ad3d;
+}
+
+.loginActive{ 
+    border: 1px solid #e1ad3d ;
+    color: #e1ad3d;
+}
+.flex-icons{ 
+    display: flex !important;
+    flex-direction: row;
+    gap: 10px;
+}
+.flex-icons a{
+    margin-top: 5px;
+}
+.icon{ 
+    color: white;
+    font-size: 18px;
+}
+
+.icon:active{
+    color: #e1ad3d;    
+}
+a{
+    text-decoration: none; 
+  }
