@@ -25,4 +25,8 @@ export class RdvService {
   rejectRdv(id: String): Observable<void> {
     return this.http.put<void>(`${environment.baseurl}/rdvs/refuse/${id}`, null );
   }
+
+  getRdvByClient(id :string ):Observable<any>{
+     return this.http.get<any>(`${environment.baseurl}/rdvs/user/${id}`)
+  }
 }

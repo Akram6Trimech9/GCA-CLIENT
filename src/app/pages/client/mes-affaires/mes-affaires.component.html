@@ -3,49 +3,84 @@
       <div class="projects-inner">
         <header class="projects-header">
           <div class="title">Mes Affaires</div>
-          <div class="count">|  {{affaires.length}}</div>
+          <div class="count">| {{ affaires.length }}</div>
           <i class="zmdi zmdi-download"></i>
         </header>
         <table class="projects-table">
           <thead>
             <tr>
-              <th>Affaire</th>
-              <th>Audiance</th>
-              <th>Intervenant</th>
-              <th>opposite</th>
-              <th>file</th>
-             </tr>
+                <th>Affaire</th>
+                <th>Audience</th>
+                <th>Intervenant</th>
+                <th>Opposant</th>
+                <th>Fichier</th>
+            </tr>
           </thead>
           <tbody>
-             <tr  *ngFor="let item of affaires">
+            <tr *ngFor="let item of affaires">
               <td>
-                <p>Affaire #: {{item.numeroAffaire}}</p>
-                <p>Nature: Nature : {{item.natureAffaire}}</p>
+                <p>Affaire #: {{ item.numeroAffaire }}</p>
+                <p>Nature: {{ item.natureAffaire }}</p>
               </td>
               <td>
-                <p>Date: À définir</p>
-                <p class="text-danger">Échéance dépassée</p>
+                <button  *ngIf=" item.audiances.length > 0 ;else temp" class="btn btn-info btn-sm" (click)="openModal(audianceModal, item)">
+                  <i class="bi bi-calendar"></i> View Audiances
+                </button>
+                <ng-template #temp>
+                    <p class="text-danger"> Il n'y a pas d'audiences pour cette affaire </p>                </ng-template>
+                
               </td>
               <td class="member">
-                <figure><img src="URL_DE_L_IMAGE" alt="Membre de l'équipe" /></figure>
+                <figure><img src="https://cdn-icons-png.flaticon.com/512/2897/2897763.png" alt="Membre de l'équipe" /></figure>
                 <div class="member-info">
-                  <p>Nom de l'équipe</p>
-                  <p>Équipe de conception</p>
-                </div>
+                    <p>Nom de l'inventaire</p>
+                    <ng-container *ngIf="item.inventaire.length > 0; else noInventaire">
+                      <p *ngFor="let inv of item.inventaire">{{inv.full_name}}</p>
+                    </ng-container>
+                    <ng-template #noInventaire>
+                      <p class="text-danger">Aucun inventaire disponible</p>
+                    </ng-template>
+                  </div>
               </td>
               <td>
-                <p>Budget: À définir</p>
-                <p>Statut: À définir</p>
+                <p>{{ item.opposite }}</p>
               </td>
               <td class="status">
-                <span class="status-text status-orange">En cours</span>
+                <button *ngIf="item.file; else noFile" class="btn btn-warning btn-sm" (click)="openPDF(item.file)">
+                  <i class="bi bi-file-earmark-pdf"></i> Voir le Fichier
+                </button>
+                <ng-template #noFile>
+                  <p class="text-danger">Aucun fichier disponible</p>
+                </ng-template>
               </td>
-            
             </tr>
-            <!-- Repeat for each item in your array -->
           </tbody>
         </table>
       </div>
     </div>
   </main>
+  
+   <ng-template #audianceModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Audiances & Inventaires</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <h5>Audiances</h5>
+      <ul>
+        <li *ngFor="let audiance of selectedAffaire.audiances">
+          {{ audiance }}  
+        </li>
+      </ul>
+      <h5>Inventaires</h5>
+      <ul>
+        <li *ngFor="let inventaire of selectedAffaire.inventaire">
+          {{ inventaire }}  
+        </li>
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+    </div>
+  </ng-template>
   
