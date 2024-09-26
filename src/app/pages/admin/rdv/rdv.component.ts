@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateStatusPipe } from '../../../utils/translateStatus.pipe';
 import { IUser } from '../../../core/models/user';
 import { AuthService } from '../../../core/service/auth.service';
+import { DossiersService } from '../../../services/dossiers.service';
 
 @Component({
   selector: 'app-rdv',
@@ -19,7 +20,7 @@ export class RdvComponent {
   successMessage: string ='';
   currentUser !: IUser  | null ; 
 
-  constructor(private rdvService: RdvService, private _authService : AuthService) { }
+  constructor(private rdvService: RdvService, private _authService : AuthService , private folderService: DossiersService) { }
   adminId !:any
 
   ngOnInit(): void {
@@ -65,6 +66,7 @@ export class RdvComponent {
           this.successMessage = 'Réservation confirmée avec succès!';
           this.errorMessage = '';
           this.loadPendingRdvs(this.adminId); 
+     
         },
         error: (error: any) => {
           console.error(error);
@@ -77,12 +79,22 @@ export class RdvComponent {
     }
   }
 
-  acceptRdv(id: String): void {
-    this.rdvService.acceptRdv(id).subscribe({
+  acceptRdv(rdv: any): void {
+    console.log( rdv)
+    this.rdvService.acceptRdv(rdv._id).subscribe({
       next: () => {
         this.successMessage = 'Rendez-vous accepté avec succès!';
-        this.errorMessage = '';
-        this.loadPendingRdvs(this.adminId); 
+        this.folderService.createDossier({avocat: rdv.avocats , client : rdv.user._id , numberFolder:parseInt(rdv.user._id)  , titleFolder:`${rdv.user.username}${rdv.user.lastname}` }).subscribe({
+            next:(value)=>{ 
+              this.errorMessage = '';
+              this.loadPendingRdvs(this.adminId); 
+            },
+            error:(err)=>{ 
+               console.error(err)
+            }
+        })
+
+        
       },
       error: (error: any) => {
         console.error(error);

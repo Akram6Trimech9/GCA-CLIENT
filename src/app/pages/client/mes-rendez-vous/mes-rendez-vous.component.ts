@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RdvService } from '../../../services/rdv.service';
 import { AuthService } from '../../../core/service/auth.service';
 import { CommonModule } from '@angular/common';
+import { DossiersService } from '../../../services/dossiers.service';
 
 @Component({
   selector: 'app-mes-rendez-vous',
@@ -13,7 +14,7 @@ import { CommonModule } from '@angular/common';
 export class MesRendezVousComponent implements OnInit{
   rdvs : any[]=[]
   currentUser: any
- constructor(private _rendezvousService : RdvService , private _authService : AuthService){
+ constructor(private _rendezvousService : RdvService , private _authService : AuthService , private _folderService : DossiersService){
 
  }
   ngOnInit(): void {

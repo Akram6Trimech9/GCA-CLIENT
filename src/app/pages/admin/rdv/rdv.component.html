@@ -26,7 +26,7 @@
              <td>{{ rdv.user.username }} {{ rdv.user.lastname }}</td>
             <td>{{ rdv.status  }}</td>
             <td class="btns">
-              <button  *ngIf="rdv.status === 'pending'" class="btn btn-sm btn-action " (click)="acceptRdv(rdv._id)">Accepter</button>
+              <button  *ngIf="rdv.status === 'pending'" class="btn btn-sm btn-action " (click)="acceptRdv(rdv)">Accepter</button>
               <button  *ngIf="rdv.status === 'pending' "  class="btn btn-sm btn-danger" (click)="rejectRdv(rdv._id)">Refuser</button>
               <button  *ngIf="rdv.status !== 'pending'" class="btn btn-sm btn-warning" (click)="delete(rdv._id)">Supprimer</button>
 
