@@ -14,8 +14,9 @@
 <section class="bg-02-b">
   <div class="container">
     <div class="form-container">
+   
       <form *ngIf="!activeAccount" [formGroup]="form" (ngSubmit)="onSubmit()">
-        
+          
         <div class="input-group">
           <label>Prénom</label>
           <input type="text" formControlName="name" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['name'].errors }" />
@@ -85,6 +86,13 @@
             <div *ngIf="f['cin'].errors['required']">Le CIN est requis</div>
           </div>
         </div>
+<div class="input-group">
+<label for="photo">Télécharger une photo</label>
+<input type="file" id="photo" (change)="onFileChange($event)" class="form-control" />
+<div *ngIf="submitted && photoError" class="invalid-feedback">
+  <div>La photo est requise</div>
+</div>
+</div>
 
         <div class="input-group">
           <label>Adresse</label>
@@ -101,7 +109,7 @@
         <div class="line mt-5 mb-5"></div>
 
         <p class="sign-up">Vous avez déjà un compte ?
-          <a routerLink='/client/login'>Se connecter</a>
+          <a routerLink='/authAdmin/adminstratorLogin'>Se connecter</a>
         </p>
       </form>
 
@@ -111,11 +119,13 @@
           <input type="text" formControlName="activeNumber" class="form-control" [ngClass]="{ 'is-invalid': submitted && fa['activeNumber'].errors }" />
           <div *ngIf="submitted && fa['activeNumber'].errors" class="invalid-feedback">
             <div *ngIf="fa['activeNumber'].errors['required']">Le numéro est requis</div>
+            <div *ngIf="fa['activeNumber'].errors['minLength']">au minimum 6 chiffres</div>
+
           </div>
         </div>
 
         <div class="input-group">
-          <button type="submit" class="sign-in">Activer</button>
+          <button  type="submit"   class="sign-in">Activer</button>
         </div>
       </form>
     </div>

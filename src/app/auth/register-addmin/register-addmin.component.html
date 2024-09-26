@@ -74,7 +74,14 @@
               <div *ngIf="f['cin'].errors['required']">Le CIN est requis</div>
             </div>
           </div>
-  
+ <div class="input-group">
+  <label for="photo">Télécharger une photo</label>
+  <input type="file" id="photo" (change)="onFileChange($event)" class="form-control" />
+  <div *ngIf="submitted && photoError" class="invalid-feedback">
+    <div>La photo est requise</div>
+  </div>
+</div>
+
           <div class="input-group">
             <label>Adresse</label>
             <input type="text" formControlName="address" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['address'].errors }" />

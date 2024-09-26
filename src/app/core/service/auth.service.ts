@@ -11,7 +11,7 @@ import { Role } from '../constant/role';
 })
 export class AuthService {
 
-  private apiUrl = `${environment.baseurl}/auth`;
+  private apiUrl = `${environment.baseurl}/user`;
   private currentUser: IUser | null = null;
   private currentUserKey = 'currentUser';
   private currentUserSubject$ = new BehaviorSubject<IUser | null>(this.getCurrentUserFromLocalStorage());
@@ -25,8 +25,17 @@ export class AuthService {
   }
    
   getAllAdmins(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.baseurl}/admins/getall`);
+    return this.http.get<any[]>(`${environment.baseurl}/user/avocat`);
   }
+  getAllClients(id:any): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.baseurl}/user/client/${id}`);
+  }
+  searchClient(id: string, searchTerm: string): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.baseurl}/user/search/client/${id}`, {
+      params: { query: searchTerm }
+    });
+  }
+   
   setCurrentUser(user: IUser): void {
     this.currentUser = user;
     this.currentUserSubject$.next(this.currentUser)
@@ -51,12 +60,18 @@ export class AuthService {
 
   }
 
-  register(request: IUser): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, request);
-  }
+ 
 
   login(request: AuthRequest): Observable<IUser> {
-    return this.http.post<IUser>(`${this.apiUrl}/authenticate`, request).pipe(
+    return this.http.post<IUser>(`${this.apiUrl}/login`, request).pipe(
+      tap((user: IUser) => {
+        this.setCurrentUser(user); 
+       })
+    );
+  }
+
+  loginAdmin(request: AuthRequest): Observable<IUser> {
+    return this.http.post<IUser>(`${this.apiUrl}/loginadmin`, request).pipe(
       tap((user: IUser) => {
         this.setCurrentUser(user); 
        })
@@ -71,8 +86,8 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/reset-password?token=${token}`, request);
   }
 
-  activateAccount(token: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/activate-account?token=${token}`);
+  activateAccount(token: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/verify-account`,token);
   }
 
   getCurrentUser(): IUser | null {
@@ -87,14 +102,10 @@ export class AuthService {
     localStorage.removeItem(this.currentUserKey);
   }
 
-  registerClient(registerData: IUser): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register/client`, registerData);
+  register(registerData: FormData ): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup`, registerData);
   }
-
-  registerAdmin(registerData: IUser): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register/admin`, registerData);
-  }
-
+ 
   getCurrentUserRole(): string | null {
     const user = this.getCurrentUser();
     return user ? user.role : null;

@@ -1,0 +1,324 @@
+<div role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
+    <div class="head d-flex justify-content-between align-items-center">
+      <div class="title">Gestion des intervenants</div>
+      <div style="cursor: pointer;" (click)="ouvrirModalAjouter()">
+        <i class="bi bi-plus-circle"></i> Ajouter un nouvel intervenant
+      </div>
+    </div>
+ <div *ngIf="loading" class="d-flex justify-content-center align-items-center fixed-top w-100 h-100" style="background: rgba(0, 0, 0, 0.5); z-index: 1050;">
+  <div class="spinner-border text-light" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+<!-- 
+<form (ngSubmit)="upload()" #uploadForm="ngForm" class="d-flex   align-items-center  mt-4">
+  <div class="form-group">
+    <label for="fileInput" class="form-label">Choisir un fichier</label>
+    <input 
+      type="file" 
+      id="fileInput" 
+      class="form-control" 
+      (change)="onFileSelected($event)" 
+    />
+  </div>
+  <button type="submit" style="background-color: #465a6e; color: white;"  class="btn  ml-2 mt-3">Téléverser</button>
+</form>
+ -->
+ <div class="search-form ">
+  <!-- Search Inputs -->
+
+  <input class="form-control search-input" [(ngModel)]="searchName" placeholder="Rechercher par nom" />  <select class="form-control search-input" [(ngModel)]="searchType">
+    <option value="">Select Type</option>
+    <option value="expert">Expert</option>
+    <option value="huissiers_justices">Huissiers de Justice</option>
+    <option value="huissiers_notaires">Huissiers Notaires</option>
+    <option value="interpreters">Interpreters</option>
+    <option value="liquidateursnotairesfiduciaires">Liquidateurs Notaires Fiduciaires</option>
+    <option value="medecinslegistes">Médecins Légistes</option>
+    <option value="medecinsdegatsphysiques">Médecins de Gâts Physiques</option>
+    <option value="judiciairesfaillite">Judiciaires Faillite</option>
+  </select>
+  
+  <button class=" btn search-button" (click)="onSearch()">Rechercher</button>
+  <div ngbDropdown class="d-inline-block" *ngIf="selectedintervenants.length">
+    <button class="btn search-button" ngbDropdownToggle>
+      Intervenants sélectionnés {{selectedintervenants.length}}
+    </button>
+    <div ngbDropdownMenu>
+      <div style="display: flex; flex-direction: column; justify-content: center;">
+        <button class="btn hover-btn" style="border: none; background: none;" (click)="openModal('action1', action1)">
+          Ajouter à une affaire existante
+        </button>
+        <button class="btn hover-btn" style="border: none; background: none;" (click)="openModal('action2', action2)">
+          Ajouter à une audience existante
+        </button>
+        <button class="btn hover-btn" style="border: none; background: none;" (click)="openModal('action3', action3)">
+          Ajouter et créer une affaire
+        </button>
+        <button class="btn hover-btn" style="border: none; background: none;" (click)="openModal('action4', action4)">
+          Ajouter et créer une audience
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  
+
+</div>
+  <!-- Table with checkboxes -->
+  <div class="projects mt-4">
+    <div class="projects-inner">
+      <header class="projects-header">
+        <div>
+          <div class="title">Gestion des intervenants</div>
+          <div class="count">| {{ intervenants?.length }} intervenants</div>
+        </div>
+      </header>
+
+      <table class="projects-table">
+        <thead>
+          <tr>
+            <th><input type="checkbox" (change)="toggleSelectAll($event)"></th>
+            <th>Nom et prénom</th>
+            <th>Adresse</th>
+            <th>Téléphone</th>
+            <th>Téléphone 2</th>
+            <th>Type d'expert</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tbody>
+            <tr *ngFor="let intervenant of intervenants">
+              <td><input type="checkbox"  (change)="onSelectionChange(intervenant, $event)"></td>
+              <td>{{ intervenant.full_name }}</td>
+              <td>{{ intervenant.adresse }}</td>
+              <td>{{ intervenant.phone1 }}</td>
+              <td>{{ intervenant.phone2 }}</td>
+              <td>{{ intervenant.typeInventaire }}</td>
+            </tr>
+           
+        </tbody>
+      </table>
+      <nav aria-label="Page navigation" class="mt-4" *ngIf="totalItems > limit">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="page === 1">
+            <button class="page-link" (click)="onPageChange(page - 1)" [disabled]="page === 1">Previous</button>
+          </li>
+      
+          <li class="page-item" *ngFor="let pageNum of getPaginationNumbers()"
+              [class.active]="page === pageNum">
+            <button class="page-link" (click)="onPageChange(pageNum)">{{ pageNum }}</button>
+          </li>
+      
+          <li class="page-item" [class.disabled]="page * limit >= totalItems">
+            <button class="page-link" (click)="onPageChange(page + 1)" [disabled]="page * limit >= totalItems">Next</button>
+          </li>
+        </ul>
+      </nav>
+      
+      <!-- Pagination -->
+    
+    </div>
+  </div>
+   </div>
+  
+   <ng-template #contentAdd let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Ajouter un nouvel intervenant</h5>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="intervenantForm" (ngSubmit)="enregistrerintervenant()">
+        <div class="form-group">
+          <label for="nom">Nom</label>
+          <input type="text" class="form-control" id="nom" formControlName="nom">
+          <div *ngIf="intervenantForm.get('nom')?.invalid && intervenantForm.get('nom')?.touched" class="text-danger">
+            Le nom est requis
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="prenom">Prénom</label>
+          <input type="text" class="form-control" id="prenom" formControlName="prenom">
+          <div *ngIf="intervenantForm.get('prenom')?.invalid && intervenantForm.get('prenom')?.touched" class="text-danger">
+            Le prénom est requis
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="role">Rôle</label>
+          <input type="text" class="form-control" id="role" formControlName="role">
+          <div *ngIf="intervenantForm.get('role')?.invalid && intervenantForm.get('role')?.touched" class="text-danger">
+            Le rôle est requis
+          </div>
+        </div>
+  
+        <button type="submit" class="btn btn-primary mr-2" [disabled]="intervenantForm.invalid">
+          Enregistrer
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Annuler')">Annuler</button>
+      </form>
+    </div>
+  </ng-template>
+  
+   <ng-template #contentDelete let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Confirmer la suppression</h5>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <p>Êtes-vous sûr de vouloir supprimer cet intervenant ?</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Annuler')">Annuler</button>
+      <button type="button" class="btn btn-danger" (click)="confirmerSuppression()">Supprimer</button>
+    </div>
+  </ng-template>
+  
+  <!-- Modal for Action 1 -->
+<ng-template #action1 let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title"> Ajouter à un affaire existante</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <label for="selectAudiance">Choisir un affaire existante</label>
+    <select id="selectAudiance" class="form-control" [(ngModel)]="selectedAffaire">
+      <option *ngFor="let affaire of affaires" [value]="affaire._id">{{ affaire.numeroAffaire }}</option>
+    </select>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="saveInAffaire()">Enregistrer</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Fermer</button>
+
+  </div>
+</ng-template>
+
+<!-- Modal for Action 2 -->
+<ng-template #action2 let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Ajouter à une audience existante</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <label for="selectAudiance">Choisir une audience existante</label>
+    <select id="selectAudiance" class="form-control" [(ngModel)]="selectEdAudiance">
+      <option *ngFor="let audiance of audiances" [value]="audiance._id">{{ audiance.numero }}</option>
+    </select>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="saveInAudiance()">Enregistrer</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Fermer</button>
+  </div>
+</ng-template>
+
+
+
+<!-- Modal for Action 3 -->
+<ng-template #action3 let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">  Ajouter et créer une affaire</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="affaireForm" >
+       <div class="form-group chips mb-2"  >
+        <span class="badge rounded-pill bg-dark" *ngFor="let item of selectedintervenants" >{{item.full_name}}</span>
+       </div>
+       <div class="form-group">
+
+      <label for="selectAudiance">Choisir un dossier  existante</label>
+      <select id="selectAudiance" class="form-control" formControlName="selectedFolder">
+        <option style="color: black;" *ngFor="let folder of folders" [value]="folder._id">{{ folder.numberFolder }}</option>
+      </select>
+      </div>
+      <div class="form-group">
+        <label for="numeroAffaire">Numéro d'Affaire</label>
+        <input type="number" class="form-control" id="numeroAffaire" formControlName="numeroAffaire">
+        <div *ngIf="affaireForm.get('numeroAffaire')?.invalid && affaireForm.get('numeroAffaire')?.touched"
+          class="text-danger">
+          Numéro d'Affaire est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="natureAffaire">Nature d'Affaire</label>
+        <input type="text" class="form-control" id="natureAffaire" formControlName="natureAffaire">
+        <div *ngIf="affaireForm.get('natureAffaire')?.invalid && affaireForm.get('natureAffaire')?.touched"
+          class="text-danger">
+          Nature d'Affaire est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="dateAudience">Date d'Audience</label>
+        <input type="date" class="form-control" id="dateAudience" formControlName="dateAudience">
+        <div *ngIf="affaireForm.get('dateAudience')?.invalid && affaireForm.get('dateAudience')?.touched"
+          class="text-danger">
+          Date d'Audience est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="Opposite">Opposée</label>
+        <input type="text" class="form-control" id="Opposite" formControlName="opposite">
+        <div *ngIf="affaireForm.get('opposite')?.invalid && affaireForm.get('opposite')?.touched"
+          class="text-danger">
+          opposite est requis
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="files">Ajouter des fichiers</label>
+        <input type="file" class="form-control" id="files" (change)="onFileChange($event)" multiple>
+      </div>
+
+      <div *ngIf="selectedFiles ">
+        <p>Fichiers sélectionnés:</p>
+        <ul>
+          <li  >{{ selectedFiles.name }}</li>
+        </ul>
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="aboutissement" formControlName="aboutissement">
+        <label class="form-check-label" for="aboutissement">Aboutie</label>
+      </div>
+
+     </form>
+  </div>
+  <div class="modal-footer">
+
+    <button type="submit" class="btn btn-primary mr-2" [disabled]="affaireForm.invalid" (click)="addNewAffaire()">
+      Enregistrer
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Close</button>
+  </div>
+</ng-template>
+
+<!-- Modal for Action 4 -->
+<ng-template #action4 let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title"> Ajouter et créer une audience</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+  <!--Using ng-option and for loop-->
+ <div class="form-group" > 
+  
+<label>
+  Ajouter à une audience existante
+</label>
+ <ng-select  class="custom form-control"  [items]="audiances" 
+         bindLabel="numero" 
+         bindValue="_id" 
+         [(ngModel)]="selectEdAudiance">
+</ng-select>
+</div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Save click')">Close</button>
+  </div>
+</ng-template>

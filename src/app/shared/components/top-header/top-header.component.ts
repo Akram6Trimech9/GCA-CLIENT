@@ -7,6 +7,7 @@ import { IUser } from '../../../core/models/user';
 import { AvaiblityService } from '../../../services/avaiblity.service';
 import { IEvent } from '../../../core/models/avaible';
 import { ReservationService } from '../../../services/reservation.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'top-header',
@@ -37,19 +38,17 @@ export class TopHeaderComponent implements OnInit {
   selectedConsultant: any = null;
   availability: string[] = [];
   selectedTime!: any;
- constructor(private  _authService : AuthService , private _availabilityService : AvaiblityService , private _reservationService  : ReservationService){
+ 
+ constructor(private  _authService : AuthService ,
+  private toastr: ToastrService ,
+   private _availabilityService : AvaiblityService , private _reservationService  : ReservationService){
 
  }
-  open(content: TemplateRef<any>) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
-  }
+ open(content: TemplateRef<any>) {
+  this.modalService.open(content);
+}
+
+
 
   private getDismissReason(reason: any): string {
     switch (reason) {
@@ -65,7 +64,7 @@ export class TopHeaderComponent implements OnInit {
   onConsultantChange() {
     if (this.selectedConsultant) {
       console.log("Selected Consultant:", this.selectedConsultant);
-      this._availabilityService.getAvailabilitiesByAdmin(this.selectedConsultant?.id).subscribe(
+      this._availabilityService.getAvailabilitiesByAdmin(this.selectedConsultant?._id).subscribe(
         (data: any[]) => { 
           this.availabilities = data;
           console.log("Availabilities:", this.availabilities);
@@ -80,16 +79,16 @@ export class TopHeaderComponent implements OnInit {
   ngOnInit(): void {
     this._authService.getAllAdmins().subscribe(
     {
-      next : (value )=> {  
-        this.admins = value 
+      next : (value :any )=> {  
+        this.admins = value.data
        }, error :(err)  =>{
         
       } 
     }
     );
      this.currentUser = this._authService.getCurrentUser()
-     if(this.currentUser && this.currentUser.id !== null) {
-       this.clientId= this.currentUser.id
+     if(this.currentUser && this.currentUser._id !== null) {
+       this.clientId= this.currentUser._id
      }
   }
   isAvailable(date: any): boolean {
@@ -113,7 +112,7 @@ export class TopHeaderComponent implements OnInit {
   onDateClick(date: any): void {
      const jsDate = new Date(date.year, date.month - 1, date.day);
        const selectedDate = new Date(date.year, date.month - 1, date.day);
-
+       this.selectedTime=new Date(date.year, date.month - 1, date.day);
        const isExist = this.availabilities.findIndex(item => {
           const availabilityDate = new Date(item.date);
            return availabilityDate.getFullYear() === selectedDate.getFullYear() &&
@@ -121,38 +120,39 @@ export class TopHeaderComponent implements OnInit {
                  availabilityDate.getDate() === selectedDate.getDate();
       });
   
-      if (isExist === -1) {
-           alert("Date is available, please select a date.");
-      } else {
-           alert("Date is already taken.");
-      }
+      // if (isExist === -1) {
+      //      alert("Date is available, please select a date.");
+      // } else {
+      //      alert("Date is already taken.");
+      // }
   
       console.log(selectedDate);  
       
   }
-   submit(){
-    console.log("ko")
-    console.log(this.selectedTime,this.selectedConsultant,"selectedConsultant",this.clientId)
-
-    if ( this.selectedConsultant && this.selectedTime) {
-       const formattedReservationTime = this.formatReservationTime(this.reservationTime);
-       console.log(this.selectedConsultant)
-      this._reservationService.createReservation(this.clientId, this.selectedTime, formattedReservationTime)
+  submit(modal: any) {
+    if (this.selectedConsultant && this.selectedTime) {
+      const formattedReservationTime = this.formatReservationTime(this.reservationTime);
+      this._reservationService.createReservation(this.clientId, this.selectedTime, formattedReservationTime, this.selectedConsultant._id)
         .subscribe({
           next: (reservation: any) => {
             this.successMessage = 'Réservation créée avec succès!';
+            this.toastr.success(this.successMessage, 'Success'); // Show success toastr
             this.errorMessage = '';
-           },
+            modal.close(); // Close modal on success
+          },
           error: (error: any) => {
             console.error(error);
             this.successMessage = '';
             this.errorMessage = 'Erreur lors de la création de la réservation.';
+            this.toastr.error(this.errorMessage, 'Error'); // Show error toastr
           }
         });
     } else {
       this.errorMessage = 'Veuillez remplir tous les champs correctement.';
+      this.toastr.warning(this.errorMessage, 'Warning'); // Show warning toastr
     }
   }
+
   private formatReservationTime(time: string): string {
     const currentDateTime = new Date();
     const [hours, minutes] = time.split(':');
@@ -161,7 +161,7 @@ export class TopHeaderComponent implements OnInit {
     currentDateTime.setMinutes(parseInt(minutes, 10));
     
     const year = currentDateTime.getFullYear();
-    const month = String(currentDateTime.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed, so we add 1
+    const month = String(currentDateTime.getMonth() + 1).padStart(2, '0');  
     const day = String(currentDateTime.getDate()).padStart(2, '0');
     const formattedHours = String(currentDateTime.getHours()).padStart(2, '0');
     const formattedMinutes = String(currentDateTime.getMinutes()).padStart(2, '0');
@@ -170,4 +170,15 @@ export class TopHeaderComponent implements OnInit {
      return `${year}-${month}-${day}T${formattedHours}:${formattedMinutes}:${seconds}`;
   }
   
+  submitEmail(modal: any) {
+     modal.close();
+  }
+
+  submitPhone(modal: any) {
+     modal.close();
+  }
+
+  submitContact(modal: any) {
+     modal.close();
+  }
 }

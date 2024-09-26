@@ -4,6 +4,8 @@ import { ClientLayoutComponent } from './layouts/client-layout/client-layout.com
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { adminGuard } from './core/guards/admin.guard';
+import { UserLayoutComponent } from './layouts/user-layout/user-layout.component';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
  {
@@ -23,6 +25,13 @@ export const routes: Routes = [
     canActivate:[adminGuard],
     loadChildren: () => import('./admin/admin.module').then(m => m.AdminModule)
  },
+
+ {
+   path:'compte',
+   component:UserLayoutComponent,
+   canActivate:[authGuard],
+   loadChildren: () => import('./user/user.module').then(m => m.UserModule)
+},
  {
    path:'authAdmin',
    component:AuthLayoutComponent,

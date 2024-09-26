@@ -10,11 +10,11 @@ export class DossiersService {
 
   constructor(private http: HttpClient ) { }
  
-  private baseUrl = `${environment.baseurl}/dossiers` ; 
+  private baseUrl = `${environment.baseurl}/folder` ; 
 
  
   getAllDossiers(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/getall`);
+    return this.http.get<any[]>(`${this.baseUrl}`);
   }
 
   getDossierById(id: number): Observable<any> {
@@ -22,7 +22,7 @@ export class DossiersService {
   }
 
   createDossier(dossier: any): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/save`, dossier);
+    return this.http.post<any>(`${this.baseUrl}`, dossier);
   }
 
   updateDossier(id: number, dossier: any): Observable<any> {
@@ -32,7 +32,17 @@ export class DossiersService {
   deleteDossier(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/delete/${id}`);
   }
-  getFolderByAdminId(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.baseurl}/dossiers/getall`);
+  getFolderByAdminId(avocatId:any): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/avocat/${avocatId}`);
+  }
+  getFolderByClient(clientId:any): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/client/${clientId}`);
+  }
+
+  updateExecuted(folderId:any , isExecuted : any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/${folderId}/executed`,{isExecuted});
+  }
+  updateReactified(folderId:any  , isRectified : any): Observable<any> {
+    return this.http.put<any>(`${this.baseUrl}/${folderId}/rectified` , {isRectified});
   }
 }

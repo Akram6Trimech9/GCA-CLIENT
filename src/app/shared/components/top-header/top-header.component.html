@@ -9,11 +9,10 @@
                     <h2>Les Meilleurs Avocats de Défense</h2>
                     <p>affaires<span>-</span>politique<span>-</span>Actualité<span>-</span>En Vedette<span>-</span>technologie<span>-</span>article</p>
                     <div class="btn-01">
-                        <a  >contactez-nous maintenant</a>
-                        <a  (click)="open(content)">Rendez-vous direct</a> <!-- Changed this button text -->
-                        <a  (click)="open(content)">Conseil par mail</a> <!-- Changed this button text -->
-                        <a  (click)="open(content)">Conseil par téléphone</a> <!-- Changed this button text -->
-
+                      <a (click)="open(content)">Rendez-vous direct</a>
+                      <a (click)="open(contentEmail)">Conseil par mail</a>
+                      <a (click)="open(contentPhone)">Conseil par téléphone</a>
+                      <a (click)="open(contentContact)">Contactez-nous maintenant</a>
                     </div>
                 </div>
             </div>
@@ -38,7 +37,7 @@
                       name="consultant"   
                     >
                       <option *ngFor="let consultant of admins" [ngValue]="consultant">
-                        {{ consultant.username }} {{ consultant.lastname }}
+                           {{ consultant.username }} {{ consultant.lastname }}
                       </option>
                     </select>
                   </div>
@@ -52,7 +51,7 @@
                   class="form-control"
                   [(ngModel)]="selectedTime"
                 >
-                  <option *ngFor="let time of availabilities" [value]="time.id">
+                  <option *ngFor="let time of availabilities" [value]="time._id">
                   {{time.date |date}}  From :  {{ time.startTime }} To {{time.endTime}}
                   </option>
                 </select>
@@ -61,7 +60,7 @@
                 <div *ngIf="selectedTime">
                   <label for="availabilitySelect">Time</label>
 
-                  <input   type="time"   [min]="selectedTime.startTime" [max]="selectedTime.endTime"  [(ngModel)]="reservationTime" name="reservation" class="form-control" />
+                  <input   type="time"  [(ngModel)]="reservationTime" name="reservation" class="form-control" />
               </div>
         </div>
         <ngb-datepicker *ngIf="availabilities.length > 0"
@@ -87,9 +86,88 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-outline-danger"  (click)="modal.close('Save click')">Cancel</button>
 
-          <button type="button" class="btn btn-outline-secondary"  (click)="submit()">Save</button>
-
+            <button type="button" class="btn btn-outline-secondary" (click)="submit(modal)">Save</button>
         </div>
      </div>
   </ng-template>
   
+<!-- Modal Template for Conseil par Mail -->
+<ng-template #contentEmail let-modal>
+  <div class="custom-modal">
+      <div class="modal-header">
+          <h4 class="modal-title">Conseil par Mail</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+          <!-- Email form logic here -->
+          <form>
+              <div class="mb-3">
+                  <label for="email">Votre Email</label>
+                  <input type="email" id="email" class="form-control"   name="email">
+              </div>
+              <div class="mb-3">
+                  <label for="message">Votre Message</label>
+                  <textarea id="message" class="form-control"  name="message"></textarea>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" (click)="modal.dismiss()">Cancel</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="submitEmail(modal)">Envoyer</button>
+      </div>
+  </div>
+</ng-template>
+
+<!-- Modal Template for Conseil par Téléphone -->
+<ng-template #contentPhone let-modal>
+  <div class="custom-modal">
+      <div class="modal-header">
+          <h4 class="modal-title">Conseil par Téléphone</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+          <!-- Phone consultation logic here -->
+          <form>
+              <div class="mb-3">
+                  <label for="phone">Votre Numéro de Téléphone</label>
+                  <input type="tel" id="phone" class="form-control"   name="phone">
+              </div>
+              <div class="mb-3">
+                  <label for="timePhoneConsult">Heure souhaitée</label>
+                  <input type="time" id="timePhoneConsult" class="form-control"  >
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" (click)="modal.dismiss()">Cancel</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="submitPhone(modal)">Planifier</button>
+      </div>
+  </div>
+</ng-template>
+
+<!-- Modal Template for Contactez-nous Maintenant -->
+<ng-template #contentContact let-modal>
+  <div class="custom-modal">
+      <div class="modal-header">
+          <h4 class="modal-title">Contactez-nous Maintenant</h4>
+          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+          <!-- General contact form -->
+          <form>
+              <div class="mb-3">
+                  <label for="contactName">Votre Nom</label>
+                  <input type="text" id="contactName" class="form-control"  name="name">
+              </div>
+              <div class="mb-3">
+                  <label for="contactMessage">Votre Message</label>
+                  <textarea id="contactMessage" class="form-control"  name="message"></textarea>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" (click)="modal.dismiss()">Cancel</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="submitContact(modal)">Envoyer</button>
+      </div>
+  </div>
+</ng-template>

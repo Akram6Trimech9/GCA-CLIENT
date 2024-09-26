@@ -22,14 +22,26 @@ export class AudianceService {
   }
 
    addAudience(audience: any , adminID :Number | undefined, affaireId:Number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/save/${adminID}/${affaireId}`, audience);
+    return this.http.post<any>(`${this.baseUrl}/${adminID}/${affaireId}`, audience);
   }
 
+
+
+  getAllAudiance() : Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/save`);
+  }
    updateAudience(id: number, audience: IAudiance): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/${id}`, audience);
   }
 
-   deleteAudience(id: number): Observable<any> {
+   deleteAudience(id: any): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/${id}`);
+  }
+
+  getAllByAdmin(adminId : any) : Observable<any>{ 
+     return this.http.get<any>(`${this.baseUrl}/admin/${adminId}`)
+  }
+  addIntervToAudiance(audianceId : any , intervenantId : any): Observable<any>{
+     return this.http.post<any>(`${this.baseUrl}/intervenant/${audianceId}`,{intervenantId})
   }
 }

@@ -15,8 +15,9 @@ export const appConfig: ApplicationConfig = {
         useFactory: adapterFactory,
       })),
       provideAnimations(), 
-    provideToastr(),  
-   provideRouter(routes) ,  importProvidersFrom(NgbModule),    provideHttpClient(withFetch())
+       provideToastr(),  
+       provideRouter(routes) ,  importProvidersFrom(NgbModule),    provideHttpClient(withFetch())
     ,
+    
     importProvidersFrom(CalendarModule),]
 };

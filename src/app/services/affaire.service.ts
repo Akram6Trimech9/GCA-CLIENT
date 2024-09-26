@@ -17,15 +17,26 @@ export class AffaireService {
   }
 
    deleteAffaire(affaireId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/delete/${affaireId}`);
+    return this.http.delete<void>(`${this.apiUrl}/${affaireId}`);
   }
 
    addAffaire(affaire: any, dossierId: number): Observable<any> {
     affaire.dossier = { id: dossierId };
-    return this.http.post(`${this.apiUrl}/save`, affaire);
+    return this.http.post(`${this.apiUrl}/${dossierId}`, affaire);
   }
 
    updateAffaire(affaireID: any,affaire:any): Observable<any> {
     return this.http.put(`${this.apiUrl}/update/${affaireID}`, affaire);
   }
+  getAllAffaireByAdmin(adminId : any): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/admin/${adminId}` )
+  }
+
+  getAllAffaireByClient(clientId : any): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/client/${clientId}` )
+  }
+
+  addIntervToAffaire(affaireId : any , intervenantId : any): Observable<any>{
+    return this.http.post<any>(`${this.apiUrl}/intervenant/${affaireId}`,{intervenantId})
+ }
 }

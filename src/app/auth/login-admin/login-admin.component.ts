@@ -30,7 +30,7 @@ export class LoginAdminComponent {
         email: email , 
         password : password
       }
-     this._authService.login(record).subscribe({
+     this._authService.loginAdmin(record).subscribe({
        next:(value) => {
            if(value.token && value.role === Role.ADMIN){
         this.router.navigate(['/administrator'])

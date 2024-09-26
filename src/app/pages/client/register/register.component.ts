@@ -14,6 +14,7 @@ import { Role } from '../../../core/constant/role';
 import Validation from '../../../utils/validation';
 import { CommonModule } from '@angular/common';
 import { DossiersService } from '../../../services/dossiers.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -27,16 +28,19 @@ export class RegisterComponent implements OnInit {
   form: FormGroup;
   submitted = false;
   activeAccount: boolean = false;
-
-  constructor(private formBuilder: FormBuilder, private _authService: AuthService, private _router: Router , private _folderService : DossiersService) {
+  selectedFile: File | null = null;  
+  photoError: boolean = false;
+  constructor(private formBuilder: FormBuilder, 
+    
+    private toastr: ToastrService ,private _authService: AuthService, private _router: Router , private _folderService : DossiersService) {
     this.activeForm = this.formBuilder.group({
-      activeNumber: ['', Validators.required],
+      activeNumber: ['',[ Validators.required, Validators.minLength(6)]],
     });
 
     this.form = this.formBuilder.group(
       {
         name: ['', Validators.required],
-        lastName: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(20)]],
+        lastName: ['', [Validators.required, Validators.maxLength(20)]],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(40)]],
         confirmPassword: ['', Validators.required],
@@ -54,7 +58,14 @@ export class RegisterComponent implements OnInit {
   clientId !: Number 
 
   ngOnInit(): void {}
-
+ 
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+      this.photoError = false;
+    }
+  }
   get f(): { [key: string]: AbstractControl } {
     return this.form.controls;
   }
@@ -70,19 +81,19 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    const record: IUser = {
-      email: this.form.value.email,
-      lastname: this.form.value.lastName,
-      username: this.form.value.name,
-      password: this.form.value.password,
-      role: Role.CLIENT,
-      adresse: this.form.value.address,
-      dateOfBirth: this.form.value.dateOfBirth,
-      cin: this.form.value.cin,
-      telephone1: this.form.value.telephone,
-    };
+    const formData = new FormData();
+    formData.append('email', this.form.value.email);
+    formData.append('lastname', this.form.value.lastName);
+    formData.append('username', this.form.value.name);
+    formData.append('password', this.form.value.password);
+    formData.append('role', Role.CLIENT);
+    formData.append('adresse', this.form.value.adresse);
+    formData.append('dateOfBirth', this.form.value.dateOfBirth.toString());   
+    formData.append('cin', this.form.value.cin);
+    formData.append('telephone1', this.form.value.telephone);
+   formData.append('userProfile', this.selectedFile as Blob);
 
-    this._authService.registerClient(record).subscribe({
+    this._authService.register(formData).subscribe({
       next: (value) => {
         if (value) {
           console.log(value, "value");
@@ -98,28 +109,27 @@ export class RegisterComponent implements OnInit {
 
     console.log(JSON.stringify(this.form.value, null, 2));
   }
-
   active(): void {
-    this._authService.activateAccount(this.activeForm.value.activeNumber).subscribe({
+    this._authService.activateAccount({
+      verificationCode: this.activeForm.value.activeNumber,
+      email: this.form.value.email,
+    }).subscribe({
       next: (value) => {
-
-        this._folderService.createDossier({client: {id : this.clientId},numeroDossier:this.clientId} ).subscribe({ 
-          next:(value)=> {
-            this._router.navigate(['/client/login']);
-          },error:(err) =>{
-            
-          },
-        })
-
+        if (value.verified) {
+          this._router.navigate(['/client/login']);
+        } else {
+          this.toastr.error('Verification code is incorrect', 'Error');
+        }
       },
-      error(err) {
+      error: (err) => {
         console.error(err);
+        this.toastr.error('An error occurred during activation', 'Error');
       },
     });
   }
-
   onReset(): void {
     this.submitted = false;
     this.form.reset();
+    this.selectedFile = null;
   }
 }

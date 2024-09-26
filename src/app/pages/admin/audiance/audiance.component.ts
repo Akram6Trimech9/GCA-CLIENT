@@ -1,49 +1,92 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCarouselModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AudianceService } from '../../../services/audiance.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { IAudiance } from '../../../core/models/audiance';
 import { ToastrService } from 'ngx-toastr';
 import { IUser } from '../../../core/models/user';
 import { AuthService } from '../../../core/service/auth.service';
+import { CerclesService } from '../../../services/cercles.service';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { environment } from '../../../../environments/environment';
+
 @Component({
   selector: 'app-audiance',
   standalone: true,
-  imports: [CommonModule ,FormsModule,ReactiveFormsModule,RouterModule],
+  imports: [CommonModule ,FormsModule,ReactiveFormsModule,RouterModule,PdfViewerModule,NgbCarouselModule],
   templateUrl: './audiance.component.html',
   styleUrl: './audiance.component.scss'
 })
 export class AudianceComponent  implements OnInit{
-  affaireId!: Number;
+  affaireId!: any;
   audiances!: IAudiance[];
   audianceForm!: FormGroup;  
+  cercles !:any[] ; 
+  cities !:any[] ;
+  @ViewChild('fileModal') fileModal!: TemplateRef<any>;
 
+  delegations !:any[]
   constructor(
     private modalService: NgbModal,
     private _audianceService: AudianceService,
     private route: ActivatedRoute,
     private fb: FormBuilder, 
     private toastr: ToastrService ,
-    private _authService : AuthService
+    private _authService : AuthService,
+    private addressService : CerclesService
   ) {}
+
+  
   currentUser!:IUser | null ;
   ngOnInit(): void {
      this.audianceForm = this.fb.group({
       date: ['', Validators.required],
-      description: ['', Validators.required]
+      numero: ['', Validators.required],
+      description: ['', Validators.required],
+      cercles: ['', Validators.required] ,
+    delegations: ['', Validators.required],
+    cities: ['', Validators.required]
+
+
     });
     this.currentUser = this._authService.getCurrentUser()  
   
-    this.route.params.subscribe(params => {
-      this.affaireId = +params['id'];
-      if (this.affaireId) {
-        this.loadAudiences(this.affaireId);
-      } else {
-        console.error('L\'identifiant de l\'affaire est indéfini ou nul.');
-      }
+    this.route.params.subscribe((params:any) => {
+       this.affaireId =params?.id
+if (this.affaireId) {
+  console.log('Affaire ID:', this.affaireId);
+  this.loadAudiences(this.affaireId);
+} else {
+  console.error('L\'identifiant de l\'affaire est indéfini ou nul.');
+}
+
     });
+  }
+  getAddress(){
+    this.addressService.getCercles().subscribe({
+       next:(value)=>{
+      this.cercles = value
+       },error:(err)=>{
+         console.log(err)
+       }
+    })
+
+    this.addressService.getCities().subscribe({
+      next:(value)=>{
+        this.cities = value
+         },error:(err)=>{
+           console.log(err)
+         }
+    })
+    this.addressService.getDelegation().subscribe({
+      next:(value)=>{
+        this.delegations = value
+         },error:(err)=>{
+           console.log(err)
+         }
+    })
   }
 
   loadAudiences(affaireId: Number) {
@@ -65,6 +108,8 @@ export class AudianceComponent  implements OnInit{
     } else {
       this.audianceForm.reset(); // Reset the form for a new audiance
     }
+    this.getAddress()
+
 
     modalRef.result.then(
       (result) => {
@@ -81,9 +126,32 @@ export class AudianceComponent  implements OnInit{
       }
     );
   }
-
+  selectedFiles: File[] = [];
+  onFilesSelected(event: any): void {
+    const files = event.target.files;
+    if (files.length > 0) {
+      this.selectedFiles = Array.from(files); 
+    }
+  }
   addAudiance(audiance: any) {
-    this._audianceService.addAudience({ dateAudience: this.audianceForm.value.date, description:  this.audianceForm.value.description},this.currentUser?.id , this.affaireId).subscribe({
+    console.log(this.affaireId,"ok")
+    const formData = new FormData();
+    formData.append('dateAudiance', this.audianceForm.value.date);
+    formData.append('description', this.audianceForm.value.description);
+    formData.append('delegationId', this.audianceForm.value.delegations);
+    formData.append('cityId', this.audianceForm.value.cities);
+    formData.append('cercleId', this.audianceForm.value.cercles);
+    formData.append('numero', this.audianceForm.value.numero);
+
+  if(this.selectedFiles.length){
+    this.selectedFiles.forEach(file => {
+      formData.append('files', file);
+    });
+  }
+ 
+  console.log(this.audianceForm.value)
+
+    this._audianceService.addAudience(formData,this.currentUser?._id , this.affaireId).subscribe({
       next: (value: IAudiance) => {
         this.audiances.push(value);
         this.toastr.success('Audiance added successfully');
@@ -96,15 +164,31 @@ export class AudianceComponent  implements OnInit{
   }
 
   editAudiance(audiance: any) {
-    const index = this.audiances.findIndex((a) => a.id === audiance.id);
+    const index = this.audiances.findIndex((a) => a._id === audiance._id);
     if (index > -1) {
       this.audiances[index] = audiance;
       this.toastr.success('Audiance updated successfully');
     }
   }
 
-  deleteAudiance(id: Number) {
-    this.audiances = this.audiances.filter((audiance) => audiance.id !== id);
-    this.toastr.info('Audiance deleted successfully');
+  deleteAudiance(id: String) {
+    this._audianceService.deleteAudience(id).subscribe({ 
+      next:(value) =>{ 
+        this.audiances = this.audiances.filter((audiance) => audiance._id !== id);
+      },error:(err)=>{
+         console.log(err)
+      },complete:()=>{
+        this.toastr.info('Audiance deleted successfully');
+
+      }
+    })
   }
+  files : any[]= []
+  openFiles(files: any) {
+      files.forEach((file:any) => {
+      this.files.push(`${environment.picUrl}${file}`)
+     }); // Assuming file.url contains the PDF link
+    const modalRef = this.modalService.open(this.fileModal); // Reference to the new modal
+  }
+  
 }

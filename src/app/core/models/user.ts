@@ -1,7 +1,7 @@
 import { Role } from "../constant/role";
 
 export interface IUser{
-    id?: Number;
+    _id?: Number;
     username: String,
     lastname: String,
     email: String,
@@ -11,7 +11,8 @@ export interface IUser{
     dateOfBirth?:Date,
     cin?:String ,
     telephone1?:String ,
-    adresse?:String 
+    adresse?:String ,
+    userProfile?:String
 }
 export interface AuthRequest {
     email: string;

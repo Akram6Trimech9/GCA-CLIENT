@@ -1,27 +1,106 @@
 <div role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
-  <div [ngClass]="{'d-flex justify-content-between align-items-center': selectedFolder, 'mb-5': true}" class="head">
+  
+  <div   class="head d-flex justify-content-between align-items-center">
     <div class="title">
       Gestion des dossiers
       <span *ngIf="selectedFolder"> - {{selectedFolder.client.username}}</span>
     </div>
-    <div *ngIf="selectedFolder">
+    <div *ngIf="selectedFolder ; else addNewFolder">
       <span class="back" (click)="goBack()">
         <i class="bi bi-arrow-left"></i> Back to folders
       </span>
     </div>
+    <ng-template #addNewFolder>
+      <div class="add-folder-icon" (click)="openFolderModal()">
+        <i class="bi bi-plus"></i>
+      </div>
+    </ng-template>
+    
   </div>
 
-  <div class="folder-container" id="folderContainer">
-    <div *ngIf="!selectedFolder">
+  <div id="folderContainer">
+    <div class="folder-container mt-4" *ngIf="!selectedFolder">
       <div class="folder" *ngFor="let item of dossiers; trackBy: trackByFn" (click)="openFolder(item)">
-        <div class="folder-icon">📁</div>
-        <div class="folder-name">{{ item.client.username }} {{ item.client.lastname }}</div>
-        <!-- <input type="checkbox" /> -->
+        <div class="folder-content">
+           <input type="checkbox" class="folder-checkbox" [(ngModel)]="item.selected">
+    
+           <div class="folder-icon">
+            <img [src]="item.client.userProfile" alt="User Picture" class="user-picture-overlay">
+          </div>
+    
+          <div class="folder-actions">
+            <i class="bi bi-check-circle execute-icon" 
+               [ngClass]="{'isActive': item.isExecuted}" 
+               (click)="executeAction(item._id,item.isExecuted); stopPropagation($event)" 
+               data-bs-toggle="tooltip" 
+               data-bs-placement="top" 
+               title="Exécuter l'action">
+            </i>
+            <i class="bi bi-x-circle rectify-icon" 
+            [ngClass]="{'isReactive': item.isRectified}" 
+
+               (click)="rectifyAction(item._id,item.isRectified); stopPropagation($event)" 
+               data-bs-toggle="tooltip" 
+               data-bs-placement="top" 
+               title="Rectifier l'action">
+            </i>
+            <i class="bi bi-send send-icon" 
+            (click)="sendAction(item._id); stopPropagation($event)" 
+            data-bs-toggle="tooltip" 
+            data-bs-placement="top" 
+            title="Envoyer le dossier">
+         </i>
+          </div>
+        </div>
+         <div class="folder-name">
+          {{ item.client.username }} {{ item.client.lastname }}
+        </div>
       </div>
     </div>
-
+   
+    
     <div *ngIf="selectedFolder" class="crud-offer">
+      
       <div class="projects mb-4">
+        <div class="card p-4 shadow-sm">
+          <div class="d-flex align-items-center">
+             <div class="user-image">
+              <img 
+                [src]="selectedFolder.client.userProfile" 
+                alt="User Picture" 
+                class="rounded-circle shadow-sm" 
+                width="100" 
+                height="100"
+              >
+            </div>
+            
+             <div class="user-details ml-4">
+              <h3>{{ selectedFolder.client.username }} {{ selectedFolder.client.lastname }}</h3>
+              
+             
+               <p  style="color: white !important;" class="text-muted mb-2">
+                <i class="bi bi-phone"></i> 
+                {{ selectedFolder.client.telephone1 || 'Phone number not available' }}
+              </p>
+              
+               <p  style="color: white !important;" class="text-muted mb-2">
+                <i class="bi bi-envelope"></i> 
+                {{ selectedFolder.client.email || 'Email not available' }}
+              </p>
+              
+               <p style="color: white !important;" class="text-muted mb-2">
+                <i class="bi bi-house"></i> 
+                {{ selectedFolder.client.address || 'Address not specified' }}
+              </p>
+              
+               <p style="color: white !important;" class="text-muted mb-2">
+                <i class="bi bi-calendar"></i> 
+                {{ selectedFolder.client.dateOfBirth | date:'longDate' }}
+              </p>
+            </div>
+          </div>
+        </div>
+        
         <div class="projects-inner">
           <header class="projects-header">
             <div>
@@ -39,9 +118,10 @@
               <tr>
                 <th>Numéro d'Affaire</th>
                 <th>Nature d'Affaire</th>
-                <th>Date Audience</th>
+                <th>Honoraires</th>
                 <th>Aboutissement</th>
-                <th>audiences </th>
+                <th>Audiences </th>
+                <th>Fichier </th>
 
                 <th>Actions</th>
               </tr>
@@ -50,14 +130,17 @@
               <tr *ngFor="let affaire of affaires">
                 <td>{{ affaire.numeroAffaire }}</td>
                 <td>{{ affaire.natureAffaire }}</td>
-                <td>{{ affaire.dateAudience }}</td>
-                <td>{{ affaire.aboutissement ? 'Aboutie' : 'Non aboutie' }}</td>
-                <td style="cursor: pointer;" [routerLink]="['/administrator/audiance', affaire.id]">
+                <td  style="cursor: pointer;" > <i class="fas fa-coins" (click)="openHonorairesModal(selectedFolder.client,affaire)"></i> </td>
+                 <td><span (click)="openDetailsJugement(affaire.aboutissement)" > <i class="bi bi-flag mr-1"></i> </span> <span class="ml-1" (click)="openAboutissement(affaire.aboutissement._id)" > <i class="bi bi-pen " style="cursor: pointer;"></i> </span></td>
+                <td style="cursor: pointer;" [routerLink]="['/administrator/audiance', affaire._id]">
                   <i class="bi bi-eye"></i>
+                </td>
+                <td style="cursor: pointer;"  (click)="openPdfModal(affaire.file,pdfContent)" >
+                  <i class="bi bi-file"></i>
                 </td>
                 <td class="btns">
                   <button class="btn  btn-sm btn-action" (click)="editAffaire(affaire)">Modifier</button>
-                  <button class="btn btn-sm btn-danger" (click)="deleteAffaire(affaire.id)">Supprimer</button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteAffaire(affaire._id)">Supprimer</button>
                 </td>
               </tr>
             </tbody>
@@ -88,6 +171,7 @@
   </div>
 </div>
 
+ <!-- Modal pour ajouter une nouvelle affaire -->
 <div class="modal fade" id="addAffaireModal" tabindex="-1" aria-labelledby="addAffaireModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -124,13 +208,33 @@
               Date d'Audience est requis
             </div>
           </div>
-
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="aboutissement" formControlName="aboutissement">
-            <label class="form-check-label" for="aboutissement">Aboutie</label>
+ 
+          <div class="form-group">
+            <label for="Opposite">Opposée</label>
+            <input type="text" class="form-control" id="Opposite" formControlName="opposite">
+            <div *ngIf="affaireForm.get('opposite')?.invalid && affaireForm.get('opposite')?.touched"
+              class="text-danger">
+              opposite est requis
+            </div>
           </div>
 
-          
+          <div class="form-group">
+            <label for="files">Ajouter des fichiers</label>
+            <input type="file" class="form-control" id="files" (change)="onFileChange($event)" multiple>
+          </div>
+
+          <div *ngIf="selectedFiles ">
+            <p>Fichiers sélectionnés:</p>
+            <ul>
+              <li  >{{ selectedFiles.name }}</li>
+            </ul>
+          </div>
+
+          <!-- <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="aboutissement" formControlName="aboutissement">
+            <label class="form-check-label" for="aboutissement">Aboutie</label>
+          </div> -->
+
           <button type="submit" class="btn btn-primary mr-2" [disabled]="affaireForm.invalid">
             {{ affaireToEdit ? 'Enregistrer les modifications' : 'Enregistrer' }}
           </button>
@@ -140,3 +244,183 @@
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="addFolderModal" tabindex="-1" aria-labelledby="addFolderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addFolderModalLabel">Ajouter un nouveau dossier</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="folderForm" (ngSubmit)="addNewFolderAction()">
+          <div class="form-group">
+            <label for="titleFolder">Nom de dossier</label>
+            <input type="text" class="form-control" id="titleFolder" formControlName="titleFolder">
+            <div *ngIf="folderForm.get('titleFolder')?.invalid && folderForm.get('titleFolder')?.touched" class="text-danger">
+              Le nom de dossier est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="numberFolder">Numéro de dossier</label>
+            <input type="text" class="form-control" id="numberFolder" formControlName="numberFolder">
+            <div *ngIf="folderForm.get('numberFolder')?.invalid && folderForm.get('numberFolder')?.touched" class="text-danger">
+              Le numéro de dossier est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="client">Choisir un client</label>
+            <select class="form-control" id="client" formControlName="client">
+               <option *ngFor="let item of clients" [value]="item._id">{{item.lastname}} {{item.username}}</option>
+            </select>
+            <div *ngIf="folderForm.get('client')?.invalid && folderForm.get('client')?.touched" class="text-danger">
+              Le client est requis
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary mr-2" [disabled]="folderForm.invalid">Enregistrer</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #pdfContent let-modal> 
+  <div class="modal-header">
+    <h4 class="modal-title">PDF : </h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body" *ngIf="openedFile">
+    <pdf-viewer [src]="openedFile"
+    [render-text]="true"
+    [original-size]="false"
+    style="width: 100%; height: 500px"
+></pdf-viewer>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #userSelectionModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Sélectionner des utilisateurs</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngFor="let user of users">
+      <input type="checkbox" [(ngModel)]="user.selected" /> {{ user.username }} {{ user.lastname }}
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')">Annuler</button>
+    <button type="button" class="btn btn-primary" (click)="confirmSendAction(modal)">Envoyer</button>
+  </div>
+</ng-template>
+
+<ng-template #aboutissement let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title"> Changer le type d'aboutissement</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <!-- User Selection -->
+ 
+
+    <!-- Justification Details -->
+    <div class="mb-3"  *ngIf="justification.type === 'Jugee'"  >
+      <label for="date" class="form-label">Date</label>
+      <input type="date" class="form-control" id="date" [(ngModel)]="justification.date">
+    </div>
+
+    <div class="mb-3">
+      <label for="type" class="form-label">Type d'aboutissement</label>
+      <select class="form-select" id="type" [(ngModel)]="justification.type">
+        <option *ngFor="let type of justificationTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+      <label for="copieJugement" class="form-label">Copie de Jugement</label>
+      <input type="file" class="form-control" id="copieJugement" (change)="onFileChangeJugement($event)">
+ 
+    </div>
+
+    <div *ngIf="selectedJugement && justification.type === 'Jugee'" >
+      <p>Fichier sélectionné: {{ selectedJugement.name }}</p>
+    </div>
+
+    <div class="mb-3" *ngIf="justification.type === 'Jugee'" >
+      <label for="situationClient" class="form-label">Situation du Client</label>
+      <select class="form-select" id="situationClient" [(ngModel)]="justification.situationClient">
+        <option *ngFor="let status of situationClientOptions" [value]="status">{{ status }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+      <label for="avocatAssocie" class="form-label">Avocat Associé</label>
+      <input type="text" class="form-control" id="avocatAssocie" [(ngModel)]="justification.avocatAssocie">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')">Annuler</button>
+    <button type="button" class="btn btn-primary" (click)="confirmAboutissement(modal)">Modifier</button>
+  </div>
+</ng-template>
+
+
+
+
+
+<ng-template #aboutissementDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title"> Détails de l'Aboutissement </h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="aboutissementDetails">
+      <h6>Type d'Aboutissement:</h6>
+      <p  class="text-muted">{{ aboutissementDetails.type }}</p>
+      <div *ngIf="aboutissementDetails.type === 'Jugee'" > 
+        <h6>Date:</h6>
+        <p class="text-muted">{{ aboutissementDetails.date | date:'longDate' }}</p>
+        
+        <h6>Justification:</h6>
+        <p class="text-muted">{{ aboutissementDetails.justification }}</p>
+  
+        <h6>Situation du Client:</h6>
+        <p class="text-muted">{{ aboutissementDetails.situationClient }}</p>
+        
+        <h6>Avocat Associé:</h6>
+        <p class="text-muted">{{ aboutissementDetails.avocatAssocie }}</p>
+        
+        <h6>Documents:</h6>
+        <span (click)="openPdf(aboutissementDetails.copieJugement)"  > <i class="bi bi-file-earmark" style="cursor: pointer;" ></i>  </span>
+
+        
+        <div *ngIf="pdfJugement">
+          <h6>Aperçu du PDF:</h6>
+          <pdf-viewer 
+            [src]="pdfJugement"
+            [render-text]="true"
+            [original-size]="false"
+            style="display: block; width: 100%; height: 500px;">
+          </pdf-viewer>
+        </div>
+      </div>
+     
+    </div>
+    <div *ngIf="!aboutissementDetails">
+      <p>Aucun détail disponible.</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')">Annuler</button>
+    <button type="button" class="btn btn-primary" (click)="confirmAboutissement(modal)">Modifier</button>
+  </div>
+</ng-template>
+
+ 

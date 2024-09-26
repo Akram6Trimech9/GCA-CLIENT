@@ -42,9 +42,10 @@
           <div class="card-body">
             <div id="calendar" class="calendar">
               <mwl-calendar-month-view
-                [viewDate]="viewDate"
+                  [viewDate]="viewDate"
                 [events]="events"
                 [refresh]="refresh"
+                [locale]="locale" 
                 (eventTimesChanged)="eventTimesChanged($event)"
                 (eventClicked)="handleEvent($event, modalContent)">
               </mwl-calendar-month-view>
@@ -57,16 +58,26 @@
 </main>
 <ng-template #modalContent let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">{{ selectedEvent?.date }}</h4>
-    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+    <h4 class="modal-title" id="modal-basic-title">
+      <i class="bi bi-calendar3"></i> {{ selectedEvent?.date | date:'longDate' }}
+    </h4>
+    <button type="button" class="close" aria-label="Fermer" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-     <p> <strong>Start:</strong> {{ selectedEvent.startTime  }}</p>
-    <p><strong>End:</strong> {{ selectedEvent?.endTime  }}</p>
-   </div>
+    <p><i class="bi bi-clock-fill"></i> <strong>Heure de début :</strong> {{ selectedEvent?.startTime }}</p>
+    <p><i class="bi bi-clock-fill"></i> <strong>Heure de fin :</strong> {{ selectedEvent?.endTime }}</p>
+    <p><i class="bi bi-info-circle"></i> <strong>Détails :</strong> {{ selectedEvent?.details }}</p>
+  </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+    <!-- <button type="button" class="btn btn-success" (click)="addEvent()">
+      <i class="bi bi-plus-circle"></i> Ajouter un événement
+    </button> -->
+    <button type="button" class="btn btn-danger" (click)="deleteEvent(selectedEvent._id)">
+      <i class="bi bi-trash"></i> Supprimer l'événement
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Fermer</button>
   </div>
 </ng-template>
+

@@ -1,7 +1,8 @@
  
 export interface IEvent{
-    id?: Number;
-    date: String,
+    _id?: Number;
+    date: Date,
     startTime: String,
     endTime: String,
+    details?:String
 }

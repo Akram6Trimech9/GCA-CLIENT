@@ -1,0 +1,23 @@
+<app-lock *ngIf="isLocked" (unlocked)="isLocked = false"></app-lock>
+<div id="warraper" *ngIf="!isLocked" >
+    <div id="logo"><span>GCA</span></div>
+    <span id="show-label-menu">utiliser uniquement sur petit écran</span>
+    <div id="left-menu">
+        <ul>
+           <li><a routerLink="/compte/mesaffaires" routerLinkActive="active"><i class="fas fa-briefcase"></i><span> Mes  Affaires</span></a></li>
+          <li><a routerLink="/compte/mesrendezvous" routerLinkActive="active"><i class="fas fa-calendar-check"></i><span>Mes Rendez vous </span></a></li>
+             <li><a routerLink="/compte/meshonnoraire" routerLinkActive="active"><i class="fas fa-coins"></i><span>Mes  honoraires</span></a></li>
+ 
+          <li><a routerLink="/compte/mesparams" routerLinkActive="active" ><i class="fas fa-cogs"></i><span>Paramètres</span></a></li>
+        </ul>
+    </div>
+     <div id="top-header">
+        <i class="fas fa-user float-right"></i>
+        <i class="fas fa-comments float-right"></i>
+        <i id="toggle-menu" class="fas fa-bars float-left"></i>
+        <i (click)="logout()" class="fas fa-sign-out-alt float-right"></i>
+    </div>
+    <div id="main-content">
+        <router-outlet />
+    </div>
+</div>

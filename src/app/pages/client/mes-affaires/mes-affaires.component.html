@@ -1,0 +1,51 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
+    <div class="projects mb-4">
+      <div class="projects-inner">
+        <header class="projects-header">
+          <div class="title">Projets en cours</div>
+          <div class="count">| 32 Projets</div>
+          <i class="zmdi zmdi-download"></i>
+        </header>
+        <table class="projects-table">
+          <thead>
+            <tr>
+              <th>Affaire</th>
+              <th>Audiance</th>
+              <th>Intervenant</th>
+              <th>opposite</th>
+              <th>file</th>
+             </tr>
+          </thead>
+          <tbody>
+             <tr  *ngFor="let item of affaires">
+              <td>
+                <p>Affaire #: {{item.numeroAffaire}}</p>
+                <p>Nature: Nature : {{item.natureAffaire}}</p>
+              </td>
+              <td>
+                <p>Date: À définir</p>
+                <p class="text-danger">Échéance dépassée</p>
+              </td>
+              <td class="member">
+                <figure><img src="URL_DE_L_IMAGE" alt="Membre de l'équipe" /></figure>
+                <div class="member-info">
+                  <p>Nom de l'équipe</p>
+                  <p>Équipe de conception</p>
+                </div>
+              </td>
+              <td>
+                <p>Budget: À définir</p>
+                <p>Statut: À définir</p>
+              </td>
+              <td class="status">
+                <span class="status-text status-orange">En cours</span>
+              </td>
+            
+            </tr>
+            <!-- Repeat for each item in your array -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  

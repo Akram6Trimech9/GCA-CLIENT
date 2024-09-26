@@ -1,0 +1,51 @@
+body {
+    background-color: #465a6e;
+  }
+  
+  .card {
+    border-radius: 10px;
+    background-color: white;
+    color: #465a6e;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .list-group-item {
+    background-color: #465a6e;
+    color: white;
+  }
+  
+  .form-inline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .form-control {
+    min-width: 150px;
+    margin-bottom: 10px;
+  }
+  
+  .btn-secondary {
+    background-color: #465a6e;
+    border: none;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #5a6268;
+  }
+  
+  .text-secondary {
+    color: #465a6e;
+  }
+  

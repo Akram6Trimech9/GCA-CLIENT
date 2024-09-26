@@ -12,9 +12,12 @@ export class AvaiblityService {
  
  
   getAvailabilitiesByAdmin(adminId: Number): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.baseurl}/admin-availabilities/getByAdmin/${adminId}`);
+    return this.http.get<any[]>(`${environment.baseurl}/admin-availabilities/admin/${adminId}`);
   }
   createAvailability(adminId: Number, availability: any): Observable<any> {
-    return this.http.post<any>(`${environment.baseurl}/admin-availabilities/create/${adminId}`, availability);
+    return this.http.post<any>(`${environment.baseurl}/admin-availabilities/${adminId}`, availability);
+  }
+  deleteAvaibility(availabilityId: any): Observable<any> {
+    return this.http.delete<any>(`${environment.baseurl}/admin-availabilities/${availabilityId}` );
   }
 }
