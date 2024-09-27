@@ -9,6 +9,8 @@ import { AboutUsComponent } from '../shared/components/about-us/about-us.compone
 import { LoginComponent } from '../pages/client/login/login.component';
 import { RegisterComponent } from '../pages/client/register/register.component';
 import { AudianceComponent } from '../pages/admin/audiance/audiance.component';
+import { ForgotPasswordComponent } from '../pages/client/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from '../pages/client/reset-password/reset-password.component';
 
 const routes: Routes = [
 
@@ -44,6 +46,14 @@ const routes: Routes = [
 {
   path:'audiance',
   component:AudianceComponent
+},
+{
+  path:'forgetPassword',
+  component:ForgotPasswordComponent
+},
+{
+  path:'reset/:token',
+  component:ResetPasswordComponent
 },
 {
   path:'register',

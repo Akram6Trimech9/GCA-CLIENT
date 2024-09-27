@@ -1,7 +1,7 @@
  
     <div class="container">
         <div class="form-container">
-            <h1 class="title">CGA ADMIN</h1>
+            <h1 class="title">GCA ADMIN</h1>
                  <form [formGroup]="loginForm" (ngSubmit)="login()" class="form">
                     <div class="input-group">
                         <label for="email">Email</label>
@@ -22,7 +22,7 @@
                     </div>
                 
                     <div class="forgot">
-                        <a href="#">Mot de passe oublié ?</a>
+                        <a routerLink="/authAdmin/adminForgetPassword" routerLinkActive="router-link-active" >Mot de passe oublié ?</a>
                     </div> 
 
                 <button type="submit" class="sign-in">Se connecter</button>

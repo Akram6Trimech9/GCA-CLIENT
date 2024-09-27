@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginAdminComponent } from './login-admin/login-admin.component';
 import { RegisterAddminComponent } from './register-addmin/register-addmin.component';
+import { ForgetPasswordComponent } from './forget-password/forget-password.component';
+import { ResetpasswordComponent } from './resetpassword/resetpassword.component';
 
 const routes: Routes = [
   {
@@ -11,6 +13,14 @@ const routes: Routes = [
   {
     path:'adminstratorRegister',
     component:RegisterAddminComponent
+  },
+  {
+    path:'adminForgetPassword',
+    component:ForgetPasswordComponent
+  },
+  {
+    path:'reset/:token',
+    component:ResetpasswordComponent
   },
 ];
 

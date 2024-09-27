@@ -79,11 +79,11 @@ export class AuthService {
   }
 
   forgetPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forget-password?email=${email}`, null);
+    return this.http.post<any>(`${this.apiUrl}/forgotpassword` , {email});
   }
 
   resetPassword(token: string, request: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password?token=${token}`, request);
+    return this.http.put(`${this.apiUrl}/resetpassword/${token}`, request);
   }
 
   activateAccount(token: any): Observable<any> {
