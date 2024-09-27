@@ -332,3 +332,30 @@ vertical-align: middle;
 }
 
  
+.details-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.detail-item i {
+  font-size: 24px;
+  margin-right: 10px;
+}
+
+.detail-item .title {
+  font-weight: bold;
+}
+
+.detail-item .value {
+  color: #555;
+}
+.modal-header {
+  background-color: #465a6e;
+  color: white;
+}

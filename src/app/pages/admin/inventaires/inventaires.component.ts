@@ -207,8 +207,7 @@ this._affaireService.getAllAffaireByAdmin(adminId).subscribe({
       formData.append('numeroAffaire', this.affaireForm.value.numeroAffaire);
       formData.append('natureAffaire', this.affaireForm.value.natureAffaire);
       formData.append('opposite', this.affaireForm.value.opposite);
-      formData.append('aboutissement', this.affaireForm.value.aboutissement);
-      
+       
       if (this.selectedFiles) {
         formData.append('file', this.selectedFiles);
       }
@@ -241,8 +240,7 @@ this._affaireService.getAllAffaireByAdmin(adminId).subscribe({
       numeroAffaire: '',
       natureAffaire: '',
       dateAudience: '',
-      aboutissement: false
-    });
+     });
     this.affaireToEdit = null;
   }
 
@@ -282,8 +280,7 @@ this._affaireService.getAllAffaireByAdmin(adminId).subscribe({
       numeroAffaire: ['', Validators.required],
       natureAffaire: ['', Validators.required],
       dateAudience: ['', Validators.required],
-      aboutissement: [false],
-      opposite: ['', Validators.required],
+       opposite: ['', Validators.required],
       selectedFolder: [null, Validators.required]   
 
     });

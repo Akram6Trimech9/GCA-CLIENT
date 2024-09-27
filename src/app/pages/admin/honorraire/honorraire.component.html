@@ -126,6 +126,7 @@
         <div class="form-group">
             <label for="clientSelect">Sélectionner le client</label>
             <select id="clientSelect" class="form-control" [(ngModel)]="selectedClient" (change)="onClientSelect($event)">
+              <option selected>   </option>
                 <option *ngFor="let client of clients" [value]="client._id">{{ client.lastname }} {{client.username}}</option>
             </select>
         </div>
