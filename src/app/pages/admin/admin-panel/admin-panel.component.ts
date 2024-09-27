@@ -10,10 +10,12 @@ import { CalendarEvent, CalendarModule, CalendarView } from 'angular-calendar';
 import { Subject } from 'rxjs';
 import { endOfDay, startOfDay } from 'date-fns';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmailsService } from '../../../services/emails.service';
+import { FormsModule } from '@angular/forms';
  @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [CommonModule ,CalendarModule ],  
+  imports: [CommonModule ,CalendarModule , FormsModule],  
   templateUrl: './admin-panel.component.html',
   styleUrls: ['./admin-panel.component.scss']
 })
@@ -22,7 +24,7 @@ export class AdminPanelComponent implements OnInit {
     folder: any; 
     depense: number = 0;
     locale: string = 'fr';
-
+  emails !:any[]
     view: CalendarView = CalendarView.Month;
     viewDate: Date = new Date();
     audianceEvents: CalendarEvent[] = [];
@@ -34,6 +36,7 @@ export class AdminPanelComponent implements OnInit {
       private folderService: DossiersService, 
       private audianceService: AudianceService,
       private modalService: NgbModal,
+      private _emailService :EmailsService
     ) {}
   
     ngOnInit(): void {
@@ -41,8 +44,17 @@ export class AdminPanelComponent implements OnInit {
       this.getFolder();
       this.getDepense();
       this.getAudiances();
+      this.getEmails()
     }
-  
+    getEmails(){
+      this._emailService.getEmailsByAvocat(this.currentUser._id).subscribe({
+         next:(value)=>{
+          this.emails= value
+         },error:(err)=>{
+            console.log(err)
+         }
+      })
+    }
     getFolder() {
       this.folderService.getFolderByAdminId(this.currentUser._id).subscribe({
         next: (value) => {
@@ -52,6 +64,28 @@ export class AdminPanelComponent implements OnInit {
           console.log(err);
         }
       });
+    }
+    onActionChange(event: any, item: any) {
+      const action = event.target.value;
+      if (action === 'delete') {
+        this.deleteEmail(item);
+      } else if (action === 'send') {
+        this.openEmailModal(item.email);
+      }
+      event.target.value = ''; // Reset select
+    }
+
+    deleteEmail(item: any) {
+      // Add logic to delete email
+    }
+
+      
+    emailSubject: string = '';
+    emailBody: string = '';
+    openEmailModal(email: string) {
+      this.emailSubject = '';
+      this.emailBody = '';
+      this.modalService.open(   { ariaLabelledBy: 'modal-basic-title' });
     }
   
     getDepense() {
@@ -90,5 +124,12 @@ export class AdminPanelComponent implements OnInit {
       this.selectedEvent = event.meta;
       this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
     }
-    
+    submitEmail() {
+      const emailData = {
+        subject: this.emailSubject,
+        body: this.emailBody
+      };
+      
+      
+    }  
 }

@@ -91,32 +91,68 @@
      </div>
   </ng-template>
   
-<!-- Modal Template for Conseil par Mail -->
+ <!-- Modal Template for Conseil par Mail -->
 <ng-template #contentEmail let-modal>
-  <div class="custom-modal">
+    <div class="custom-modal">
       <div class="modal-header">
-          <h4 class="modal-title">Conseil par Mail</h4>
-          <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        <h4 class="modal-title">Conseil par Mail</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
       </div>
       <div class="modal-body">
-          <!-- Email form logic here -->
-          <form>
-              <div class="mb-3">
-                  <label for="email">Votre Email</label>
-                  <input type="email" id="email" class="form-control"   name="email">
+        <!-- Email form logic here -->
+        <form [formGroup]="emailForm" (ngSubmit)="onSubmitEmailForm(modal)">
+          <div class="mb-3">
+            <label for="consultantSelect">Choisir un avocat</label>
+            <select
+              id="consultantSelect"
+              class="form-control"
+              formControlName="avocat"
+              (change)="onConsultantChange()"
+              name="consultant"
+            >
+              <option *ngFor="let consultant of admins" [value]="consultant._id">
+                {{ consultant.username }} {{ consultant.lastname }}
+              </option>
+            </select>
+            <div *ngIf="emailForm.get('avocat')?.invalid && emailForm.get('avocat')?.touched" class="invalid-feedback">
+                Veuillez entrer un avocat .
               </div>
-              <div class="mb-3">
-                  <label for="message">Votre Message</label>
-                  <textarea id="message" class="form-control"  name="message"></textarea>
-              </div>
-          </form>
+          </div>
+          <div class="mb-3">
+            <label for="email">Votre Email</label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              [ngClass]="{'is-invalid': emailForm.get('email')?.invalid && emailForm.get('email')?.touched }"
+            />
+            <div *ngIf="emailForm.get('email')?.invalid && emailForm.get('email')?.touched" class="invalid-feedback">
+              Veuillez entrer une adresse e-mail valide.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="message">Votre Message</label>
+            <textarea
+              id="message"
+              formControlName="message"
+              class="form-control"
+              rows="5"
+              [ngClass]="{'is-invalid': emailForm.get('message')?.invalid && emailForm.get('message')?.touched }"
+            ></textarea>
+            <div *ngIf="emailForm.get('message')?.invalid && emailForm.get('message')?.touched" class="invalid-feedback">
+              Veuillez entrer un message.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" (click)="modal.dismiss()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="emailForm.invalid">Envoyer</button>
+          </div>
+        </form>
       </div>
-      <div class="modal-footer">
-          <button type="button" class="btn btn-outline-danger" (click)="modal.dismiss()">Cancel</button>
-          <button type="button" class="btn btn-outline-secondary" (click)="submitEmail(modal)">Envoyer</button>
-      </div>
-  </div>
-</ng-template>
+    </div>
+  </ng-template>
+  
 
 <!-- Modal Template for Conseil par Téléphone -->
 <ng-template #contentPhone let-modal>

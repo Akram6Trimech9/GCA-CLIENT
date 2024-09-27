@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, TemplateRef } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModalDismissReasons, NgbDatepickerModule, NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from '../../../core/service/auth.service';
 import { IUser } from '../../../core/models/user';
@@ -8,6 +8,7 @@ import { AvaiblityService } from '../../../services/avaiblity.service';
 import { IEvent } from '../../../core/models/avaible';
 import { ReservationService } from '../../../services/reservation.service';
 import { ToastrService } from 'ngx-toastr';
+import { EmailsService } from '../../../services/emails.service';
 
 @Component({
   selector: 'top-header',
@@ -31,6 +32,7 @@ export class TopHeaderComponent implements OnInit {
   successMessage!: string;
   currentUser!:IUser | null
   errorMessage!: string;
+  emailForm!: FormGroup;
 	outsideDays = 'visible';
   // Sample consultant data
   consultants : any ; 
@@ -41,7 +43,8 @@ export class TopHeaderComponent implements OnInit {
  
  constructor(private  _authService : AuthService ,
   private toastr: ToastrService ,
-   private _availabilityService : AvaiblityService , private _reservationService  : ReservationService){
+  private fb: FormBuilder,
+   private _availabilityService : AvaiblityService ,private _emailService :EmailsService,  private _reservationService  : ReservationService){
 
  }
  open(content: TemplateRef<any>) {
@@ -77,6 +80,13 @@ export class TopHeaderComponent implements OnInit {
     }
   }
   ngOnInit(): void {
+    this.emailForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],  
+      message: ['', [Validators.required]],
+      avocat: ['', [Validators.required]],  
+
+
+    });
     this._authService.getAllAdmins().subscribe(
     {
       next : (value :any )=> {  
@@ -181,4 +191,25 @@ export class TopHeaderComponent implements OnInit {
   submitContact(modal: any) {
      modal.close();
   }
-}
+
+  onSubmitEmailForm( modal: any ) {
+    if (this.emailForm.valid) {
+      const emailData = this.emailForm.value; 
+      console.log('Form submitted successfully', emailData);
+  
+       this._emailService.createEmail(emailData).subscribe({
+        next: (response) => {
+          this.toastr.success('Email envoyé avec succès!', 'Success');
+          modal.close()
+        },
+        error: (error) => {
+          this.toastr.error('Erreur lors de l\'envoi de l\'email.', 'Error');
+          console.error(error);
+        }
+      });
+    } else {
+      console.log('Form is invalid');
+    }
+  }
+  
+ }
