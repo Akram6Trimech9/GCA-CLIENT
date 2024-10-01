@@ -26,7 +26,7 @@ export class AffaireService {
   }
 
    updateAffaire(affaireID: any,affaire:any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/update/${affaireID}`, affaire);
+    return this.http.put(`${this.apiUrl}/${affaireID}`, affaire);
   }
   getAllAffaireByAdmin(adminId : any): Observable<any>{
     return this.http.get<any>(`${this.apiUrl}/admin/${adminId}` )

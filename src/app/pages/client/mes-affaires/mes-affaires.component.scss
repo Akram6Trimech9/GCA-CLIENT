@@ -332,3 +332,21 @@ vertical-align: middle;
 }
 
  
+
+
+.modal-body {
+  background-color: #f8f9fa; /* Light background for contrast */
+}
+
+.table {
+  color: #313e4f; /* Table text color */
+}
+
+.table th {
+  background-color: #313e4f; /* Darker header background */
+  color: white; /* Header text color */
+}
+
+.table tbody tr:hover {
+  background-color: #e2e6ea; /* Highlight row on hover */
+}

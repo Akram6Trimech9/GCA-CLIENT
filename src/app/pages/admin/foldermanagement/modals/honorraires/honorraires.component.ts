@@ -17,7 +17,7 @@ export class HonorrairesComponent  implements OnInit{
   @Input() affaire: any;
   total:any ;
   edit: boolean = false;
-  newTranche = { tranche: null, date: '', method: '' };
+  newTranche = { tranche: null, date: '', method: '' ,natureTranche:'' };
 
   constructor(public activeModal: NgbActiveModal ,private  _honorraireService : CreditService) {}
 
@@ -35,10 +35,11 @@ export class HonorrairesComponent  implements OnInit{
       const record ={ 
         part: this.newTranche.tranche, 
         date: this.newTranche.date, 
-        method: this.newTranche.method 
+        method: this.newTranche.method ,
+        natureTranche:this.newTranche.natureTranche
       }
       this.credit.payedCredit.push(record);
-      this.newTranche = { tranche: null, date: '', method: '' };  
+      this.newTranche = { tranche: null, date: '', method: '' ,natureTranche :'' };  
       this._honorraireService.addTranch(this.credit?._id,record).subscribe({
         next:(value)=>{
              console.log(value)

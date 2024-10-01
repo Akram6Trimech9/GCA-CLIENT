@@ -30,6 +30,13 @@ export class AuthService {
   getAllClients(id:any): Observable<any[]> {
     return this.http.get<any[]>(`${environment.baseurl}/user/client/${id}`);
   }
+
+
+  getUserById(id: any):Observable<any>{
+    return this.http.get<any>(`${environment.baseurl}/user/one-user/${id}`);
+
+     
+  }
   searchClient(id: string, searchTerm: string): Observable<any[]> {
     return this.http.get<any[]>(`${environment.baseurl}/user/search/client/${id}`, {
       params: { query: searchTerm }
@@ -116,11 +123,19 @@ export class AuthService {
     this.clearCurrentUser();
     this.currentUserSubject$.next(null)
     this.router.navigate(['/client/login']); }
+
     logoutAdmin(): void {
       this.clearCurrentUser();
       this.currentUserSubject$.next(null)
-      this.router.navigate(['/authAdmin/adminstratorLogin']); }
+      this.router.navigate(['/authAdmin/adminstratorLogin']);
+     }
+  
+  update(id:any , user :any) : Observable<any>{
+     return this.http.put<any>(`${this.apiUrl}/update-user/${id}`,user)
+  }
     
-    
+  
+  
+  
 }
  

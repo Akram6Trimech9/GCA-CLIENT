@@ -5,25 +5,18 @@
     <!-- Conditionally show the input or static honoraires value -->
     <div style="display: flex; gap: 20px; align-items: center;">
       <p class="card-text" *ngIf="!edit">Total Honoraires: <strong>{{ credit.totalCredit }} €</strong></p>
-     @if(!edit){
-      <span   (click)="editClient()" style="cursor: pointer; border: 1px solid #465a6e; padding: 2px;">
-        <i class="bi bi-pencil-fill"></i>  
+      <span *ngIf="!edit" (click)="editClient()" class="edit-icon">
+        <i class="bi bi-pencil-fill"></i>
       </span>
-     }
-     
     </div>
 
     <!-- Edit mode: Show input to modify honoraires -->
-     @if (edit) {
-      <div >
-        <label for="editHonoraires" class="mr-2">Nouveaux Honoraires:</label>
-        <input type="number" [(ngModel)]="total" class="form-control d-inline-block mr-2" style="width: 150px;" />
-        <button (click)="saveClient()" class="btn btn-secondary btn-sm ml-2">Enregistrer</button>
-        <button (click)="cancelEdit()" class="btn btn-secondary btn-sm ml-2">Annuler</button>
-      </div>
-     }
-     
-  
+    <div *ngIf="edit" class="edit-mode">
+      <label for="editHonoraires" class="mr-2">Nouveaux Honoraires:</label>
+      <input type="number" [(ngModel)]="total" class="form-control d-inline-block mr-2" style="width: 150px;" />
+      <button (click)="saveClient()" class="btn btn-secondary btn-sm ml-2">Enregistrer</button>
+      <button (click)="cancelEdit()" class="btn btn-secondary btn-sm ml-2">Annuler</button>
+    </div>
 
     <!-- Payment list -->
     <ul class="list-group mb-3">
@@ -31,6 +24,7 @@
         <span><i class="fas fa-coins"></i> Tranche: {{ payment.part }} €</span>
         <span><i class="fas fa-calendar-alt"></i> Payé le: {{ payment.date | date }}</span>
         <span><i class="fas fa-credit-card"></i> Méthode: {{ payment.method }}</span>
+        <span><i class="fas fa-credit-card"></i> Nature: {{ payment.natureTranche }}</span>
       </li>
     </ul>
 
@@ -53,6 +47,14 @@
           <option value="Virement bancaire">Virement bancaire</option>
           <option value="Espèces">Espèces</option>
           <option value="PayPal">PayPal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="natureTranche">Nature de la Tranche</label>
+        <select id="natureTranche" class="form-control" [(ngModel)]="newTranche.natureTranche"  name="natureTranche" >
+            <option value="Avance">Avance</option>
+            <option value="Règlement définitif">Règlement définitif</option>
+            <option value="Frais">Frais</option>
         </select>
       </div>
       <button type="submit" class="btn btn-secondary">Ajouter Tranche</button>

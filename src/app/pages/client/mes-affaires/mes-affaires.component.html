@@ -35,7 +35,7 @@
                 <div class="member-info">
                     <p>Nom de l'inventaire</p>
                     <ng-container *ngIf="item.inventaire.length > 0; else noInventaire">
-                      <p *ngFor="let inv of item.inventaire">{{inv.full_name}}</p>
+                      <p *ngFor="let inv of item.inventaire"><span style="cursor: pointer;" (click)="detailIntervenant(inventaireModal,inv)" >{{inv.full_name}}</span></p>
                     </ng-container>
                     <ng-template #noInventaire>
                       <p class="text-danger">Aucun inventaire disponible</p>
@@ -60,23 +60,80 @@
     </div>
   </main>
   
-   <ng-template #audianceModal let-modal>
+  <ng-template #audianceModal let-modal>
+    <div class="modal-header" style="background-color: #313e4f; color: white;">
+        <h4 class="modal-title">Détails de l'Audiance</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="details-container">
+            <div class="container mt-4">
+                 <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Numéro</th>
+                            <th>Date de l'Audiance</th>
+                            <th>Description</th>
+                            <th>Documents</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let audiance of selectedAudiance; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ audiance.numero }}</td>
+                            <td>{{ audiance.dateAudiance | date: 'shortDate' }}</td>
+                            <td>{{ audiance.description }}</td>
+                            <td>
+                                <ul (click)="downloadFile(audiance.files)">
+                                    <li  *ngFor="let file of audiance.files">
+                                        <a [href]="file" target="_blank">{{ file.split('/').pop() }}</a>
+                                    </li>
+                                </ul>
+                            </td>
+ 
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Fermer</button>
+    </div>
+</ng-template>
+
+  
+  
+  <ng-template #inventaireModal let-modal>
     <div class="modal-header">
-      <h4 class="modal-title">Audiances & Inventaires</h4>
+      <h4 class="modal-title">Details de l'inventaire</h4>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-      <h5>Audiances</h5>
-      <ul>
-        <li *ngFor="let audiance of selectedAffaire.audiances">
-          {{ audiance }}  
+      <div class="d-flex align-items-center mb-3">
+        <img src="https://cdn-icons-png.flaticon.com/512/2897/2897763.png" alt="Inventaire Image" class="rounded-circle" width="50">
+        <h5 class="ms-3">{{ selectedInventaire.full_name }}</h5>
+      </div>
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-person"></i> Nom</span>
+          <span>{{ selectedInventaire.full_name }}</span>
         </li>
-      </ul>
-      <h5>Inventaires</h5>
-      <ul>
-        <li *ngFor="let inventaire of selectedAffaire.inventaire">
-          {{ inventaire }}  
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span> <i class="bi bi-person-badge"></i>
+             Type </span>
+          <span>{{ selectedInventaire.typeInventaire }}</span>
         </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-telephone"></i> Téléphone</span>
+          <span>{{ selectedInventaire.phone1 }}</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-building"></i> Adresse</span>
+          <span>{{ selectedInventaire.adresse }}</span>
+        </li>
+        <!-- Add more details as needed -->
       </ul>
     </div>
     <div class="modal-footer">

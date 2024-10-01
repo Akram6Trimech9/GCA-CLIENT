@@ -118,6 +118,7 @@
               <tr>
                 <th>Numéro d'Affaire</th>
                 <th>Nature d'Affaire</th>
+                <th>Degre</th>
                 <th>Honoraires</th>
                 <th>Aboutissement</th>
                 <th>Audiences </th>
@@ -130,6 +131,7 @@
               <tr *ngFor="let affaire of affaires">
                 <td>{{ affaire.numeroAffaire }}</td>
                 <td>{{ affaire.natureAffaire }}</td>
+                <td>{{ affaire.degre }}</td>
                 <td  style="cursor: pointer;" > <i class="fas fa-coins" (click)="openHonorairesModal(selectedFolder.client,affaire)"></i> </td>
                  <td><span (click)="openDetailsJugement(affaire.aboutissement)" > <i class="bi bi-flag mr-1"></i> </span> <span class="ml-1" (click)="openAboutissement(affaire.aboutissement._id)" > <i class="bi bi-pen " style="cursor: pointer;"></i> </span></td>
                 <td style="cursor: pointer;" [routerLink]="['/administrator/audiance', affaire._id]">
@@ -192,12 +194,22 @@
           </div>
 
           <div class="form-group">
-            <label for="natureAffaire">Nature d'Affaire</label>
-            <input type="text" class="form-control" id="natureAffaire" formControlName="natureAffaire">
-            <div *ngIf="affaireForm.get('natureAffaire')?.invalid && affaireForm.get('natureAffaire')?.touched"
-              class="text-danger">
-              Nature d'Affaire est requis
-            </div>
+            <label for="natureAffaire">Nature de l'Affaire</label>
+            <select formControlName="natureAffaire" class="form-control">
+              <option *ngFor="let option of natureAffaireOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+          
+          <!-- Degre Select -->
+          <div class="form-group">
+            <label for="degre">Degré</label>
+            <select formControlName="degre" class="form-control">
+              <option *ngFor="let option of degreOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
           </div>
 
           <div class="form-group">

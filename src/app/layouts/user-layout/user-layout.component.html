@@ -1,7 +1,7 @@
 <!-- <app-lock *ngIf="isLocked" (unlocked)="isLocked = false"></app-lock> -->
 <!-- *ngIf="!isLocked" -->
 <div id="warraper"  >
-    <div id="logo"><span>GCA</span></div>
+    <div id="logo"  routerLink="/" style="cursor: pointer;" ><span>GCA</span></div>
     <span id="show-label-menu">utiliser uniquement sur petit écran</span>
     <div id="left-menu">
         <ul>
@@ -9,7 +9,8 @@
           <li><a routerLink="/compte/mesrendezvous" routerLinkActive="active"><i class="fas fa-calendar-check"></i><span>Mes Rendez vous </span></a></li>
              <li><a routerLink="/compte/meshonnoraire" routerLinkActive="active"><i class="fas fa-coins"></i><span>Mes  honoraires</span></a></li>
  
-          <li><a routerLink="/compte/mesparams" routerLinkActive="active" ><i class="fas fa-cogs"></i><span>Paramètres</span></a></li>
+          <li><a routerLink="/compte/mesparams" routerLinkActive="active" ><i class="fas fa-cogs"></i><span>Paramètres du Profile
+        </span></a></li>
         </ul>
     </div>
      <div id="top-header">

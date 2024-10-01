@@ -97,7 +97,8 @@ loadCreditByClient(id : any){
       {
         part: 0,
         date: '',
-        method: ''
+        method: '',
+        natureTranche:''
       }
     ]
   };
@@ -141,7 +142,9 @@ loadCreditByClient(id : any){
     const newPayment = {
         part: 0,  // default values
         date: '',
-        method: ''
+        method: '',
+        natureTranche:''
+
     };
     this.credit.payedCredit.push(newPayment);
 }

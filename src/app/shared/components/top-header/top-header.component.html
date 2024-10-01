@@ -26,7 +26,24 @@
           <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
         </div>
         <div class="modal-body">
+       
+          
+ 
             <form>
+              <div   *ngIf="!currentUser?._id" class="mb-3" > 
+                <label for="firstName">First Name:</label>
+                <input class="form-control"  type="text" id="firstName" [(ngModel)]="guest.firstName" name="firstName" required>
+              </div>
+          
+              <div    *ngIf="!currentUser?._id" class="mb-3" >
+                <label for="lastName">Last Name:</label>
+                <input class="form-control"  type="text" id="lastName" [(ngModel)]="guest.lastName" name="lastName" required>
+              </div>
+          
+              <div    *ngIf="!currentUser?._id" class="mb-3" >
+                <label for="email">Email:</label>
+                <input class="form-control"  type="email" id="email" [(ngModel)]="guest.email" name="email" required>
+              </div>
                 <div class="mb-3">
                     <label for="consultantSelect">Choisir un consultant</label>
                     <select

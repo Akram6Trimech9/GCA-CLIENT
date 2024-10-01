@@ -1,43 +1,44 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
-    <div class="projects mb-4">
+  <div class="projects mb-4">
       <div class="projects-inner">
-        <header class="projects-header">
-          <div class="title">Rendez-vous en cours</div>
-          <div class="count">|  {{rdvs.length}} Rendez-vous</div>
-          <i class="zmdi zmdi-download"></i>
-        </header>
-        <table class="projects-table">
-          <thead>
-            <tr>
-              <th>Avocat</th>
-              <th>Heure du rendez-vous</th>
-              <th>Utilisateur</th>
-              <th>Status</th>
-             </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of rdvs">
-              <td>
-                <p style="color: white; font-weight: bolder;"> {{item.avocats.username}} {{item.avocats.lastname}} </p>
-              </td>
-              <td>
-                <p  style="color: white; font-weight: bolder;"> {{item.reservationTime | date }} </p>
-              </td>
-              <td class="member">
-                 <div class="member-info">
-                  <p  style="color: white; font-weight: bolder;">{{item.user.username}} {{item.user.lastname}} </p>
-                </div>
-              </td>
-              <td class="status">
-                <span class="status-text status-green">{{item.status}}</span>
-              </td>
- 
-            </tr>
-  
-            
-          </tbody>
-        </table>
+          <header class="projects-header">
+              <div class="title">Rendez-vous en cours</div>
+              <div class="count">|  {{rdvs.length}} Rendez-vous</div>
+              <i class="zmdi zmdi-download"></i>
+          </header>
+          <table class="projects-table">
+              <thead>
+                  <tr>
+                      <th>Avocat</th>
+                      <th>Heure du rendez-vous</th>
+                      <th>Utilisateur</th>
+                      <th>Status</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let item of rdvs">
+                      <td>
+                          <p style="color: white; font-weight: bolder;">{{item.avocats.username}} {{item.avocats.lastname}}</p>
+                      </td>
+                      <td>
+                          <p style="color: white; font-weight: bolder;">{{item.reservationTime | date}}</p>
+                      </td>
+                      <td class="member">
+                          <div class="member-info">
+                              <p style="color: white; font-weight: bolder;">{{item.user.username}} {{item.user.lastname}}</p>
+                          </div>
+                      </td>
+                      <td class="status">
+                          <span class="status-text">
+                              <i *ngIf="item.status === 'accepted'" class="fas fa-check-circle" style="color: green;"></i>
+                              <i *ngIf="item.status === 'refused'" class="fas fa-times-circle" style="color: red;"></i>
+                              <i *ngIf="item.status === 'pending'" class="fas fa-hourglass-half" style="color: orange;"></i>
+                              {{item.status}}
+                          </span>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
       </div>
-    </div>
-  </main>
-  
+  </div>
+</main>

@@ -36,7 +36,11 @@ export class TopHeaderComponent implements OnInit {
 	outsideDays = 'visible';
   // Sample consultant data
   consultants : any ; 
-
+  guest:any ={
+     firstName :'',
+     lastName:'',
+     email:''
+  }
   selectedConsultant: any = null;
   availability: string[] = [];
   selectedTime!: any;
@@ -210,6 +214,10 @@ export class TopHeaderComponent implements OnInit {
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  onSubmitGuestForm(){
+
   }
   
  }

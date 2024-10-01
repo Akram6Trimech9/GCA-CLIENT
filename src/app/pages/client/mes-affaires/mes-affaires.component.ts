@@ -16,9 +16,9 @@ import { environment } from '../../../../environments/environment';
 export class MesAffairesComponent implements OnInit {
 
   currentUser: any;
-  affaires!: any;
-  selectedAffaire: any;
-
+  affaires: any[] = [];
+   selectedAffaire: any;
+  selectedInventaire: any
   constructor(
     private _affaireService: AffaireService, 
     private _authService: AuthService,
@@ -33,7 +33,7 @@ export class MesAffairesComponent implements OnInit {
   getAffaireByClient() {
     this._affaireService.getAllAffaireByClient(this.currentUser._id).subscribe({
       next: (value) => {
-        this.affaires = value;
+        this.affaires = value || [];  
         console.log(value);
       },
       error: (err) => {
@@ -41,8 +41,10 @@ export class MesAffairesComponent implements OnInit {
       }
     });
   }
-
+  selectedAudiance: any
   openModal(content: any, affaire: any) {
+    this.selectedAudiance = affaire.audiances
+    console.log(this.selectedAudiance,"selected audiancd")
     this.selectedAffaire = affaire;
     this.modalService.open(content, { size: 'lg' });
   }
@@ -50,5 +52,19 @@ export class MesAffairesComponent implements OnInit {
   openPDF(fileUrl: string) {
     const trueUrl = `${environment.picUrl}${fileUrl}`
     window.open(trueUrl, '_blank');
+  }
+
+  detailIntervenant(content: any, inventaire: any) {
+    console.log('this',inventaire)
+    this.selectedInventaire = inventaire;
+    this.modalService.open(content, { size: 'md' });
+  }
+  downloadFile(files: string[]): void {
+     if (files.length > 0) {
+      const fileUrl = files[0]; 
+      window.open(fileUrl, '_blank');  
+    } else {
+      alert("Aucun fichier disponible pour téléchargement.");
+    }
   }
 }

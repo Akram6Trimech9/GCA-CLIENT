@@ -17,7 +17,7 @@
       </div>
       <div class="col-12 col-md-6 col-lg-3 col-xl-3 mb-3">
         <div class="card orange">
-          <div class="title">Totale de depense</div>
+          <div class="title">Total de dépenses</div>
           <i class="zmdi zmdi-download"></i>
           <div class="value">{{ depense | currency:'TND' }}</div>
         </div>
@@ -32,7 +32,7 @@
     </div>
   </div>
   
-  <h5 class="mt-4 mb-3">Calendrier: Toutes les audiences par jour cette semaine:</h5>
+  <h5 class="mt-4 mb-3">Calendrier : Toutes les audiences par jour cette semaine :</h5>
 
   <div class="projects mb-4">
     <div class="calendar-container">
@@ -45,11 +45,12 @@
       </mwl-calendar-month-view>
     </div>
   </div>
+  
   <div class="projects mb-4">
     <div class="projects-inner">
       <header class="projects-header">
-        <div class="title">people who want to connect you par email</div>
-        <div class="count">| 32 Projects</div>
+        <div class="title">Personnes qui veulent vous contacter par e-mail</div>
+        <div class="count">| 32 Projets</div>
         <i class="zmdi zmdi-download"></i>
       </header>
       <table class="projects-table">
@@ -57,41 +58,36 @@
           <tr>
             <th>Email</th>
             <th>Message</th>
-              <th class="text-right">Actions</th>
+            <th class="text-right">Actions</th>
           </tr>
         </thead>
-        <tr  *ngFor="let item of emails" >
-        
+        <tr *ngFor="let item of emails">
           <td class="member">
-             <div class="member-info">
-              <p style="color: white;">{{item.email}}</p>
-             </div>
+            <div class="member-info">
+              <p>{{item.email}}</p>
+            </div>
           </td>
           <td>
-            <p  style="color: white;" >{{item.message}}</p>
-           </td>
-       
+            <p>{{item.message}}</p>
+          </td>
           <td>
-            <form class="form" action="#" method="POST">
-            <select class="action-box">
-              <option>Actions</option>
-              <option>Supprimer</option>
-              <option>Envoyer</option>
+            <form class="form" (ngSubmit)="submitEmail()">
+              <select class="action-box" (change)="onActionChange($event, item)">
+                <option value="">Actions</option>
+                <option value="delete">Supprimer</option>
+                <option value="send">Envoyer</option>
               </select>
             </form>
           </td>
         </tr>
-        
       </table>
     </div>
   </div>
-
- 
 </main>
 
 <ng-template #content let-modal>
   <div class="modal-header">
-    <span class="modal-title">AUDIANCE : {{selectedEvent.dateAudiance | date}}</span>
+    <span class="modal-title">AUDIENCE : {{selectedEvent.dateAudiance | date}}</span>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -157,6 +153,26 @@
     <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Fermer</button>
   </div>
 </ng-template>
- 
-   
-  
+
+<!-- Modal for sending email -->
+<ng-template #emailModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Envoyer un e-mail</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form (ngSubmit)="submitEmail()">
+      <div class="form-group">
+        <label for="subject">Objet</label>
+        <input type="text" id="subject" [(ngModel)]="emailSubject" name="subject" required class="form-control" />
+      </div>
+      <div class="form-group">
+        <label for="body">Message</label>
+        <textarea id="body" [(ngModel)]="emailBody" name="body" required class="form-control"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+  </div>
+</ng-template>

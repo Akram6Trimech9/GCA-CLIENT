@@ -1,29 +1,39 @@
-<div class="container">
-     
-    <div class="credit-card">
-     
-      <div class="payed-credit">
-         <table>
-          <thead>
-            <tr>
-              <th>Part</th>
-              <th>Date</th>
-              <th>Method</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>$2000</td>
-              <td>2024-08-15</td>
-              <td>Bank Transfer</td>
-            </tr>
-            <tr>
-              <td>$3000</td>
-              <td>2024-09-10</td>
-              <td>Credit Card</td>
-            </tr>
-          </tbody>
-        </table>
+ 
+
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
+  <div class="projects mb-4">
+      <div class="projects-inner">
+          <header class="projects-header">
+              <div class="title">Mes Honoraires</div>
+              <div class="count">| TOTAL : <span class="text-white"> {{totalAmount | currency:'TND'}}  </span>  </div>
+              <i class="zmdi zmdi-download"></i>
+          </header>
+          <div class="credit-card" *ngFor="let credit of credits">
+            <div class="credit-details">
+                <h3 class="credit-amount">Total : ${{ credit.totalCredit }}</h3>
+              </div>
+          <table class="projects-table">
+              <thead>
+                  <tr>
+                    <th>Part</th>
+                    <th>Date</th>
+                    <th>Méthode</th>
+                    <th>Type</th>
+
+                  </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let payment of credit.payedCredit ; let i ">
+                  <td> {{ payment.part}}</td>
+                  <td>{{ payment.date | date }}</td>
+                  <td>{{ payment.method }}</td>
+                  <td>{{ payment.natureTranche }}</td>
+
+              </tr>
+              </tbody>
+          </table>
+          </div>
       </div>
-    </div>
   </div>
+</main>

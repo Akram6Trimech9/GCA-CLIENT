@@ -63,6 +63,19 @@ export class FoldermanagementComponent implements OnInit {
     'En Procédure',
     'En Rétablissement'
   ];
+
+  degreOptions = [
+    { value: 'première_instance', label: 'Première Instance' },
+    { value: 'appel', label: 'Appel' },
+    { value: 'cour_suprême', label: 'Cour Suprême' }
+  ];
+  
+  natureAffaireOptions = [
+    { value: 'civil', label: 'Civil' },
+    { value: 'penal', label: 'Pénal' },
+    { value: 'commercial', label: 'Commercial' }
+  ];
+  
   justificationTypes = Object.values(AffaireStatus);
 
 
@@ -129,6 +142,7 @@ export class FoldermanagementComponent implements OnInit {
       numeroAffaire: ['', Validators.required],
       natureAffaire: ['', Validators.required],
       dateAudience: ['', Validators.required],
+      degre: ['', Validators.required],
       opposite: ['', Validators.required]
     });
 
@@ -294,6 +308,7 @@ export class FoldermanagementComponent implements OnInit {
        const formData = new FormData()
        formData.append('numeroAffaire',this.affaireForm.value.numeroAffaire)
        formData.append('natureAffaire',this.affaireForm.value.natureAffaire)
+       formData.append('degre',this.affaireForm.value.degre)
        formData.append('opposite',this.affaireForm.value.opposite)
        if(this.selectedFiles){ 
  
@@ -323,7 +338,7 @@ export class FoldermanagementComponent implements OnInit {
     if (this.affaireForm.valid && this.affaireToEdit) {
       const updatedAffaire = { ...this.affaireToEdit, ...this.affaireForm.value };
 
-      this.affaireService.updateAffaire(updatedAffaire.id, updatedAffaire).subscribe({
+      this.affaireService.updateAffaire(updatedAffaire._id, updatedAffaire).subscribe({
         next: () => {
           const index = this.affaires.findIndex((aff) => aff.id === updatedAffaire.id);
           if (index !== -1) this.affaires[index] = updatedAffaire;
@@ -344,6 +359,7 @@ export class FoldermanagementComponent implements OnInit {
       numeroAffaire: '',
       natureAffaire: '',
       dateAudience: '',
+      degre:''
      });
     this.affaireToEdit = null;
   }

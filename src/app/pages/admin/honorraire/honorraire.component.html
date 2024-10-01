@@ -1,7 +1,7 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
     <div>
         <div class="head ">
-            <span>Gestion des Honoraires </span>
+            <span>Gestion des Honoraires</span>
             <div (click)="openModalFunction(myModalContent)" class="add-folder-icon">
                 <i class="bi bi-plus"></i>
             </div>
@@ -9,107 +9,45 @@
     </div>
 
     <!-- Grid Container -->
-
-    <div class="form-group search-form " >
-         <input type="text" id="clientSearch" class="form-control search-input" [(ngModel)]="searchTerm" (input)="filterClients()" placeholder="Chercher un client" />
+    <div class="form-group search-form ">
+        <input type="text" id="clientSearch" class="form-control search-input" [(ngModel)]="searchTerm" (input)="filterClients()" placeholder="Chercher un client" />
         <ul *ngIf="filteredClients.length > 0" class="list-group mt-2">
             <li class="list-group-item" style="cursor: pointer;" *ngFor="let client of filteredClients" (click)="selectClient(client)">
-                {{ client.username }} {{ client.username }}
+                <i class="fas fa-user"></i> {{ client.username }} {{ client.lastname }}
             </li>
         </ul>
     </div>
-    <div  *ngIf="selectedClientInfo" class="Info-section p-4 bg-white shadow-md rounded-lg mt-4">
-        <img [src]="selectedClientInfo?.userProfile" alt="Image du Client" style="width: 120px;
-        height: 120px;
-        " class="  rounded-circle   object-cover mr-4" />
-<div>
-        <div class="client-info flex items-center mb-4">
-            <div>
-                <h4 class="text-lg font-semibold">{{ selectedClientInfo?.username }} {{ selectedClientInfo?.lastname }}</h4>
-                <p class="text-sm text-gray-600">Email: {{ selectedClientInfo?.email }}</p>
-                <p class="text-sm text-gray-600">Téléphone: {{ selectedClientInfo?.telephone1 }}</p>
+
+    <div *ngIf="selectedClient" class="Info-section p-4 bg-white shadow-md rounded-lg mt-4">
+        <img [src]="selectedClientInfo?.userProfile" alt="Image du Client" class="rounded-circle mr-4 user-profile" />
+        <div>
+            <div class="client-info flex items-center mb-4">
+                <div>
+                    <h4 class="text-lg font-semibold">{{ selectedClientInfo?.username }} {{ selectedClientInfo?.lastname }}</h4>
+                    <p class="text-sm text-gray-600"><i class="fas fa-envelope"></i> {{ selectedClientInfo?.email }}</p>
+                    <p class="text-sm text-gray-600"><i class="fas fa-phone"></i> {{ selectedClientInfo?.telephone1 }}</p>
+                </div>
+            </div>
+            <div class="total-honoraires">
+                <h4 class="font-semibold">Total Honoraires</h4>
+                <p class="text-lg text-green-600 font-bold">{{ totalHonoraires | currency:'TND' }}</p>
             </div>
         </div>
-        <div class="total-honoraires">
-            <h4 class="font-semibold">Total Honoraires</h4>
-            <p class="text-lg text-green-600 font-bold">{{ totalHonoraires | currency:'TND' }}</p>
-        </div>
     </div>
-
-    </div>
-    
 
     <div id="grid-container" *ngIf="selectedClient" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
-        <!-- Example Card -->
-
-        <!-- <fieldset>
-             <label>
-              <input type="radio" id="base" name="subscription" value="base">
-              <span class="content">
-                <span class="title">Base</span>
-                <span class="description">Without benefits</span>
-                <span class="price">FREE</span>
-              </span>
-            </label>
-            <label>
-              <input type="radio" id="pro" name="subscription" value="pro">
-              <span class="content">
-                <span class="title">Pro</span>
-                <span class="description">Everything in Base</span>
-                <span class="price">15,00 $/mo</span>
-              </span>
-            </label>
-            <label>
-              <input type="radio" id="ultima" name="subscription" value="ultima">
-              <span class="content">
-                <span class="title">Ultima</span>
-                <span class="description">Everything in Pro</span>
-                <span class="price">150,00 $/mo</span>
-              </span>
-            </label>
-          </fieldset> -->
-          <label *ngFor="let item of credits">
-            <input type="radio" id="base" name="subscription" value="base">
-            <span class="content">
-              <span class="title">Affaire : {{item.affaire.numeroAffaire}} - {{item.affaire.natureAffaire}} </span>
-              <span class="description">Total Payé: <span class="font-bold">{{item.totalCredit | currency:'TND'}}</span></span>
-              <span   >Tranche payé :    
-                <i (click)="openPaymentModal(item)"  class="bi bi-eye"></i> 
-            </span>
-
-            
-              <span class="price   mt-4 flex justify-between items-center" style="gap: 6px;" > 
-                
-                <button class=" btn btn-sm  btn-primary rounded-md  mr-2 p-1  text-sm" style="font-size: smaller; font-weight: lighter;" (click)="openHonorairesModal(item.client , item.affaire,item)">Modifier</button>
-                <button class=" btn btn-sm rounded-md  btn-danger   mr-2  p-1  "   style="font-size: smaller; font-weight: lighter;"   (click)="deleteCredit( item._id)">Supprimer</button></span>
-            </span>
-          </label>
-         <!-- <div class="shadow-lg rounded-lg bg-neutral-50 p-4" *ngFor="let item of credits">
-             <div class="mt-4">
-                 <p class="mt-2 text-sm text-neutral-700">Affaire: {{item.affaire.numeroAffaire}} - {{item.affaire.natureAffaire}}</p>
-                <p class="mt-2 text-sm text-neutral-700">Total Payé: <span class="font-bold">{{item.totalCredit | currency:'TND'}}</span></p>
-                <p class="mt-2 text-sm text-neutral-700">Reste : </p>
-
-                <div class="payed">
-                    <div class="mt-2 text-sm text-neutral-700" *ngFor="let pay of item.payedCredit">
-                        <i class="bi bi-dot mx-2"></i> 
-                        <span class="font-bold">Part: {{pay.part | currency:'TND'}}</span> <br />
-                        <i class="bi bi-dot mx-2"></i> 
-                        <span class="font-bold">Date: {{pay.date | date}}</span>  <br /> 
-                        <i class="bi bi-dot mx-2"></i>
-                        <span class="font-bold">Méthode: {{pay.method}}</span>  <br />
-                    <hr  />
-
-                    </div>
+        <div *ngFor="let item of credits" class="card shadow-sm">
+            <div class="card-body">
+                <input type="radio" id="base" name="subscription" value="base">
+                <h5 class="card-title">Affaire : {{ item.affaire.numeroAffaire }} - {{ item.affaire.natureAffaire }}</h5>
+                <p class="card-text">Total Payé: <strong>{{ item.totalCredit | currency:'TND' }}</strong></p>
+                <p class="card-text">Tranche payé: <i (click)="openPaymentModal(item)" class="fas fa-eye"></i></p>
+                <div class="d-flex justify-content-between mt-4">
+                    <button class="btn btn-sm btn-primary" (click)="openHonorairesModal(item.client, item.affaire, item)">Modifier</button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteCredit(item._id)">Supprimer</button>
                 </div>
-                
             </div>
-            <div class="mt-4 flex justify-between items-center">
-                <button class="edit rounded-md text-white py-2 px-4" (click)="openHonorairesModal(item.client , item.affaire,item)">Modifier</button>
-                <button class="edit rounded-md text-white py-2 px-4" (click)="deleteCredit( item._id)">Supprimer</button>
-
-            </div>
-        </div> -->
+        </div>
     </div>
 </main>
 
@@ -122,31 +60,27 @@
     </div>
 
     <div class="modal-body">
-        <!-- Select Client -->
         <div class="form-group">
             <label for="clientSelect">Sélectionner le client</label>
             <select id="clientSelect" class="form-control" [(ngModel)]="selectedClient" (change)="onClientSelect($event)">
-              <option selected>   </option>
-                <option *ngFor="let client of clients" [value]="client._id">{{ client.lastname }} {{client.username}}</option>
+                <option selected> </option>
+                <option *ngFor="let client of clients" [value]="client._id">{{ client.lastname }} {{ client.username }}</option>
             </select>
         </div>
 
-        <!-- Select Affaire -->
         <div class="form-group" *ngIf="affaires && affaires.length > 0">
             <label for="affaireSelect">Sélectionner l'affaire</label>
             <select id="affaireSelect" class="form-control" [(ngModel)]="selectedAffaire" (change)="onAffaireSelect()">
-                <option *ngFor="let affaire of affaires" [value]="affaire._id">{{ affaire.numeroAffaire }} {{affaire.natureAffaire}}</option>
+                <option *ngFor="let affaire of affaires" [value]="affaire._id">{{ affaire.numeroAffaire }} {{ affaire.natureAffaire }}</option>
             </select>
         </div>
 
-        <!-- Add Credit Info -->
         <div *ngIf="selectedAffaire">
             <div class="form-group">
                 <label for="totalCredit">Crédit Total</label>
                 <input type="number" id="totalCredit" class="form-control" [(ngModel)]="credit.totalCredit" placeholder="Entrer le crédit total" />
             </div>
 
-            <!-- Paid Credit Entries -->
             <div *ngFor="let payment of credit.payedCredit; let i = index">
                 <div class="form-group">
                     <label for="part{{ i }}">Montant Payé</label>
@@ -167,21 +101,29 @@
                         <option value="bank transfer">Virement Bancaire</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="natureTranche">Nature de la Tranche</label>
+                    <select id="natureTranche" class="form-control" [(ngModel)]="payment.natureTranche">
+                        <option value="Avance">Avance</option>
+                        <option value="Règlement définitif">Règlement définitif</option>
+                        <option value="Frais">Frais</option>
+                    </select>
+                </div>
 
-                <button type="button" style="padding: 3px;" class="btn btn-danger btn-sm" (click)="removePayment(i)">Supprimer</button>
+                <button type="button" class="btn btn-danger btn-sm" (click)="removePayment(i)">Supprimer</button>
             </div>
 
-            <button type="button" style="padding: 3px;" class="btn btn-primary btn-sm mt-3" (click)="addPayment()">Ajouter un Paiement</button>
+            <button type="button" class="btn btn-primary btn-sm mt-3" (click)="addPayment()">Ajouter un Paiement</button>
         </div>
     </div>
 
     <div class="modal-footer">
-        <button type="button" style="padding: 3px;" class="btn btn-secondary" (click)="modal.close()">Fermer</button>
-        <button type="button" style="padding: 3px;" class="btn btn-primary" (click)="saveCredit()">Enregistrer</button>
+        <button type="button" class="btn btn-secondary" (click)="modal.close()">Fermer</button>
+        <button type="button" class="btn btn-primary" (click)="saveCredit()">Enregistrer</button>
     </div>
 </ng-template>
 
- <ng-template #paymentModal let-modal>
+<ng-template #paymentModal let-modal>
     <div class="modal-header">
         <h5 class="modal-title">Détails des Paiements</h5>
         <button type="button" class="close" (click)="modal.dismiss()">
@@ -191,13 +133,14 @@
     <div class="modal-body">
         <div *ngFor="let pay of selectedCredit?.payedCredit; let i = index" class="card mb-3">
             <div class="card-body">
-                <button type="button" class="close float-right" (click)="removePaymentFromBd(i,pay._id)">
+                <button type="button" class="close float-right" (click)="removePaymentFromBd(i, pay._id)">
                     <span>&times;</span>
                 </button>
                 <h5 class="card-title">Détails du Paiement</h5>
-                <p><strong>Part:</strong> {{pay.part | currency:'TND'}}</p>
-                <p><strong>Date:</strong> {{pay.date | date}}</p>
-                <p><strong>Méthode:</strong> {{pay.method}}</p>
+                <p><strong>Part:</strong> {{ pay.part | currency:'TND' }}</p>
+                <p><strong>Date:</strong> {{ pay.date | date }}</p>
+                <p><strong>Méthode:</strong> {{ pay.method }}</p>
+                <p><strong>Nature:</strong> {{ pay.natureTranche }}</p>
             </div>
         </div>
     </div>
