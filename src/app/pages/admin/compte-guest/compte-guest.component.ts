@@ -68,9 +68,9 @@ export class CompteGuestComponent implements OnInit {
     if (this.guestForm.valid) {
       const record: any = {
         username: this.guestForm.value.username,
-        lastname: this.guestForm.value.lastname,
+        lastname: this.guestForm.value.lastName,
         email: this.guestForm.value.email,
-        telephone1: this.guestForm.value.telephone1,
+        telephone1: this.guestForm.value.phone,
         password: this.guestForm.value.password,
         address: this.guestForm.value.address,
         dateOfBirth: this.guestForm.value.dateOfBirth,
