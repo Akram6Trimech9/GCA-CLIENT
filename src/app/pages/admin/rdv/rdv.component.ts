@@ -92,15 +92,30 @@ export class RdvComponent {
   }
 guestId: any
   acceptRdv(rdv: any): void {
+ console.log(rdv)
     this.guestId =''
     if (rdv.rdvBy === 'guest') {
       this.openModal(); 
       this.guestId = rdv.guest._id
 
     } else {
+      const record : any ={
+        'titleFolder': `${rdv.user.username} ${rdv.user.lastname}`, 
+        'numberFolder': `${parseInt(rdv.user._id)}`  , 
+        'client': `${rdv.user._id}`,
+        'avocat':this.adminId
+      }
        this.rdvService.acceptRdv(rdv._id).subscribe({
-        next: () => {
+        next: (value) => {
           this.successMessage = 'Rendez-vous accepté avec succès!';
+     
+          this.folderService.createDossier(record).subscribe({
+              next:(value)=>{
+                    console.log(value)
+              } , error:(err)=>{
+                    console.log(err)
+              }
+          })
           this.loadPendingRdvs(this.adminId);
         },
         error: (error: any) => {
