@@ -1,0 +1,36 @@
+/* General form styling with color adjustments */
+.head{
+    width: 100%;
+    background-color: #465a6e;
+    color: white;
+     padding: 10px;
+    display: flex;
+  
+  }
+label {
+    color: #465a6e;
+  }
+  
+  input.form-control {
+    border-color: #465a6e;
+  }
+  
+  input.form-control:focus {
+    border-color: #465a6e;
+    box-shadow: 0 0 5px rgba(70, 90, 110, 0.5);
+  }
+  
+  button.btn-primary {
+    background-color: #465a6e;
+    border-color: #465a6e;
+  }
+  
+  button.btn-primary:hover {
+    background-color: #3e4f61;
+    border-color: #3e4f61;
+  }
+  
+  h2 {
+    color: #465a6e;
+  }
+  

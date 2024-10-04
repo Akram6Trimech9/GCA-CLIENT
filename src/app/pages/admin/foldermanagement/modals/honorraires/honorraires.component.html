@@ -19,14 +19,44 @@
     </div>
 
     <!-- Payment list -->
-    <ul class="list-group mb-3">
-      <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let payment of credit.payedCredit">
-        <span><i class="fas fa-coins"></i> Tranche: {{ payment.part }} €</span>
-        <span><i class="fas fa-calendar-alt"></i> Payé le: {{ payment.date | date }}</span>
-        <span><i class="fas fa-credit-card"></i> Méthode: {{ payment.method }}</span>
-        <span><i class="fas fa-credit-card"></i> Nature: {{ payment.natureTranche }}</span>
-      </li>
-    </ul>
+   <!-- Payment list -->
+ <!-- Payment list -->
+<ul class="list-group mb-3">
+  <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let payment of credit.payedCredit; let i = index">
+    <ng-container *ngIf="!payment.editMode; else editMode">
+      <span><i class="fas fa-coins"></i> Tranche: {{ payment.part }} €</span>
+      <span><i class="fas fa-calendar-alt"></i> Payé le: {{ payment.date | date }}</span>
+      <span><i class="fas fa-credit-card"></i> Méthode: {{ payment.method }}</span>
+      <span><i class="fas fa-credit-card"></i> Nature: {{ payment.natureTranche }}</span>
+      <div>
+        <button (click)="editTranche(payment)" class="btn btn-secondary btn-sm mr-2">Éditer</button>
+        <button (click)="generateFacture(credit._id,payment._id)" class="btn btn-secondary btn-sm"> Facture</button>
+      </div>
+    </ng-container>
+    
+    <ng-template #editMode>
+      <div style="display: flex; align-items: center;">
+        <input type="number" [(ngModel)]="payment.editCopy.part" class="form-control d-inline-block mr-2" style="width: 80px;" />
+        <input type="date" [(ngModel)]="payment.editCopy.date" [value]="formatISODate(payment.editCopy.date)" class="form-control d-inline-block mr-2" />        <select [(ngModel)]="payment.editCopy.method" class="form-control d-inline-block mr-2">
+          <option value="Carte de crédit">Carte de crédit</option>
+          <option value="Virement bancaire">Virement bancaire</option>
+          <option value="Espèces">Espèces</option>
+          <option value="PayPal">PayPal</option>
+        </select>
+        <select [(ngModel)]="payment.editCopy.natureTranche" class="form-control d-inline-block mr-2">
+          <option value="Avance">Avance</option>
+          <option value="Règlement définitif">Règlement définitif</option>
+          <option value="Frais">Frais</option>
+        </select>
+        <button (click)="saveTranche(payment ,credit._id)" class="btn btn-secondary btn-sm mr-2">Enregistrer</button>
+        <button (click)="cancelEditTranche(payment)" class="btn btn-secondary btn-sm">Annuler</button>
+      </div>
+    </ng-template>
+    
+    
+  </li>
+</ul>
+
 
     <p class="card-text">Total Payé: <strong>{{ totalPayed(credit.payedCredit) }} €</strong></p>
 

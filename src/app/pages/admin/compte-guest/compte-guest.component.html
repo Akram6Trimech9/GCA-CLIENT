@@ -1,0 +1,96 @@
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
+
+    <div class="head mb-4">
+      Ajouter un utilisateur pour l'invité : {{ guest?.firstName }} {{ guest?.lastName }}
+    </div>
+  
+    <form [formGroup]="guestForm" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+      <div class="row">
+        <!-- Nom d'utilisateur -->
+        <div class="col-md-6 mb-3">
+          <label for="username" class="form-label" style="color: #465a6e;">Nom d'utilisateur</label>
+          <input type="text" id="username" formControlName="username" class="form-control" placeholder="Entrez le nom d'utilisateur">
+          <div *ngIf="f['username'].invalid && (f['username'].dirty || f['username'].touched)" class="invalid-feedback d-block">
+            <div *ngIf="f['username'].errors?.['required']">Le nom d'utilisateur est obligatoire.</div>
+            <div *ngIf="f['username'].errors?.['minlength']">Le nom d'utilisateur doit contenir au moins 3 caractères.</div>
+          </div>
+        </div>
+  
+        <!-- Prénom -->
+        <div class="col-md-6 mb-3">
+          <label for="firstName" class="form-label" style="color: #465a6e;">Prénom</label>
+          <input type="text" id="firstName" formControlName="firstName" class="form-control" placeholder="Entrez le prénom">
+          <div *ngIf="f['firstName'].invalid && (f['firstName'].dirty || f['firstName'].touched)" class="invalid-feedback d-block">
+            <div *ngIf="f['firstName'].errors?.['required']">Le prénom est obligatoire.</div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row">
+        <!-- Nom de famille -->
+        <div class="col-md-6 mb-3">
+          <label for="lastName" class="form-label" style="color: #465a6e;">Nom de famille</label>
+          <input type="text" id="lastName" formControlName="lastName" class="form-control" placeholder="Entrez le nom de famille">
+          <div *ngIf="f['lastName'].invalid && (f['lastName'].dirty || f['lastName'].touched)" class="invalid-feedback d-block">
+            <div *ngIf="f['lastName'].errors?.['required']">Le nom de famille est obligatoire.</div>
+          </div>
+        </div>
+  
+        <!-- Email -->
+        <div class="col-md-6 mb-3">
+          <label for="email" class="form-label" style="color: #465a6e;">Email</label>
+          <input type="email" id="email" formControlName="email" class="form-control" placeholder="Entrez l'email">
+          <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)" class="invalid-feedback d-block">
+            <div *ngIf="f['email'].errors?.['required']">L'email est obligatoire.</div>
+            <div *ngIf="f['email'].errors?.['email']">L'email doit être valide.</div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="row">
+        <!-- Mot de passe -->
+        <div class="col-md-6 mb-3">
+          <label for="password" class="form-label" style="color: #465a6e;">Mot de passe</label>
+          <input type="password" id="password" formControlName="password" class="form-control" placeholder="Entrez le mot de passe">
+          <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" class="invalid-feedback d-block">
+            <div *ngIf="f['password'].errors?.['required']">Le mot de passe est obligatoire.</div>
+            <div *ngIf="f['password'].errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères.</div>
+          </div>
+        </div>
+  
+        <!-- Téléphone -->
+        <div class="col-md-6 mb-3">
+          <label for="phone" class="form-label" style="color: #465a6e;">Numéro de téléphone</label>
+          <input type="tel" id="phone" formControlName="phone" class="form-control" placeholder="Entrez le numéro de téléphone">
+          <div *ngIf="f['phone'].invalid && (f['phone'].dirty || f['phone'].touched)" class="invalid-feedback d-block">
+            <div *ngIf="f['phone'].errors?.['required']">Le numéro de téléphone est obligatoire.</div>
+            <div *ngIf="f['phone'].errors?.['pattern']">Le numéro de téléphone doit être valide.</div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+
+   <div class="col-md-6 mb-3">
+        <label for="address" class="form-label" style="color: #465a6e;">Adresse</label>
+        <input type="text" id="address" formControlName="address" class="form-control" placeholder="Entrez l'adresse">
+        <div *ngIf="f['address'].invalid && (f['address'].dirty || f['address'].touched)" class="invalid-feedback d-block">
+          <div *ngIf="f['address'].errors?.['required']">L'adresse est obligatoire.</div>
+        </div>
+      </div>
+
+      <!-- Date de naissance -->
+      <div class="col-md-6 mb-3">
+        <label for="dateOfBirth" class="form-label" style="color: #465a6e;">Date de naissance</label>
+        <input type="date" id="dateOfBirth" formControlName="dateOfBirth" class="form-control">
+        <div *ngIf="f['dateOfBirth'].invalid && (f['dateOfBirth'].dirty || f['dateOfBirth'].touched)" class="invalid-feedback d-block">
+          <div *ngIf="f['dateOfBirth'].errors?.['required']">La date de naissance est obligatoire.</div>
+        </div>
+      </div>
+    </div>
+      <!-- Submit Button -->
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary mt-3" style="background-color: #465a6e;" [disabled]="guestForm.invalid">Soumettre</button>
+      </div>
+    </form>
+  </main>
+  

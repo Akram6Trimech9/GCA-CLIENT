@@ -23,7 +23,12 @@
           <tr *ngFor="let rdv of pendingRdvs">
             <td>{{rdv.displonibilty.date | date:'yyyy-MM-dd'}}</td>
             <td>{{rdv.reservationTime | date:'HH:mm'}}</td>
-             <td>{{ rdv.user.username }} {{ rdv.user.lastname }}</td>
+            @if (rdv.rdvBy ==='guest') {
+              <td >{{ rdv.guest.firstName }} {{ rdv.guest.lastName }}</td>
+            }@else if (rdv.rdvBy ==='client') {
+              <td >{{ rdv.user.username }} {{ rdv.user.lastname }}</td>
+
+            }
             <td>{{ rdv.status  }}</td>
             <td class="btns">
               <button  *ngIf="rdv.status === 'pending'" class="btn btn-sm btn-action " (click)="acceptRdv(rdv)">Accepter</button>
@@ -56,3 +61,26 @@
     </div>
   </div>
 </main>
+
+<!-- Modale dans ng-template -->
+<ng-template #modalTemplate let-modal >
+  <div tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div   role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Créer un compte</h5>
+          <button type="button" class="close" (click)="closeModal()" aria-label="Fermer">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Pour accepter ce rendez-vous, l'invité doit d'abord créer un compte.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="redirectToCreateAccount()">Créer un compte</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -263,10 +263,9 @@ body {
   }
   
   .projects {
-  background-color: $dark-text;
+  background-color: white ;
   border: 1px solid $light-bg;
-  overflow-x: auto;
-  width: 100%;
+   width: 100%;
   
   &-inner {
   border-radius: 4px;
@@ -303,7 +302,7 @@ body {
   }
   
   .projects-table {
-  background: #465a6e;
+  background: #e7e7e7;
   width: 100%;
   
   td,

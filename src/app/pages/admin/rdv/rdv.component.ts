@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { ReservationService } from '../../../services/reservation.service';
 import { RdvService } from '../../../services/rdv.service';
 import { CommonModule } from '@angular/common';
@@ -6,6 +6,8 @@ import { TranslateStatusPipe } from '../../../utils/translateStatus.pipe';
 import { IUser } from '../../../core/models/user';
 import { AuthService } from '../../../core/service/auth.service';
 import { DossiersService } from '../../../services/dossiers.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rdv',
@@ -19,8 +21,11 @@ export class RdvComponent {
   errorMessage: string ='';
   successMessage: string ='';
   currentUser !: IUser  | null ; 
-
-  constructor(private rdvService: RdvService, private _authService : AuthService , private folderService: DossiersService) { }
+  @ViewChild('modalTemplate') modalTemplate!: TemplateRef<any>;
+  
+  constructor(  private modalService: NgbModal, private rdvService: RdvService,
+    private router: Router,  
+     private _authService : AuthService , private folderService: DossiersService) { }
   adminId !:any
 
   ngOnInit(): void {
@@ -32,7 +37,14 @@ export class RdvComponent {
     }
 
   }
+  openModal(): void {
+    this.modalService.open(this.modalTemplate, { size: 'lg' });
+  }
 
+  redirectToCreateAccount(): void {
+    this.closeModal();
+    this.router.navigate([`/administrator/compte-guest/${this.guestId}`]);  
+  }
   loadPendingRdvs(id:any): void {
     this.rdvService.getPendingRdvs(id).subscribe(
       (data: any[]) => {this.pendingRdvs = data;
@@ -78,30 +90,29 @@ export class RdvComponent {
       this.errorMessage = 'Erreur: Utilisateur non connecté.';
     }
   }
-
+guestId: any
   acceptRdv(rdv: any): void {
-    console.log( rdv)
-    this.rdvService.acceptRdv(rdv._id).subscribe({
-      next: () => {
-        this.successMessage = 'Rendez-vous accepté avec succès!';
-        this.folderService.createDossier({avocat: rdv.avocats , client : rdv.user._id , numberFolder:parseInt(rdv.user._id)  , titleFolder:`${rdv.user.username}${rdv.user.lastname}` }).subscribe({
-            next:(value)=>{ 
-              this.errorMessage = '';
-              this.loadPendingRdvs(this.adminId); 
-            },
-            error:(err)=>{ 
-               console.error(err)
-            }
-        })
+    this.guestId =''
+    if (rdv.rdvBy === 'guest') {
+      this.openModal(); 
+      this.guestId = rdv.guest._id
 
-        
-      },
-      error: (error: any) => {
-        console.error(error);
-        this.successMessage = '';
-        this.errorMessage = 'Erreur lors de l\'acceptation du rendez-vous.';
-      }
-    });
+    } else {
+       this.rdvService.acceptRdv(rdv._id).subscribe({
+        next: () => {
+          this.successMessage = 'Rendez-vous accepté avec succès!';
+          this.loadPendingRdvs(this.adminId);
+        },
+        error: (error: any) => {
+          console.error(error);
+          this.errorMessage = 'Erreur lors de l\'acceptation du rendez-vous.';
+        }
+      });
+    }
+  }
+  
+  closeModal(): void {
+    this.modalService.dismissAll(); // Close all modals
   }
 
   rejectRdv(id: String): void {

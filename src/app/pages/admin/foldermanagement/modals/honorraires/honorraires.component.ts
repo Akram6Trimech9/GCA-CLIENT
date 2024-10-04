@@ -60,6 +60,7 @@ export class HonorrairesComponent  implements OnInit{
     if(this.total !== this.credit.totalCredit){
         this._honorraireService.updateTotal({totalCredit:this.total},this.credit._id).subscribe({
            next:(value)=>{ 
+            
             this.credit.totalCredit = this.total
            },error:(err)=>{ 
              console.log(err)
@@ -75,4 +76,77 @@ export class HonorrairesComponent  implements OnInit{
    close() {
     this.activeModal.close();
   }
+  editTranche(payment: any ) {
+     payment.editMode = true;
+    payment.editCopy = { ...payment };  
+
+  }
+  saveTranche(payment: any, credit: any) {
+    payment.editMode = false;
+
+  
+    // Find the tranche (payment) in credit.payedCredit by its _id
+    const trancheIndex = this.credit.payedCredit.findIndex((tranche: any) => tranche._id === payment._id);
+  
+    if (trancheIndex !== -1) {
+      // Update the found tranche with new payment data
+      this.credit.payedCredit[trancheIndex] = { ...payment };
+   
+      // Call the service to update the tranche in the backend
+      this._honorraireService.updateTranche(payment._id, credit, payment).subscribe({
+        next: (value) => {
+         },
+        error: (err) => {
+          console.error('Error updating tranche:', err);
+        }
+      });
+    } else {
+      console.error('Tranche not found!');
+    }
+  }
+  
+  
+  cancelEditTranche(payment: any) {
+    payment.part = payment.editCopy.part;
+    payment.date = payment.editCopy.date;
+    payment.method = payment.editCopy.method;
+    payment.natureTranche = payment.editCopy.natureTranche;
+    payment.editMode = false;
+    delete payment.editCopy;
+  }
+  
+  
+  generateFacture(credit: any, payment: any) {
+    this._honorraireService.getCreditInvoice(credit, payment).subscribe({
+      next: (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `facture-${payment}.pdf`;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error generating PDF:', err);
+       }
+    });
+  }
+  formatDateForInput(date:any) {
+    const d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    const year = d.getFullYear();
+  
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+  
+    return [year, month, day].join('-');
+  }
+  formatISODate(dateString:any) {
+    return dateString.split('T')[0]; // Extract just the date portion
+  }
+  
 }

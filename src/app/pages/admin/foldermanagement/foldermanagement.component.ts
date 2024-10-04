@@ -15,6 +15,7 @@ import { intervenantService } from '../../../services/inventaire.service';
 import { AffaireStatus } from '../../../utils/justification';
 import { JustificationService } from '../../../services/justification.service';
 import { ToastrService } from 'ngx-toastr';
+import { CreditService } from '../../../services/credit.service';
 declare var window: any;
 
 @Component({
@@ -90,6 +91,7 @@ export class FoldermanagementComponent implements OnInit {
     private _folderService: DossiersService,
     private _userService : AuthService,
     private affaireService: AffaireService,
+    private _creditService: CreditService, 
     private _authService : AuthService,
     private  _intervenantService :   intervenantService,
     private modalService: NgbModal , 
@@ -141,7 +143,6 @@ export class FoldermanagementComponent implements OnInit {
     this.affaireForm = this.fb.group({
       numeroAffaire: ['', Validators.required],
       natureAffaire: ['', Validators.required],
-      dateAudience: ['', Validators.required],
       degre: ['', Validators.required],
       opposite: ['', Validators.required]
     });
@@ -358,8 +359,7 @@ export class FoldermanagementComponent implements OnInit {
     this.affaireForm.reset({
       numeroAffaire: '',
       natureAffaire: '',
-      dateAudience: '',
-      degre:''
+       degre:''
      });
     this.affaireToEdit = null;
   }
@@ -408,11 +408,15 @@ export class FoldermanagementComponent implements OnInit {
     });
   }
   openHonorairesModal(client: any , affaire:any) {
+    console.log(affaire,"affaire")
     const modalRef = this.modalService.open(HonorrairesComponent, {
-      size: 'lg',  
+     
       backdrop: 'static',  
+      size: 'xl'  
     });
-  
+   
+    modalRef.componentInstance.credit = affaire.credit;
+
      modalRef.componentInstance.client = client;
     modalRef.componentInstance.affaire = affaire;
 
@@ -444,4 +448,25 @@ export class FoldermanagementComponent implements OnInit {
     this.aboutissementDetails  = aboutissement
      
   }
+  generateFacture(affaireId: any) {
+    this.affaireService.generateFacture(affaireId).subscribe({
+      next: (response: Blob) => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+  
+         const a = document.createElement('a');
+        a.href = url;
+        a.download = `facture-${affaireId}.pdf`;
+        a.click();
+  
+         window.open(url);
+  
+         window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error generating PDF:', err);
+      }
+    });
+  }
+  
 }

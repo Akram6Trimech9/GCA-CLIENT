@@ -9,6 +9,8 @@ import { AudianceComponent } from '../pages/admin/audiance/audiance.component';
 import { CaisseComponent } from '../pages/admin/caisse/caisse.component';
 import { intervenantsComponent } from '../pages/admin/inventaires/inventaires.component';
 import { CabinetComponent } from '../pages/admin/cabinet/cabinet.component';
+import { CompteGuestComponent } from '../pages/admin/compte-guest/compte-guest.component';
+import { AffairesSingleComponentComponent } from '../pages/admin/affaires-single-component/affaires-single-component.component';
 
 const routes: Routes = [
  
@@ -29,8 +31,16 @@ const routes: Routes = [
   component:RdvComponent
 },
 {
+  path:'affaires',
+  component:AffairesSingleComponentComponent
+},
+{
   path:'intervenants',
   component:intervenantsComponent
+},
+{
+  path:'compte-guest/:id',
+  component:CompteGuestComponent
 },
 {
   path:'honnoraire',

@@ -704,3 +704,8 @@ vertical-align: middle;
     filter: invert(1); 
   }
   
+ .custom-modal-size {
+  max-width: 90%; /* or any width you prefer */
+  width: auto;    /* Allows for auto width calculation */
+  height: auto;   /* Adjusts height as needed */
+}

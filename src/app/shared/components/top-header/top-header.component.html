@@ -31,18 +31,22 @@
  
             <form>
               <div   *ngIf="!currentUser?._id" class="mb-3" > 
-                <label for="firstName">First Name:</label>
+                <label for="firstName">Prénom:</label>
                 <input class="form-control"  type="text" id="firstName" [(ngModel)]="guest.firstName" name="firstName" required>
               </div>
           
               <div    *ngIf="!currentUser?._id" class="mb-3" >
-                <label for="lastName">Last Name:</label>
+                <label for="lastName">Nom de famille :</label>
                 <input class="form-control"  type="text" id="lastName" [(ngModel)]="guest.lastName" name="lastName" required>
               </div>
           
               <div    *ngIf="!currentUser?._id" class="mb-3" >
                 <label for="email">Email:</label>
                 <input class="form-control"  type="email" id="email" [(ngModel)]="guest.email" name="email" required>
+              </div>
+              <div    *ngIf="!currentUser?._id" class="mb-3" >
+                <label for="number">Numéro de téléphone:</label>
+                <input class="form-control"  type="text" id="number" [(ngModel)]="guest.number" name="email" required>
               </div>
                 <div class="mb-3">
                     <label for="consultantSelect">Choisir un consultant</label>

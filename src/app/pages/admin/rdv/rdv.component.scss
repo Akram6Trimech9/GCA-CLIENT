@@ -398,3 +398,13 @@ vertical-align: middle;
     justify-content: center;
     color: #fff;
   }
+  .modal-header{
+    background-color: #465a6e;
+    color: white;
+  }
+  .modal-header .btn-close{
+    color: white;
+  }
+  .btn-close {
+    filter: invert(1); 
+  }

@@ -28,9 +28,7 @@
                   <th>Numéro</th>
                    <th>Date</th>
                    <th>Description </th>
-                   <th>Delegation</th>
-                   <th>City</th>
-                   <th>Cercle</th>
+                     <th>Cercle</th>
                    <th>Fichier</th>
 
                   <th>Actions</th>
@@ -43,9 +41,7 @@
 
                      <td>{{ item.dateAudiance | date }}</td>
                     <td>{{ item.description }}</td>
-                    <td>{{ item.delegation.nom }}</td>
-                    <td>{{ item.city.name }}  {{item.city.zip}}</td>
-                    <td>{{ item.cercle.nom  }}  </td>
+                     <td>{{ item.cercle.nom  }}  </td>
                     <td><i class="fas fa-file pe-auto" (click)="openFiles(item.files)" ></i></td>
 
                     <td class="btns">
@@ -109,26 +105,9 @@
               </div>
             </div>
             
-            <div class="form-group">
-              <label for="delegations">Delegations</label>
-              <select id="delegations" class="form-control" formControlName="delegations">
-                <option *ngFor="let delegation of delegations" [value]="delegation._id">{{ delegation.nom }}  </option>
-              </select>
-              <div *ngIf="audianceForm.get('delegations')?.invalid && audianceForm.get('delegations')?.touched" class="text-danger">
-                Delegation is required
-              </div>
-            </div>
+ 
             
-            <div class="form-group">
-              <label for="cities">Cities</label>
-              <select id="cities" class="form-control" formControlName="cities">
-                <option *ngFor="let city of cities" [value]="city._id">{{ city.name }} {{city.zip}}</option>
-              </select>
-              <div *ngIf="audianceForm.get('cities')?.invalid && audianceForm.get('cities')?.touched" class="text-danger">
-                City is required
-              </div>
-            </div>
-            
+           
             <div class="form-group">
               <label for="cercles">Cercles</label>
               <select id="cercles" class="form-control" formControlName="cercles">

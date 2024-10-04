@@ -188,12 +188,11 @@ loadCreditByClient(id : any){
   openHonorairesModal(client: any , affaire:any , credit:any) {
     console.log(client,affaire,'dsds')
     const modalRef = this.modalService.open(HonorrairesComponent, {
-      size: 'lg',  
+      size: 'xl',  
       backdrop: 'static',  
     });
   
      modalRef.componentInstance.credit = credit;
-
      modalRef.componentInstance.client = client;
     modalRef.componentInstance.affaire = affaire;
 

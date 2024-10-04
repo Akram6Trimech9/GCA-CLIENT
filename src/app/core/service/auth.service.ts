@@ -93,6 +93,11 @@ export class AuthService {
     return this.http.put(`${this.apiUrl}/resetpassword/${token}`, request);
   }
 
+
+  getGuestById(guestId:any): Observable<any> {
+    return this.http.get<any>(`${environment.baseurl}/guest/${guestId}`);
+  }
+
   activateAccount(token: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/verify-account`,token);
   }
@@ -111,6 +116,10 @@ export class AuthService {
 
   register(registerData: FormData ): Observable<any> {
     return this.http.post(`${this.apiUrl}/signup`, registerData);
+  }
+
+  registerGuest(registerData: FormData , idGuest : any ): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup/guest/${idGuest}`, registerData);
   }
  
   getCurrentUserRole(): string | null {

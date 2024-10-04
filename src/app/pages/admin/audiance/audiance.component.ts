@@ -45,11 +45,7 @@ export class AudianceComponent  implements OnInit{
       date: ['', Validators.required],
       numero: ['', Validators.required],
       description: ['', Validators.required],
-      cercles: ['', Validators.required] ,
-    delegations: ['', Validators.required],
-    cities: ['', Validators.required]
-
-
+      cercles: ['', Validators.required] , 
     });
     this.currentUser = this._authService.getCurrentUser()  
   
@@ -73,20 +69,7 @@ if (this.affaireId) {
        }
     })
 
-    this.addressService.getCities().subscribe({
-      next:(value)=>{
-        this.cities = value
-         },error:(err)=>{
-           console.log(err)
-         }
-    })
-    this.addressService.getDelegation().subscribe({
-      next:(value)=>{
-        this.delegations = value
-         },error:(err)=>{
-           console.log(err)
-         }
-    })
+ 
   }
 
   loadAudiences(affaireId: Number) {
@@ -138,9 +121,7 @@ if (this.affaireId) {
     const formData = new FormData();
     formData.append('dateAudiance', this.audianceForm.value.date);
     formData.append('description', this.audianceForm.value.description);
-    formData.append('delegationId', this.audianceForm.value.delegations);
-    formData.append('cityId', this.audianceForm.value.cities);
-    formData.append('cercleId', this.audianceForm.value.cercles);
+      formData.append('cercleId', this.audianceForm.value.cercles);
     formData.append('numero', this.audianceForm.value.numero);
 
   if(this.selectedFiles.length){

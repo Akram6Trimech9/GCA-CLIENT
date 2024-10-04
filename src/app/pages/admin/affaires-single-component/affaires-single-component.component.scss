@@ -1,0 +1,58 @@
+ 
+  .header {
+    background-color: #313e4f;
+    padding: 15px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .header label,
+  .header input,
+  .header button {
+    color: #fff;
+  }
+  
+  .header input {
+    background-color: #465667;
+    border: none;
+    border-radius: 0.25rem;
+  }
+  
+  .header button {
+    background-color: #ffd146;
+    border-color: #ffd146;
+  }
+  
+  .header button:hover {
+    background-color: #ffbf00;
+    border-color: #ffbf00;
+  }
+  
+  .container {
+    padding-top: 80px; /* Adjust padding to push content below sticky header */
+  }
+  
+  .card {
+    background-color: #313e4f;
+    color: #fff;
+    border: none;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-title {
+    color: #ffd146;
+  }
+  
+  .pagination .page-link {
+    color: #313e4f;
+  }
+  
+  .pagination .page-item.active .page-link {
+    background-color: #ffd146;
+    border-color: #ffd146;
+    color: #313e4f;
+  }
+  

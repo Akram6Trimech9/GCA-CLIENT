@@ -39,7 +39,9 @@ export class TopHeaderComponent implements OnInit {
   guest:any ={
      firstName :'',
      lastName:'',
-     email:''
+     email:'',
+     number:''
+
   }
   selectedConsultant: any = null;
   availability: string[] = [];
@@ -146,7 +148,8 @@ export class TopHeaderComponent implements OnInit {
   submit(modal: any) {
     if (this.selectedConsultant && this.selectedTime) {
       const formattedReservationTime = this.formatReservationTime(this.reservationTime);
-      this._reservationService.createReservation(this.clientId, this.selectedTime, formattedReservationTime, this.selectedConsultant._id)
+      if(this.clientId){
+        this._reservationService.createReservation(this.clientId, this.selectedTime, formattedReservationTime, this.selectedConsultant._id)
         .subscribe({
           next: (reservation: any) => {
             this.successMessage = 'Réservation créée avec succès!';
@@ -161,6 +164,24 @@ export class TopHeaderComponent implements OnInit {
             this.toastr.error(this.errorMessage, 'Error'); // Show error toastr
           }
         });
+      }else{
+        this._reservationService.createReservationforGuest(  this.selectedTime, formattedReservationTime, this.selectedConsultant._id , this.guest)
+        .subscribe({
+          next: (reservation: any) => {
+            this.successMessage = 'Réservation créée avec succès!';
+            this.toastr.success(this.successMessage, 'Success'); 
+            this.errorMessage = '';
+            modal.close(); 
+          },
+          error: (error: any) => {
+            console.error(error);
+            this.successMessage = '';
+            this.errorMessage = 'Erreur lors de la création de la réservation.';
+            this.toastr.error(this.errorMessage, 'Error'); // Show error toastr
+          }
+        });
+      }
+     
     } else {
       this.errorMessage = 'Veuillez remplir tous les champs correctement.';
       this.toastr.warning(this.errorMessage, 'Warning'); // Show warning toastr

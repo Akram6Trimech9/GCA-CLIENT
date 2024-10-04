@@ -13,6 +13,10 @@ export class ReservationService {
     return this.http.post<any>(`${environment.baseurl}/rdvs/${clientId}/${avocatId}`,{reservationTime:reservationTime,displonibilty:availabilityId});
   }
 
+  createReservationforGuest( availabilityId: number, reservationTime: string,avocatId:String , guest : any ): Observable<any> {
+    return this.http.post<any>(`${environment.baseurl}/rdvs/createRdvByGuest/${avocatId}`,{ ...guest, reservationTime:reservationTime,displonibilty:availabilityId});
+  }
+
   getAllReservations(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.baseurl}/getall`);
   }

@@ -73,8 +73,7 @@
                         <tr>
                             <th>#</th>
                             <th>Numéro</th>
-                            <th>Date de l'Audiance</th>
-                            <th>Description</th>
+                             <th>Description</th>
                             <th>Documents</th>
                          </tr>
                     </thead>
@@ -82,8 +81,7 @@
                         <tr *ngFor="let audiance of selectedAudiance; let i = index">
                             <td>{{ i + 1 }}</td>
                             <td>{{ audiance.numero }}</td>
-                            <td>{{ audiance.dateAudiance | date: 'shortDate' }}</td>
-                            <td>{{ audiance.description }}</td>
+                             <td>{{ audiance.description }}</td>
                             <td>
                                 <ul (click)="downloadFile(audiance.files)">
                                     <li  *ngFor="let file of audiance.files">
