@@ -1,0 +1,54 @@
+ 
+<div id="wrapper" class="d-flex">
+    <nav id="sidebar" [ngClass]="{'active': isCollapsed}"  style="background-color: #232c38;">
+        <div id="logo" class="text-center text-white py-3">
+            <span>GCA</span>
+        </div>
+        <ul class="list-unstyled components">
+            <li>
+                <a routerLink="/sousadministrator/home" routerLinkActive="active">
+                    <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                </a>
+            </li>
+          
+            <li>
+                <a routerLink="/sousadministrator/folder" routerLinkActive="active">
+                    <i class="fas fa-folder-open"></i> Gestion des dossiers
+                </a>
+            </li>
+            
+            <li>
+                <a routerLink="/administrator/honnoraire" routerLinkActive="active">
+                    <i class="fas fa-coins"></i> Gestion des honoraires
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/caisse" routerLinkActive="active">
+                    <i class="fas fa-cash-register"></i> Gestion des dépenses
+                </a>
+            </li>
+            
+          
+            <li>
+                <a routerLink="">
+                    <i class="fas fa-cogs"></i> Paramètres
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div id="content" [ngClass]="{'active': isCollapsed}">
+        <div class="top-header d-flex justify-content-between align-items-center">
+            <button (click)="toggleSidebar()" class="btn btn-light">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-comments"></i>
+                <i (click)="logout()" class="fas fa-sign-out-alt"></i>
+            </div>
+        </div>
+        <div class="main-content">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

@@ -1,59 +1,70 @@
-<main role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
-  <div class="card-list">
-    <div class="row">
-      <div class="col-12 col-md-6 col-lg-3 col-xl-3 mb-3">
-        <div class="card blue">
-          <div class="title">Nombre de dossiers</div>
-          <i class="zmdi zmdi-upload"></i>
-          <div class="value">{{folder}}</div>
+<main role="main" class="container-fluid mt-4">
+  <div class="row">
+    <app-delai [messages]="delais" [soundUrl]="'assets/audio.mp3'"></app-delai>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="card text-white bg-primary shadow-sm rounded">
+        <div class="card-body">
+          <h5 class="card-title">Nombre de dossiers</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <i class="zmdi zmdi-folder zmdi-hc-2x"></i>
+            <h3>{{folder}}</h3>
+          </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-lg-3 col-xl-3 mb-3">
-        <div class="card green">
-          <div class="title">Membres de l'équipe</div>
-          <i class="zmdi zmdi-upload"></i>
-          <div class="value">10</div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="card text-white bg-success shadow-sm rounded">
+        <div class="card-body">
+          <h5 class="card-title">Membres de l'équipe</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <i class="zmdi zmdi-accounts zmdi-hc-2x"></i>
+            <h3>10</h3>
+          </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-lg-3 col-xl-3 mb-3">
-        <div class="card orange">
-          <div class="title">Total de dépenses</div>
-          <i class="zmdi zmdi-download"></i>
-          <div class="value">{{ depense | currency:'TND' }}</div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="card text-white bg-warning shadow-sm rounded">
+        <div class="card-body">
+          <h5 class="card-title">Total de dépenses</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <i class="zmdi zmdi-money zmdi-hc-2x"></i>
+            <h3>{{ depense | currency:'TND' }}</h3>
+          </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-lg-3 col-xl-3 mb-3">
-        <div class="card red">
-          <div class="title">Nombre d'experts</div>
-          <i class="zmdi zmdi-download"></i>
-          <div class="value">3</div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="card text-white bg-danger shadow-sm rounded">
+        <div class="card-body">
+          <h5 class="card-title">Nombre d'experts</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <i class="zmdi zmdi-graduate zmdi-hc-2x"></i>
+            <h3>3</h3>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  
-  <h5 class="mt-4 mb-3">Calendrier : Toutes les audiences par jour cette semaine :</h5>
+  <header class="projects-header d-flex justify-content-between align-items-center  text-white p-3 rounded shadow-sm">
+    <div class="title">Calendrier : Toutes les audiences par jour cette semaine :</div>
+  </header>
+   <div class="calendar-container bg-light p-4 rounded shadow-sm">
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="audianceEvents"
+      [refresh]="refresh"
+      [locale]="locale" 
+      (eventClicked)="eventClicked($event, content)">
+    </mwl-calendar-month-view>
+  </div>
 
   <div class="projects mb-4">
-    <div class="calendar-container">
-      <mwl-calendar-month-view
-        [viewDate]="viewDate"
-        [events]="audianceEvents"
-        [refresh]="refresh"
-        [locale]="locale" 
-        (eventClicked)="eventClicked($event, content)">
-      </mwl-calendar-month-view>
-    </div>
-  </div>
-  
-  <div class="projects mb-4">
     <div class="projects-inner">
-      <header class="projects-header">
+      <header class="projects-header d-flex justify-content-between align-items-center text-white p-3 rounded shadow-sm">
         <div class="title">Personnes qui veulent vous contacter par e-mail</div>
-        <div class="count">| 32 Projets</div>
-        <i class="zmdi zmdi-download"></i>
       </header>
-      <table class="projects-table">
+      <table class="table table-striped   mt-3">
         <thead>
           <tr>
             <th>Email</th>
@@ -61,30 +72,25 @@
             <th class="text-right">Actions</th>
           </tr>
         </thead>
-        <tr *ngFor="let item of emails">
-          <td class="member">
-            <div class="member-info">
-              <p>{{item.email}}</p>
-            </div>
-          </td>
-          <td>
-            <p>{{item.message}}</p>
-          </td>
-          <td>
-            <form class="form" (ngSubmit)="submitEmail()">
-              <select class="action-box" (change)="onActionChange($event, item)">
-                <option value="">Actions</option>
-                <option value="delete">Supprimer</option>
-                <option value="send">Envoyer</option>
-              </select>
-            </form>
-          </td>
-        </tr>
+        <tbody>
+          <tr *ngFor="let item of emails">
+            <td>{{item.email}}</td>
+            <td>{{item.message}}</td>
+            <td class="text-right">
+              <form class="form-inline">
+                <select class="form-control" (change)="onActionChange($event, item)">
+                  <option value="">Actions</option>
+                  <option value="delete">Supprimer</option>
+                  <option value="send">Envoyer</option>
+                </select>
+              </form>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
   </div>
 </main>
-
 <ng-template #content let-modal>
   <div class="modal-header">
     <span class="modal-title">AUDIENCE : {{selectedEvent.dateAudiance | date}}</span>

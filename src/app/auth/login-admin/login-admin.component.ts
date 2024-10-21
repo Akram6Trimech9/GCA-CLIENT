@@ -34,6 +34,9 @@ export class LoginAdminComponent {
        next:(value) => {
            if(value.token && value.role === Role.ADMIN){
         this.router.navigate(['/administrator'])
+           }else if(value.token && value.role === Role.SOUSADMIN){
+            this.router.navigate(['/sousadministrator'])
+
            }
        },error:(err) => {
           

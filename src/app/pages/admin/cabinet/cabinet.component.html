@@ -1,1 +1,111 @@
-<p>cabinet works!</p>
+<div class="main  container-fluid mt-4">
+ 
+  <div class="header">
+    <span class="text-white">Cabinet Management</span>
+          </div>
+    <div class="card mt-4">
+      <div class="card-header text-light">
+        <h5 class="mb-0">Cabinets</h5>
+        <button class="btn btn-sm  btn-warning" (click)="openCabinetModal(cabinetModal)">Add Cabinet</button>
+
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Address</th>
+              <th>description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="cabinet && cabinet._id">
+              <td>{{ cabinet.name }}</td>
+              <td>{{ cabinet.address }}</td>
+              <td>{{ cabinet.description }}</td>
+              <td>
+                  <button class="btn btn-outline-warning btn-sm" (click)="editCabinet(cabinetModal)">Edit</button>
+                  <button class="btn btn-outline-danger btn-sm" (click)="deleteCabinet(cabinet)">Delete</button>
+              </td>
+          </tr>
+          
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- NgbModal Content -->
+    <ng-template #cabinetModal let-modal>
+      <div class="modal-header">
+        <h5 class="modal-title">{{ editIndex === null ? 'Add Cabinet' : 'Edit Cabinet' }}</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="cabinetForm" (ngSubmit)="saveCabinet(modal)">
+          <div class="form-group">
+            <label for="cabinetName">Nom du cabinet:</label>
+            <input type="text" id="cabinetName" formControlName="name" class="form-control" placeholder="Entrez le nom du cabinet" />
+            <div *ngIf="cabinetForm.controls['name'].invalid && cabinetForm.controls['name'].touched" class="text-danger">
+              Le nom du cabinet est obligatoire.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cabinetLocalisation">Localisation:</label>
+            <input type="text" id="cabinetLocalisation" formControlName="localisation" class="form-control" placeholder="Entrez la localisation" />
+            <div *ngIf="cabinetForm.controls['localisation'].invalid && cabinetForm.controls['localisation'].touched" class="text-danger">
+              La localisation est obligatoire.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cabinetDescription">Description:</label>
+            <input type="text" id="cabinetDescription" formControlName="description" class="form-control" placeholder="Entrez la description" />
+            <div *ngIf="cabinetForm.controls['description'].invalid && cabinetForm.controls['description'].touched" class="text-danger">
+              La description est obligatoire.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cabinetAddress">Adresse du cabinet:</label>
+            <input type="text" id="cabinetAddress" formControlName="address" class="form-control" placeholder="Entrez l'adresse" />
+            <div *ngIf="cabinetForm.controls['address'].invalid && cabinetForm.controls['address'].touched" class="text-danger">
+              L'adresse du cabinet est obligatoire.
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">{{ editIndex === null ? 'Ajouter Cabinet' : 'Mettre à jour Cabinet' }}</button>
+        </form>
+      </div>
+      
+    </ng-template>
+   
+  
+  
+        <app-sous-admins [users]="sousAdmins"></app-sous-admins>
+        <!-- <form [formGroup]="userForm" (ngSubmit)="addUser()">
+          <div class="form-row mb-3">
+            <div class="col">
+              <input
+                type="text"
+                formControlName="username"
+                class="form-control"
+                placeholder="Add user name"
+                required
+              />
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-primary">Add User</button>
+            </div>
+          </div>
+        </form>
+  
+        <ul class="list-group mt-3">
+          <li *ngFor="let user of users" class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ user.username }}</span>
+            <div>
+              <button class="btn btn-outline-warning btn-sm"  >Edit</button>
+              <button class="btn btn-outline-danger btn-sm" (click)="deleteUser(user)">Delete</button>
+            </div>
+          </li>
+        </ul> -->
+ 

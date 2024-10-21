@@ -45,4 +45,8 @@ export class DossiersService {
   updateReactified(folderId:any  , isRectified : any): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/${folderId}/rectified` , {isRectified});
   }
-}
+
+  transfertFolder(data:any  ): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/transfer-folder` ,  data);
+  }
+ }

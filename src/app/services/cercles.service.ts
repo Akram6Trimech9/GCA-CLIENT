@@ -20,5 +20,7 @@ export class CerclesService {
   getCities(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.baseurl}/cities`);
   }
-   
+  getTribinaux(): Observable<any[]> {
+    return this.http.get<any[]>(`${environment.baseurl}/tribinaux`);
+  } 
 }

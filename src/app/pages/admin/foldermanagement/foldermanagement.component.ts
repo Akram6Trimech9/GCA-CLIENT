@@ -6,105 +6,90 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/service/auth.service';
 import { IUser } from '../../../core/models/user';
- import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
+import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HonorrairesComponent } from './modals/honorraires/honorraires.component';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { environment } from '../../../../environments/environment';
 import { intervenantService } from '../../../services/inventaire.service';
 import { AffaireStatus } from '../../../utils/justification';
-import { JustificationService } from '../../../services/justification.service';
 import { ToastrService } from 'ngx-toastr';
 import { CreditService } from '../../../services/credit.service';
+import { AffairesComponent } from './components/affaires/affaires.component';
+import { CategoryComponent } from './components/category/category.component';
+import { ProcesService } from '../../../services/proces.service';
+import { CabinetService } from '../../../services/cabinet.service';
 declare var window: any;
 
 @Component({
   selector: 'app-foldermanagement',
   standalone: true,
-  imports: [CommonModule, FormsModule, PdfViewerModule,ReactiveFormsModule, RouterModule ,NgLabelTemplateDirective,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, NgLabelTemplateDirective,
     NgOptionTemplateDirective,
-    NgSelectComponent,
-  NgSelectModule],
+    NgSelectComponent, AffairesComponent,
+    CategoryComponent,
+    NgSelectModule],
   templateUrl: './foldermanagement.component.html',
   styleUrls: ['./foldermanagement.component.scss']
 })
 export class FoldermanagementComponent implements OnInit {
   dossiers!: any[];
   selectedFolder: any = null;
-  affaires: any[]=[];
+  affaires: any[] = [];
   selectedAffaire: any = null;
   modal: any;
-  affaireForm!: FormGroup;
-  affaireToEdit: any = null;
-  intervenants!:any[]
+  intervenants!: any[]
   folderForm!: FormGroup;
-  clients:any[]=[]
-  currentUser !: IUser  | null ; 
-  adminId:any;
+  clients: any[] = []
+  currentUser !: any | null;
+  selectedClient : any ;
+  adminId: any;
   users: any[] = [];
-  justification = {
-    date: null,
-    type: '',
-    copieJugement: '',
-    situationClient: '',
-    avocatAssocie: ''
-  };
-  selectedJugement: any
-  onFileChangeJugement(event: any) {
-    const file = event.target.files[0];
 
-    
-    if (file) {
-      this.selectedJugement = file;
-     }
+
+  selectedFolderName: any
+
+  onFolderSelected(folder: string) {
+    this.selectedFolderName = folder;
   }
-  situationClientOptions = [
-    'Actif',
-    'Inactif',
-    'En Procédure',
-    'En Rétablissement'
-  ];
 
-  degreOptions = [
-    { value: 'première_instance', label: 'Première Instance' },
-    { value: 'appel', label: 'Appel' },
-    { value: 'cour_suprême', label: 'Cour Suprême' }
-  ];
-  
-  natureAffaireOptions = [
-    { value: 'civil', label: 'Civil' },
-    { value: 'penal', label: 'Pénal' },
-    { value: 'commercial', label: 'Commercial' }
-  ];
-  
-  justificationTypes = Object.values(AffaireStatus);
+
+
+
 
 
   selectedFolderId: any;
   @ViewChild('userSelectionModal') userSelectionModal!: TemplateRef<any>;
-  @ViewChild('aboutissementDetailsModal') aboutissementDetailsModal!: TemplateRef<any>;
+ 
 
-  @ViewChild('aboutissement') aboutissement!: TemplateRef<any>;
+  sousAdmins!:any[]
 
   constructor(
     private fb: FormBuilder,
     private _folderService: DossiersService,
-    private _userService : AuthService,
+    private _userService: AuthService,
     private affaireService: AffaireService,
-    private _creditService: CreditService, 
-    private _authService : AuthService,
-    private  _intervenantService :   intervenantService,
-    private modalService: NgbModal , 
-    private _justificationService : JustificationService , 
-    private toastr : ToastrService
-  ) {}
+    private _creditService: CreditService,
+    private _authService: AuthService,
+    private _intervenantService: intervenantService,
+    private modalService: NgbModal,
+    private _procesService : ProcesService,
+    private  _cabinetService :CabinetService,
+    private toastr: ToastrService
+   ) { }
 
   ngOnInit(): void {
-    this.currentUser = this._authService.getCurrentUser()  
-    if(this.currentUser?._id){ 
-       this.adminId = this.currentUser?._id
-       this.getClients(this.adminId)
-
+    this.currentUser = this._authService.getCurrentUser()
+    if (this.currentUser?._id) {
+      this.adminId = this.currentUser?._id
+      this.getClients(this.adminId)
+      this._cabinetService.getCabinet(this.adminId).subscribe({ 
+        next:(value)=>{
+          this.sousAdmins = value.sousAdmins
+        },error:(err)=>{ 
+           console.log(err)
+        }
+    })
     }
     this.getFolderByAdmin();
     this.initializeForms();
@@ -112,40 +97,31 @@ export class FoldermanagementComponent implements OnInit {
       document.getElementById('addAffaireModal')
     );
     this.getInterventaire()
+
+    
   }
 
-  getInterventaire(){
+  getInterventaire() {
     this._intervenantService.getAllintervenant().subscribe({
-       next:(value :any)=>{
-          this.intervenants = value.data
-       },error:(err)=>{
+      next: (value: any) => {
+        this.intervenants = value.data
+      }, error: (err) => {
         console.log(err)
-       }
+      }
     })
   }
-  selectedFiles!:File
-  onFileChange(event : any){
-   this.selectedFiles = event.target.files[0]
-    console.log(this.selectedFiles,"selected")
-  }
 
-  getClients(id:any){
+  getClients(id: any) {
     this._userService.getAllClients(id).subscribe({
-       next:(value:any)=> {
-           this.clients = value.data
-       },error:(err)=>{
-    console.log(err)
-       }
+      next: (value: any) => {
+        this.clients = value.data
+      }, error: (err) => {
+        console.log(err)
+      }
     })
   }
 
   initializeForms() {
-    this.affaireForm = this.fb.group({
-      numeroAffaire: ['', Validators.required],
-      natureAffaire: ['', Validators.required],
-      degre: ['', Validators.required],
-      opposite: ['', Validators.required]
-    });
 
     this.folderForm = this.fb.group({
       titleFolder: ['', Validators.required],
@@ -158,61 +134,38 @@ export class FoldermanagementComponent implements OnInit {
     this.selectedFolderId = id;
     this.modalService.open(this.userSelectionModal);
   }
+ selectedUser : any ;
+ message : any
+ confirmSendAction(modal: any) {
+  const record = {
+    folderId: this.selectedFolderId,
+    fromUserId: this.currentUser._id,
+    toUserId: this.selectedUser,
+    message: this.message,
+  };
 
-  confirmSendAction(modal: any) {
-    const selectedUsers = this.users.filter(user => user.selected).map(user => user._id);
-  }
-  confirmAboutissement(modal: any) {
-    console.log(this.justification, "justification");
-  
-    if (this.justification.type !== 'Jugee') {
-      const record = { 
-        type: this.justification.type 
-      };
-  
-      this._justificationService.updateJustification(this.aboutissementId, record).subscribe({
-        next: (value) => { 
-          this.toastr.success('Modification réussie'); 
-          this.modalService.dismissAll();  
-        },
-        error: (err) => { 
-          this.toastr.error('Erreur lors de la modification'); 
-        }
-      });
-    } else {
-      const formData = new FormData();
-  
-      console.log(this.selectedJugement,"ook")
-       if (this.justification.date) {
-        formData.append('date', this.justification.date);
-      }
-      if (this.justification.type) {
-        formData.append('type', this.justification.type);
-      }
-      if (this.selectedJugement) {
-        formData.append('file', this.selectedJugement);
-      }
-      if (this.justification.situationClient) {
-        formData.append('situationClient', this.justification.situationClient);
-      }
-      if (this.justification.avocatAssocie) {
-        formData.append('avocatAssocie', this.justification.avocatAssocie);
-      }
-  
-      this._justificationService.updateJustification(this.aboutissementId, formData).subscribe({
-        next: (value) => { 
-          this.toastr.success('Modification réussie');  
-          this.modalService.dismissAll(); 
-          console.log(value);
-        },
-        error: (err) => { 
-          this.toastr.error('Erreur lors de la modification'); 
-        }
-      });
+  this._folderService.transfertFolder(record).subscribe({
+    next: (value) => {
+      console.log('Dossier envoyé avec succès');
+      // Display a success toastr
+      this.toastr.success('Dossier envoyé avec succès', 'Succès');
+
+      // Remove the folder from the list after sending
+      this.dossiers = this.dossiers.filter(dossier => dossier._id !== this.selectedFolderId);
+
+      // Close the modal
+      modal.dismiss('Close click');
+    },
+    error: (err) => {
+      console.log(err);
+      // Display an error toastr
+      this.toastr.error('Erreur lors de l\'envoi du dossier', 'Erreur');
     }
-  }
-  
-  
+  });
+}
+
+
+
   getFolderByAdmin() {
     this._folderService.getFolderByAdminId(this.adminId).subscribe({
       next: (folders) => {
@@ -228,16 +181,19 @@ export class FoldermanagementComponent implements OnInit {
   }
   openFolder(folder: any) {
     this.selectedFolder = folder;
-     this.getAffairesByDossierId(folder._id);
+    this.selectedClient = this.selectedFolder.client
+    this.getAffairesByDossierId(folder._id);
+ 
   }
+
+
+
   executeAction(id: any, isExecuted: boolean) {
     const params = !isExecuted;
-    
+
     this._folderService.updateExecuted(id, params).subscribe({
       next: (value) => {
         console.log(value);
-  
-        // Find the dossier by ID and update its isExecuted status
         const dossierIndex = this.dossiers.findIndex(d => d._id === id);
         if (dossierIndex !== -1) {
           this.dossiers[dossierIndex].isExecuted = params; // Update the isExecuted property
@@ -245,34 +201,23 @@ export class FoldermanagementComponent implements OnInit {
       },
       error: (err) => {
         console.log(err);
-        // Optionally handle the error case
         const dossierIndex = this.dossiers.findIndex(d => d._id === id);
         if (dossierIndex !== -1) {
           this.dossiers[dossierIndex].isExecuted = isExecuted; // Revert if the API call fails
         }
       }
     });
-  } 
-  openedFile: any; 
-  openPdfModal(url: any,content: TemplateRef<any>){
-     this.openedFile = `${environment.picUrl}${url}`
-     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then(
-      (result) => {
-        console.log(`Closed with: ${result}`);
-      },
-      (reason) => {
-       }
-    );
   }
+
   rectifyAction(id: any, isRectified: boolean) {
     const params = !isRectified;
     this._folderService.updateReactified(id, params).subscribe({
       next: (value) => {
         console.log(value);
-        
-         const dossierIndex = this.dossiers.findIndex(d => d._id === id);
+
+        const dossierIndex = this.dossiers.findIndex(d => d._id === id);
         if (dossierIndex !== -1) {
-          this.dossiers[dossierIndex].isRectified = params;  
+          this.dossiers[dossierIndex].isRectified = params;
         }
       },
       error: (err) => {
@@ -280,7 +225,7 @@ export class FoldermanagementComponent implements OnInit {
       }
     });
   }
-  
+
   goBack() {
     this.selectedFolder = null;
     this.selectedAffaire = null;
@@ -288,81 +233,19 @@ export class FoldermanagementComponent implements OnInit {
 
   getAffairesByDossierId(dossierId: number) {
     this.affaireService.fetchAffaires(dossierId).subscribe({
-      next: (affaires:any) => {
+      next: (affaires: any) => {
         this.affaires = affaires.data;
       },
       error: (err) => {
-        this.affaires =[]
+        this.affaires = []
         console.error(err);
       }
     });
   }
 
-  openModal() {
-    this.resetAffaireForm();
-    this.modal.show();
-  }
 
-  addNewAffaire() {
-    console.log(this.affaireForm.value,"sdff",this.selectedFolder)
-    if (this.affaireForm.valid && this.selectedFolder) {
-       const formData = new FormData()
-       formData.append('numeroAffaire',this.affaireForm.value.numeroAffaire)
-       formData.append('natureAffaire',this.affaireForm.value.natureAffaire)
-       formData.append('degre',this.affaireForm.value.degre)
-       formData.append('opposite',this.affaireForm.value.opposite)
-       if(this.selectedFiles){ 
- 
-           formData.append('file',this.selectedFiles)
-      } 
 
-      this.affaireService.addAffaire(formData, this.selectedFolder._id).subscribe({
-        next: (newAffaire) => {
-          this.affaires.push(newAffaire.data);
-          this.modal.hide();
-          this.resetAffaireForm();
-        },
-        error: (err) => {
-          console.error(err);
-        }
-      });
-    }
-  }
 
-  editAffaire(affaire: any) {
-    this.affaireToEdit = affaire;
-    this.affaireForm.patchValue(affaire);
-    this.modal.show();
-  }
-
-  updateAffaire() {
-    if (this.affaireForm.valid && this.affaireToEdit) {
-      const updatedAffaire = { ...this.affaireToEdit, ...this.affaireForm.value };
-
-      this.affaireService.updateAffaire(updatedAffaire._id, updatedAffaire).subscribe({
-        next: () => {
-          const index = this.affaires.findIndex((aff) => aff.id === updatedAffaire.id);
-          if (index !== -1) this.affaires[index] = updatedAffaire;
-
-          this.modal.hide();
-          this.resetAffaireForm();
-          this.affaireToEdit = null;
-        },
-        error: (err) => {
-          console.error(err);
-        }
-      });
-    }
-  }
-
-  resetAffaireForm() {
-    this.affaireForm.reset({
-      numeroAffaire: '',
-      natureAffaire: '',
-       degre:''
-     });
-    this.affaireToEdit = null;
-  }
 
   openFolderModal() {
     this.folderForm.reset();
@@ -375,98 +258,28 @@ export class FoldermanagementComponent implements OnInit {
   addNewFolderAction() {
     if (this.folderForm.valid) {
       const newFolder = this.folderForm.value;
-     console.log(this.folderForm.value,this.adminId,"adminId")
-       this._folderService.createDossier({...newFolder,avocat:this.adminId}).subscribe({
-         next: (folder) => {
-            this.dossiers.push(folder);  
-         this.modal.hide();
-    },
-          error: (err) => {
-            console.error(err);
-          }
-        });
+      console.log(this.folderForm.value, this.adminId, "adminId")
+      this._folderService.createDossier({ ...newFolder, avocat: this.adminId }).subscribe({
+        next: (folder) => {
+          this.dossiers.push(folder);
+          this.modal.hide();
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
     }
-  }
-
+  } 
+ 
   trackByFn(index: number, item: any) {
     return item.id || index;
   }
 
-  cancelEdit() {
-    this.affaireForm.reset();
-    this.affaireToEdit = null;
-  }
 
-  deleteAffaire(affaireId: number) {
-    this.affaireService.deleteAffaire(affaireId).subscribe({
-      next: () => {
-        this.affaires = this.affaires.filter(aff => aff._id !== affaireId);
-      },
-      error: (err) => {
-        console.error(err);
-      }
-    });
-  }
-  openHonorairesModal(client: any , affaire:any) {
-    console.log(affaire,"affaire")
-    const modalRef = this.modalService.open(HonorrairesComponent, {
-     
-      backdrop: 'static',  
-      size: 'xl'  
-    });
-   
-    modalRef.componentInstance.credit = affaire.credit;
 
-     modalRef.componentInstance.client = client;
-    modalRef.componentInstance.affaire = affaire;
 
-    modalRef.result.then(
-      result => {
-        console.log('Modal closed with:', result);
-      },
-      reason => {
-        console.log('Modal dismissed');
-      }
-    );
-  }
 
-  aboutissementId : any ; 
-  openAboutissement(id : any){ 
-    this.aboutissementId = id
-    this.modalService.open(this.aboutissement);
-  }
-  aboutissementDetails: any
-  pdfJugement: any
-  openPdf(url: string) {
-    this.pdfJugement = `${environment.picUrl}${url}`;  
-    console.log(this.pdfJugement,"pdf")
-  }
 
-  openDetailsJugement(aboutissement : any){ 
-    console.log(aboutissement,"aboutiss")
-    this.modalService.open(this.aboutissementDetailsModal);
-    this.aboutissementDetails  = aboutissement
-     
-  }
-  generateFacture(affaireId: any) {
-    this.affaireService.generateFacture(affaireId).subscribe({
-      next: (response: Blob) => {
-        const blob = new Blob([response], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-  
-         const a = document.createElement('a');
-        a.href = url;
-        a.download = `facture-${affaireId}.pdf`;
-        a.click();
-  
-         window.open(url);
-  
-         window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        console.error('Error generating PDF:', err);
-      }
-    });
-  }
-  
+
+
 }

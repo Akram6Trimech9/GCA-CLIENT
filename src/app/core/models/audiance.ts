@@ -4,6 +4,8 @@ export interface IAudiance{
     dateAudiance: Date,
     description: String,
     affaires?: any,
+    type?: any,
+    datePlaidoirie?: any,
     delegation?: any,
     cercle?: any,
     city?: any,

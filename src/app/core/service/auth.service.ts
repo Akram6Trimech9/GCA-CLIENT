@@ -66,7 +66,10 @@ export class AuthService {
     return this.getCurrentUserFromLocalStorage()?.role == Role.ADMIN 
 
   }
+  isSousAdmin():boolean {
+    return this.getCurrentUserFromLocalStorage()?.role == Role.SOUSADMIN 
 
+  }
  
 
   login(request: AuthRequest): Observable<IUser> {
@@ -121,12 +124,19 @@ export class AuthService {
   registerGuest(registerData: FormData , idGuest : any ): Observable<any> {
     return this.http.post(`${this.apiUrl}/signup/guest/${idGuest}`, registerData);
   }
+
+
+  registerSousAdmin(registerData: FormData ,idAdmin  : any ): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup/sous-admin/${idAdmin}`, registerData);
+  }
  
   getCurrentUserRole(): string | null {
     const user = this.getCurrentUser();
     return user ? user.role : null;
   }
-
+  addSousAdmin(adminId : any , userInfo  : any) : Observable<any>{ 
+     return this.http.post<any>(`${this.apiUrl}/signup/sous-admin/${adminId}`,userInfo)
+  }
  
   logout(): void {
     this.clearCurrentUser();

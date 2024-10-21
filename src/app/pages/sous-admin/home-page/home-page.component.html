@@ -1,0 +1,41 @@
+<div class="container mt-5">
+    <!-- Cabinet Info Card -->
+    <div *ngIf="cabinet" class="card shadow-lg mb-5" style="background-color: #232c38; color: #fff;">
+      <div class="card-header text-white" style="background-color: #ffc107;">
+        <p class="card-title">{{ cabinet?.name }}</p>
+      </div>
+      <div class="card-body">
+        <p><strong>Adresse :</strong> {{ cabinet?.address }}</p>
+        <p><strong>Administrateur :</strong> {{ cabinet?.admin.username }} {{ cabinet?.admin.lastname }}  </p>
+        <p><strong>Avocat :</strong> {{ currentUser?.username }} {{ currentUser.lastname }} </p>
+      </div>
+    </div>
+  
+    <!-- Transferred Folders Section -->
+    <div class="card shadow-lg" style="background-color: #fff; color: #000;">
+      <div class="card-header" style="background-color: #ffc107;">
+        <p class="card-title text-dark">Nouveaux dossiers transférés</p>
+      </div>
+      <div class="card-body">
+        <div >
+          <div class="row">
+             <div class="col-md-4 mb-4" *ngFor="let trans of transactions">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                  <h6 class="card-subtitle mb-2 text-muted">Num  du dossier {{trans.folder?.numberFolder}}</h6>
+                  <p class="card-text"><strong>{{ trans.message }}</strong></p>
+                    <p><strong>Date de transfert :</strong> {{ trans.createdAt | date }}</p>
+                  <!-- <p><strong>Responsable :</strong> {{ folder.responsible }}</p>
+                  <p><strong>État :</strong> {{ folder.status }}</p>  -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div *ngIf="cabinet?.newTransferFolders?.length === 0">
+          <p>Aucun dossier transféré récemment.</p>
+        </div> -->
+      </div>
+    </div>
+  </div>
+  

@@ -1,11 +1,10 @@
 
   
   
-  <div role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
+  <div role="main" class="container-fluid mt-4">
     <div  class="head mb-5 ">
         <div class="title ">
-          Gestion des audiance
-         </div>
+          </div>
         
       </div>
       <div  class="crud-offer">
@@ -29,6 +28,8 @@
                    <th>Date</th>
                    <th>Description </th>
                      <th>Cercle</th>
+                     <th>Type</th>
+
                    <th>Fichier</th>
 
                   <th>Actions</th>
@@ -38,10 +39,11 @@
           
                 <tr *ngFor="let item of audiances">
                   <td>{{ item.numero   }}</td>
-
                      <td>{{ item.dateAudiance | date }}</td>
                     <td>{{ item.description }}</td>
                      <td>{{ item.cercle.nom  }}  </td>
+                     <td>{{item?.type}}</td>
+
                     <td><i class="fas fa-file pe-auto" (click)="openFiles(item.files)" ></i></td>
 
                     <td class="btns">
@@ -104,9 +106,18 @@
                 Description is required
               </div>
             </div>
-            
- 
-            
+              
+            <div class="form-group">
+              <label for="type">Type</label>
+              <select id="type" class="form-control" formControlName="type">
+                <option *ngFor="let t of typeAudiance" [value]="t.label">{{ t.label }}</option>
+              </select>
+              <div *ngIf="audianceForm.get('type')?.invalid && audianceForm.get('type')?.touched" class="text-danger">
+                type is required
+              </div>
+            </div>
+  
+   
            
             <div class="form-group">
               <label for="cercles">Cercles</label>

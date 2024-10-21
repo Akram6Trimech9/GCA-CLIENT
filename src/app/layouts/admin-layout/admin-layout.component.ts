@@ -6,17 +6,22 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [RouterModule,CommonModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './admin-layout.component.html',
-  styleUrl: './admin-layout.component.scss'
+  styleUrls: ['./admin-layout.component.scss']
 })
 export class AdminLayoutComponent implements OnInit {
-  constructor(private _authService : AuthService){
+  constructor(private _authService: AuthService) {}
+
+  ngOnInit(): void {}
+
+  logout() {
+    this._authService.logoutAdmin();
   }
-  ngOnInit(): void {
-    
-  }
-  logout(){ 
-    this._authService.logoutAdmin()
+
+  isCollapsed = false;
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
   }
 }

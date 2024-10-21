@@ -1,0 +1,279 @@
+<div class="projects-inner">
+  <header class="projects-header">
+    <div>
+      <div class="title">Gestion de AFFAIRES</div>
+      <!-- <div class="count">| Offres</div> -->
+      <i class="zmdi zmdi-download"></i>
+    </div>
+    <div style="cursor: pointer;" (click)="openModal()">
+      <i class="bi bi-plus-circle"></i> Ajouter une nouvelle affaire
+    </div>
+  </header>
+
+  <table class="projects-table">
+    <thead>
+      <tr>
+        <th>Numéro d'Affaire</th>
+        <th>Nature d'Affaire</th>
+        <th>Honoraires</th>
+        <th>Aboutissement</th>
+        <th>Audiences </th>
+        <th>Fichier </th>
+
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let affaire of affaires">
+        <td>{{ affaire.numeroAffaire }}</td>
+        <td>{{ affaire.natureAffaire }}</td>
+        <td style="cursor: pointer;"> <i class="fas fa-coins"
+            (click)="openHonorairesModal(selectedFolder.client,affaire)"></i> </td>
+        <td><span (click)="openDetailsJugement(affaire.aboutissement)"> <i class="bi bi-flag mr-1"></i> </span> <span
+            class="ml-1" (click)="openAboutissement(affaire.aboutissement._id)"  > <i class="bi bi-pen "
+              style="cursor: pointer;"></i> </span></td>
+        <td style="cursor: pointer;" [routerLink]="['/administrator/audiance', affaire._id]">
+          <i class="bi bi-eye"></i>
+        </td>
+        <td style="cursor: pointer;" (click)="openPdfModal(affaire.file,pdfContent)">
+          <i class="bi bi-file"></i>
+        </td>
+        <td class="btns">
+          <button class="btn  btn-sm btn-action" (click)="editAffaire(affaire)">Modifier</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteAffaire(affaire._id)">Supprimer</button>
+          <button class="btn btn-sm btn-secondary" (click)="generateFacture(affaire._id)">Facture</button>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      <li class="page-item disabled">
+        <span class="page-link">Previous</span>
+      </li>
+      <li class="page-item active" aria-current="page">
+        <span class="page-link">1</span>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="#">2</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="#">3</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="#">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<ng-template #aboutissementDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title"> Détails de l'Aboutissement </h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="aboutissementDetails">
+      <h6>Type d'Aboutissement:</h6>
+      <p class="text-muted">{{ aboutissementDetails.type }}</p>
+      <div *ngIf="aboutissementDetails.type === 'Jugee'">
+        <h6>Date de jugement </h6>
+        <p class="text-muted">{{ aboutissementDetails.date | date:'longDate' }}</p>
+
+        <h6>Justification:</h6>
+        <p class="text-muted">{{ aboutissementDetails.justification }}</p>
+
+        <h6>Situation du Client:</h6>
+        <p class="text-muted">{{ aboutissementDetails.situationClient }}</p>
+
+        <h6>Avocat Associé:</h6>
+        <p class="text-muted">{{ aboutissementDetails.avocatAssocie }}</p>
+
+
+        <h6>Documents:</h6>
+        <span (click)="openPdf(aboutissementDetails.copieJugement)"> <i class="bi bi-file-earmark"
+            style="cursor: pointer;"></i> </span>
+
+
+        <div *ngIf="pdfJugement">
+          <h6>Aperçu du PDF:</h6>
+          <pdf-viewer [src]="pdfJugement" [render-text]="true" [original-size]="false"
+            style="display: block; width: 100%; height: 500px;">
+          </pdf-viewer>
+        </div>
+      </div>
+
+    </div>
+    <div *ngIf="!aboutissementDetails">
+      <p>Aucun détail disponible.</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')">Annuler</button>
+    <button type="button" class="btn btn-primary" (click)="confirmAboutissement(modal)">Modifier</button>
+  </div>
+</ng-template>
+
+
+
+<ng-template #aboutissement let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title"> Changer le type d'aboutissement</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+
+    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+      <label for="date" class="form-label">Date de jugement</label>
+      <input type="date" class="form-control" id="date" [(ngModel)]="justification.date">
+    </div>
+
+    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+      <label for="nature" class="form-label">Nature de jugement </label>
+      <select class="form-select" id="nature" [(ngModel)]="justification.natureJugement">
+        @for (item of natureJugement; track $index) {
+        <option [value]="item.value"> {{item.label}} </option>
+
+        }
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="type" class="form-label">Type d'aboutissement</label>
+      <select class="form-select" id="type" [(ngModel)]="justification.type">
+        <option *ngFor="let type of justificationTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+      <label for="copieJugement" class="form-label">Copie de Jugement</label>
+      <input type="file" class="form-control" id="copieJugement" (change)="onFileChangeJugement($event)">
+
+    </div>
+
+    <div *ngIf="selectedJugement && justification.type === 'Jugee'">
+      <p>Fichier sélectionné: {{ selectedJugement.name }}</p>
+    </div>
+
+    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+      <label for="situationClient" class="form-label">Situation du Client</label>
+      <select class="form-select" id="situationClient" [(ngModel)]="justification.situationClient">
+        <option *ngFor="let status of situationClientOptions" [value]="status">{{ status }}</option>
+      </select>
+    </div>
+
+    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+      <label for="avocatAssocie" class="form-label">Avocat Associé</label>
+      <input type="text" class="form-control" id="avocatAssocie" [(ngModel)]="justification.avocatAssocie">
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')">Annuler</button>
+    <button type="button" class="btn btn-primary" (click)="confirmAboutissement(modal)">Modifier</button>
+  </div>
+</ng-template>
+
+<ng-template #pdfContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">PDF : </h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body" *ngIf="openedFile">
+    <pdf-viewer [src]="openedFile" [render-text]="true" [original-size]="false"
+      style="width: 100%; height: 500px"></pdf-viewer>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Close</button>
+  </div>
+</ng-template>
+
+<div class="modal fade" id="addAffaireModal" tabindex="-1" aria-labelledby="addAffaireModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAffaireModalLabel">Ajouter une nouvelle affaire</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="affaireForm" (ngSubmit)="affaireToEdit ? updateAffaire() : addNewAffaire()">
+
+          <div class="form-group">
+            <label for="numeroAffaire">Numéro d'Affaire</label>
+            <input type="text" class="form-control" id="numeroAffaire" formControlName="numeroAffaire">
+            <div *ngIf="affaireForm.get('numeroAffaire')?.invalid && affaireForm.get('numeroAffaire')?.touched"
+              class="text-danger">
+              Numéro d'Affaire est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="natureAffaire">Nature de l'Affaire</label>
+            <select formControlName="natureAffaire" class="form-control">
+              <option *ngFor="let option of natureAffaireOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+
+          <!-- Degre Select -->
+          <div class="form-group">
+            <label for="degre">Degré</label>
+            <select formControlName="degre" class="form-control">
+              <option *ngFor="let option of degreOptions" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+
+
+
+          <div class="form-group">
+            <label for="Opposite">Opposée</label>
+            <input type="text" class="form-control" id="Opposite" formControlName="opposite">
+            <div *ngIf="affaireForm.get('opposite')?.invalid && affaireForm.get('opposite')?.touched"
+              class="text-danger">
+              opposite est requis
+            </div>
+          </div>
+
+
+          <div class="form-group"
+            *ngIf="affaireForm.get('degre')?.value==='première_instance'&& affaireForm.get('natureAffaire')?.value ==='civil' ">
+            <label for="statusClient">Status De Client</label>
+            <select formControlName="statusClient" class="form-control">
+              <option *ngFor="let status of statusClients" [value]="status.label">
+                {{ status.value }}
+              </option>
+            </select>
+          </div>
+ 
+          <div class="form-group"
+            *ngIf="affaireForm.get('degre')?.value==='cassastion'&& affaireForm.get('natureAffaire')?.value ==='civil' ">
+            <label for="dateDemande">Date de la demande </label>
+            <input type="date" class="form-control" id="dateDemande" formControlName="dateDemande">
+
+          </div>
+          <div class="form-group">
+            <label for="files">Ajouter des fichiers</label>
+            <input type="file" class="form-control" id="files" (change)="onFileChange($event)" multiple>
+          </div>
+
+          <div *ngIf="selectedFiles ">
+            <p>Fichiers sélectionnés:</p>
+            <ul>
+              <li>{{ selectedFiles.name }}</li>
+            </ul>
+          </div>
+
+          <button type="submit" class="btn btn-primary mr-2" [disabled]="affaireForm.invalid">
+            {{ affaireToEdit ? 'Enregistrer les modifications' : 'Enregistrer' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Annuler</button>
+        </form>
+      </div>
+    </div>
+  </div>

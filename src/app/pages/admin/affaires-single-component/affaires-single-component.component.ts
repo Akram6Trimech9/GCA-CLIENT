@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/service/auth.service';
- import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AffaireService } from '../../../services/affaire.service';
 
 @Component({
   selector: 'app-affaires-single-component',
   standalone: true,
-  imports: [CommonModule, FormsModule,ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './affaires-single-component.component.html',
   styleUrls: ['./affaires-single-component.component.scss']
 })
@@ -16,8 +16,9 @@ export class AffairesSingleComponentComponent implements OnInit {
   affaires: any[] = [];
   filters: FormGroup;
   page: number = 1;
-  limit: number = 10;
+  limit: number = 2;
   totalAffaires: number = 0;
+  filterApplied: boolean = false; 
 
   constructor(
     private _authService: AuthService,
@@ -47,6 +48,11 @@ export class AffairesSingleComponentComponent implements OnInit {
     }).subscribe(response => {
       this.affaires = response.affaires;
       this.totalAffaires = response.total;
+
+      if(this.filters.value.clientName ||  this.filters.value.folderNumber   ||  this.filters.value.degre){
+        this.filterApplied = true; 
+
+      }
     });
   }
 

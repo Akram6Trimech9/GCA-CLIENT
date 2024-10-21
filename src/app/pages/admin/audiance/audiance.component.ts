@@ -15,61 +15,68 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-audiance',
   standalone: true,
-  imports: [CommonModule ,FormsModule,ReactiveFormsModule,RouterModule,PdfViewerModule,NgbCarouselModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, PdfViewerModule, NgbCarouselModule],
   templateUrl: './audiance.component.html',
   styleUrl: './audiance.component.scss'
 })
-export class AudianceComponent  implements OnInit{
+export class AudianceComponent implements OnInit {
   affaireId!: any;
   audiances!: IAudiance[];
-  audianceForm!: FormGroup;  
-  cercles !:any[] ; 
-  cities !:any[] ;
+  audianceForm!: FormGroup;
+  cercles !: any[];
+  cities !: any[];
+  typeAudiance = [{
+    label: 'Première audience'
+  },
+  { label: 'Audience préparatoire' },
+  { label: 'Plaidoirie' }]
   @ViewChild('fileModal') fileModal!: TemplateRef<any>;
 
-  delegations !:any[]
+  delegations !: any[]
   constructor(
     private modalService: NgbModal,
     private _audianceService: AudianceService,
     private route: ActivatedRoute,
-    private fb: FormBuilder, 
-    private toastr: ToastrService ,
-    private _authService : AuthService,
-    private addressService : CerclesService
-  ) {}
+    private fb: FormBuilder,
+    private toastr: ToastrService,
+    private _authService: AuthService,
+    private addressService: CerclesService
+  ) { }
 
-  
-  currentUser!:IUser | null ;
+
+  currentUser!: IUser | null;
   ngOnInit(): void {
-     this.audianceForm = this.fb.group({
+    this.audianceForm = this.fb.group({
       date: ['', Validators.required],
       numero: ['', Validators.required],
       description: ['', Validators.required],
-      cercles: ['', Validators.required] , 
+      cercles: ['', Validators.required],
+      type: ['', Validators.required],
+ 
     });
-    this.currentUser = this._authService.getCurrentUser()  
-  
-    this.route.params.subscribe((params:any) => {
-       this.affaireId =params?.id
-if (this.affaireId) {
-  console.log('Affaire ID:', this.affaireId);
-  this.loadAudiences(this.affaireId);
-} else {
-  console.error('L\'identifiant de l\'affaire est indéfini ou nul.');
-}
+    this.currentUser = this._authService.getCurrentUser()
+
+    this.route.params.subscribe((params: any) => {
+      this.affaireId = params?.id
+      if (this.affaireId) {
+        console.log('Affaire ID:', this.affaireId);
+        this.loadAudiences(this.affaireId);
+      } else {
+        console.error('L\'identifiant de l\'affaire est indéfini ou nul.');
+      }
 
     });
   }
-  getAddress(){
+  getAddress() {
     this.addressService.getCercles().subscribe({
-       next:(value)=>{
-      this.cercles = value
-       },error:(err)=>{
-         console.log(err)
-       }
+      next: (value) => {
+        this.cercles = value
+      }, error: (err) => {
+        console.log(err)
+      }
     })
 
- 
+
   }
 
   loadAudiences(affaireId: Number) {
@@ -85,7 +92,7 @@ if (this.affaireId) {
 
   openModal(content: any, audiance?: any) {
     const modalRef = this.modalService.open(content);
-    
+
     if (audiance) {
       this.audianceForm.patchValue(audiance); // Set values for editing
     } else {
@@ -113,26 +120,26 @@ if (this.affaireId) {
   onFilesSelected(event: any): void {
     const files = event.target.files;
     if (files.length > 0) {
-      this.selectedFiles = Array.from(files); 
+      this.selectedFiles = Array.from(files);
     }
   }
   addAudiance(audiance: any) {
-    console.log(this.affaireId,"ok")
+    console.log(this.affaireId, "ok")
     const formData = new FormData();
     formData.append('dateAudiance', this.audianceForm.value.date);
     formData.append('description', this.audianceForm.value.description);
-      formData.append('cercleId', this.audianceForm.value.cercles);
+    formData.append('cercleId', this.audianceForm.value.cercles);
     formData.append('numero', this.audianceForm.value.numero);
+    formData.append('type', this.audianceForm.value.type);
 
-  if(this.selectedFiles.length){
-    this.selectedFiles.forEach(file => {
-      formData.append('files', file);
-    });
-  }
+    if (this.selectedFiles.length) {
+      this.selectedFiles.forEach(file => {
+        formData.append('files', file);
+      });
+    }
  
-  console.log(this.audianceForm.value)
-
-    this._audianceService.addAudience(formData,this.currentUser?._id , this.affaireId).subscribe({
+ 
+    this._audianceService.addAudience(formData, this.currentUser?._id, this.affaireId).subscribe({
       next: (value: IAudiance) => {
         this.audiances.push(value);
         this.toastr.success('Audiance added successfully');
@@ -153,23 +160,23 @@ if (this.affaireId) {
   }
 
   deleteAudiance(id: String) {
-    this._audianceService.deleteAudience(id).subscribe({ 
-      next:(value) =>{ 
+    this._audianceService.deleteAudience(id).subscribe({
+      next: (value) => {
         this.audiances = this.audiances.filter((audiance) => audiance._id !== id);
-      },error:(err)=>{
-         console.log(err)
-      },complete:()=>{
+      }, error: (err) => {
+        console.log(err)
+      }, complete: () => {
         this.toastr.info('Audiance deleted successfully');
 
       }
     })
   }
-  files : any[]= []
+  files: any[] = []
   openFiles(files: any) {
-      files.forEach((file:any) => {
+    files.forEach((file: any) => {
       this.files.push(`${environment.picUrl}${file}`)
-     }); // Assuming file.url contains the PDF link
+    }); // Assuming file.url contains the PDF link
     const modalRef = this.modalService.open(this.fileModal); // Reference to the new modal
   }
-  
+
 }

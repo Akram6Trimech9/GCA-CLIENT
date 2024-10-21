@@ -1,15 +1,13 @@
-<main role="main" class="col-md-9 ml-sm-auto col-lg-10 my-3">
-    <div>
-        <div class="head ">
-            <span>Gestion des Honoraires</span>
-            <div (click)="openModalFunction(myModalContent)" class="add-folder-icon">
-                <i class="bi bi-plus"></i>
-            </div>
+<main role="main" class="container-fluid mt-4">
+    <div class="header">
+        <span class="text-white">Gestion des Honoraires</span>
+        <div (click)="openModalFunction(myModalContent)" class="add-folder-icon">
+            <i class="bi bi-plus"></i>
         </div>
     </div>
 
     <!-- Grid Container -->
-    <div class="form-group search-form ">
+    <div class="form-group search-form">
         <input type="text" id="clientSearch" class="form-control search-input" [(ngModel)]="searchTerm" (input)="filterClients()" placeholder="Chercher un client" />
         <ul *ngIf="filteredClients.length > 0" class="list-group mt-2">
             <li class="list-group-item" style="cursor: pointer;" *ngFor="let client of filteredClients" (click)="selectClient(client)">
@@ -18,10 +16,10 @@
         </ul>
     </div>
 
-    <div *ngIf="selectedClient" class="Info-section p-4 bg-white shadow-md rounded-lg mt-4">
-        <img [src]="selectedClientInfo?.userProfile" alt="Image du Client" class="rounded-circle mr-4 user-profile" />
+    <div *ngIf="selectedClient" class="info-section p-4 bg-white shadow-md rounded-lg mt-4">
+        <img [src]="selectedClientInfo?.userProfile" alt="Image du Client" class="rounded-circle user-profile" />
         <div>
-            <div class="client-info flex items-center mb-4">
+            <div class="client-info mb-4">
                 <div>
                     <h4 class="text-lg font-semibold">{{ selectedClientInfo?.username }} {{ selectedClientInfo?.lastname }}</h4>
                     <p class="text-sm text-gray-600"><i class="fas fa-envelope"></i> {{ selectedClientInfo?.email }}</p>
@@ -35,7 +33,7 @@
         </div>
     </div>
 
-    <div id="grid-container" *ngIf="selectedClient" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+    <div id="grid-container" *ngIf="selectedClient" class="grid-container">
         <div *ngFor="let item of credits" class="card shadow-sm">
             <div class="card-body">
                 <input type="radio" id="base" name="subscription" value="base">

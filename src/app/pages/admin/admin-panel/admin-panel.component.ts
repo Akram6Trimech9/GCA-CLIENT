@@ -12,10 +12,12 @@ import { endOfDay, startOfDay } from 'date-fns';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmailsService } from '../../../services/emails.service';
 import { FormsModule } from '@angular/forms';
+import { DelaiComponent } from '../../../shared/components/delai/delai.component';
+import { DelaiService } from '../../../services/delai.service';
  @Component({
   selector: 'app-admin-panel',
   standalone: true,
-  imports: [CommonModule ,CalendarModule , FormsModule],  
+  imports: [CommonModule ,CalendarModule , FormsModule ,DelaiComponent],  
   templateUrl: './admin-panel.component.html',
   styleUrls: ['./admin-panel.component.scss']
 })
@@ -24,7 +26,9 @@ export class AdminPanelComponent implements OnInit {
     folder: any; 
     depense: number = 0;
     locale: string = 'fr';
-  emails !:any[]
+  emails !:any[] ;
+  delais !:any[] ;
+
     view: CalendarView = CalendarView.Month;
     viewDate: Date = new Date();
     audianceEvents: CalendarEvent[] = [];
@@ -36,7 +40,8 @@ export class AdminPanelComponent implements OnInit {
       private folderService: DossiersService, 
       private audianceService: AudianceService,
       private modalService: NgbModal,
-      private _emailService :EmailsService
+      private _emailService :EmailsService , 
+      private _delaisService : DelaiService
     ) {}
   
     ngOnInit(): void {
@@ -45,7 +50,19 @@ export class AdminPanelComponent implements OnInit {
       this.getDepense();
       this.getAudiances();
       this.getEmails()
+      this.getDelais()
     }
+    getDelais(){
+      this._delaisService.getDelaiByAvocat(this.currentUser._id).subscribe({ 
+         next:(value)=>{ 
+          this.delais = value
+          console.log(this.delais,"delais")
+         } ,error:(err)=>{ 
+            console.log(err)
+         }
+      })
+    }
+    
     getEmails(){
       this._emailService.getEmailsByAvocat(this.currentUser._id).subscribe({
          next:(value)=>{
@@ -133,3 +150,4 @@ export class AdminPanelComponent implements OnInit {
       
     }  
 }
+

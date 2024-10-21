@@ -1,0 +1,126 @@
+<div role="main" class="container-fluid mt-4">
+
+ 
+    <div class="head d-flex justify-content-between align-items-center">
+      <div class="title">
+        Gestion des dossiers
+        <span *ngIf="selectedFolder"> - {{selectedFolder.client.username}}</span>
+      </div>
+      <div *ngIf="selectedFolder ; else addNewFolder">
+        <span class="back" (click)="goBack()">
+          <i class="bi bi-arrow-left"></i> Back to folders
+        </span>
+      </div>
+      <ng-template #addNewFolder>
+        <div class="add-folder-icon" (click)="openFolderModal()">
+          <i class="bi bi-plus"></i>
+        </div>
+      </ng-template>
+  
+    </div>
+  
+    <div id="folderContainer">
+      <div class="folder-container mt-4" *ngIf="!selectedFolder">
+        <div class="folder" *ngFor="let item of dossiers; trackBy: trackByFn" (click)="openFolder(item)">
+          <div class="folder-content">
+            <input type="checkbox" class="folder-checkbox" [(ngModel)]="item.selected">
+  
+            <div class="folder-icon">
+              <img [src]="item.client.userProfile" alt="" class="user-picture-overlay">
+            </div>
+  
+            <div class="folder-actions">
+              <i class="bi bi-check-circle execute-icon" [ngClass]="{'isActive': item.isExecuted}"
+                (click)="executeAction(item._id,item.isExecuted); stopPropagation($event)" data-bs-toggle="tooltip"
+                data-bs-placement="top" title="Exécuter l'action">
+              </i>
+              <i class="bi bi-x-circle rectify-icon" [ngClass]="{'isReactive': item.isRectified}"
+                (click)="rectifyAction(item._id,item.isRectified); stopPropagation($event)" data-bs-toggle="tooltip"
+                data-bs-placement="top" title="Rectifier l'action">
+              </i>
+          
+            </div>
+          </div>
+          <div class="folder-name">
+            {{ item.client.username }} {{ item.client.lastname }}
+          </div>
+        </div>
+      </div>
+  
+      <div *ngIf="selectedFolder" class="crud-offer">
+        <div class="mt-4">
+          <app-category [selectedClient]="selectedClient" [Folder]="selectedFolder" [selectedAffaires]="affaires"
+            (folderSelected)="onFolderSelected($event)"></app-category>
+        </div>
+  
+      </div>
+      @if(selectedFolderName === 'affaires'){
+      }@else if (selectedFolderName === 'procesCheques') {}
+  
+    </div>
+  </div>
+  
+  
+  
+  
+  <div class="modal fade" id="addFolderModal" tabindex="-1" aria-labelledby="addFolderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addFolderModalLabel">Ajouter un nouveau dossier</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="folderForm" (ngSubmit)="addNewFolderAction()">
+            <div class="form-group">
+              <label for="titleFolder">Nom de dossier</label>
+              <input type="text" class="form-control" id="titleFolder" formControlName="titleFolder">
+              <div *ngIf="folderForm.get('titleFolder')?.invalid && folderForm.get('titleFolder')?.touched"
+                class="text-danger">
+                Le nom de dossier est requis
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <label for="numberFolder">Numéro de dossier</label>
+              <input type="text" class="form-control" id="numberFolder" formControlName="numberFolder">
+              <div *ngIf="folderForm.get('numberFolder')?.invalid && folderForm.get('numberFolder')?.touched"
+                class="text-danger">
+                Le numéro de dossier est requis
+              </div>
+            </div>
+  
+            <div class="form-group">
+              <label for="client">Choisir un client</label>
+              <select class="form-control" id="client" formControlName="client">
+                <option *ngFor="let item of clients" [value]="item._id">{{item.lastname}} {{item.username}}</option>
+              </select>
+              <div *ngIf="folderForm.get('client')?.invalid && folderForm.get('client')?.touched" class="text-danger">
+                Le client est requis
+              </div>
+            </div>
+  
+            <button type="submit" class="btn btn-primary mr-2" [disabled]="folderForm.invalid">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+  <ng-template #userSelectionModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Sélectionner des utilisateurs</h5>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div *ngFor="let user of users">
+        <input type="checkbox" [(ngModel)]="user.selected" /> {{ user.username }} {{ user.lastname }}
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')">Annuler</button>
+      <button type="button" class="btn btn-primary" (click)="confirmSendAction(modal)">Envoyer</button>
+    </div>
+  </ng-template>

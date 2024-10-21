@@ -1,0 +1,35 @@
+<div class="client-card">
+  <div class="client-header">
+    <img [src]="selectedClient?.userProfile" alt="Client Profile Picture" class="client-profile">
+    <div class="client-info">
+      <h2>{{ selectedClient?.username }} {{ selectedClient?.lastname }}</h2>
+      <p>Email: {{ selectedClient?.email }}</p>
+      <p>Phone: {{ selectedClient?.telephone1 }}</p>
+      <p>Date of Birth: {{ selectedClient?.dateOfBirth | date: 'longDate' }}</p>
+      <p>Address: {{ selectedClient?.address }}</p>
+    </div>
+  </div>
+
+  <div class="folder-container">
+    <div class="folder" (click)="selectFolder('affaires')">
+      <img src="assets/affaire.png" alt="Affaires Folder">
+      <p>Affaires</p>
+    </div>
+
+     <div class="folder" (click)="selectFolder('procesCheques')">
+      <img src="assets/cheque.png" alt="Procés Cheques Folder">
+      <p>Procés Cheques</p>
+    </div>
+  </div>
+
+  <div *ngIf="selectedFolder" class="folder-content">
+ 
+     <div *ngIf="selectedFolder ==='affaires'">
+      <app-affaires [selectedFolder]="Folder" [affaires]="selectedAffaires"  ></app-affaires> 
+     </div>
+     <div *ngIf="selectedFolder !=='affaires'">
+ <app-proces [selectedFolder]="Folder" ></app-proces>
+     </div>
+     <button (click)="deselectFolder()">Close</button>
+  </div>
+</div>

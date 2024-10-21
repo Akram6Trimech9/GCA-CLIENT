@@ -1,31 +1,80 @@
-<div id="warraper">
-    <div id="logo"><span>GCA</span></div>
-    <span id="show-label-menu">utiliser uniquement sur petit écran</span>
-    <div id="left-menu">
-        <ul>
-          <li><a routerLink="/administrator/Dashboard" routerLinkActive="active"><i class="fas fa-tachometer-alt"></i><span>Tableau de bord</span></a></li>
-          <li><a routerLink="/administrator/calendar" routerLinkActive="active"><i class="fas fa-calendar-alt"></i><span>Gestion des disponibilités</span></a></li>
-          <li><a routerLink="/administrator/folder" routerLinkActive="active"><i class="fas fa-folder-open"></i><span>Gestion des dossiers</span></a></li>
-          <li><a routerLink="/administrator/rdv" routerLinkActive="active"><i class="fas fa-calendar-check"></i><span>Gestion des rendez-vous</span></a></li>
-          <!-- honnoraire -->
-          <li><a routerLink="/administrator/affaires" routerLinkActive="active" ><i class="fas fa-briefcase"></i><span>Gestion des affaires</span></a></li>
-          <li><a routerLink="/administrator/intervenants" routerLinkActive="active"><i class="fas fa-clipboard-list"></i><span>Gestion des intervenants</span></a></li>
-          <li><a routerLink="/administrator/honnoraire" routerLinkActive="active"><i class="fas fa-coins"></i><span>Gestion des honoraires</span></a></li>
-          <li><a routerLink="/administrator/caisse" routerLinkActive="active" ><i class="fas fa-cash-register"></i><span>    Gestion des dépenses
-        </span></a></li>
-           <li><a routerLink="/administrator/cabinet" routerLinkActive="active"><i class="fas fa-coins"></i><span>Gestion de cabinet </span></a></li>
-
-          <li><a routerLink=""><i class="fas fa-users"></i><span>Utilisateurs</span></a></li>
-          <li><a routerLink=""><i class="fas fa-cogs"></i><span>Paramètres</span></a></li>
+ 
+<div id="wrapper" class="d-flex">
+    <nav id="sidebar" [ngClass]="{'active': isCollapsed}"  style="background-color: #232c38;">
+        <div id="logo" class="text-center text-white py-3">
+            <span>GCA</span>
+        </div>
+        <ul class="list-unstyled components">
+            <li>
+                <a routerLink="/administrator/Dashboard" routerLinkActive="active">
+                    <i class="fas fa-tachometer-alt"></i> Tableau de bord
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/calendar" routerLinkActive="active">
+                    <i class="fas fa-calendar-alt"></i> Gestion des disponibilités
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/folder" routerLinkActive="active">
+                    <i class="fas fa-folder-open"></i> Gestion des dossiers
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/rdv" routerLinkActive="active">
+                    <i class="fas fa-calendar-check"></i> Gestion des rendez-vous
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/affaires" routerLinkActive="active">
+                    <i class="fas fa-briefcase"></i> Gestion des affaires
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/intervenants" routerLinkActive="active">
+                    <i class="fas fa-clipboard-list"></i> Gestion des intervenants
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/honnoraire" routerLinkActive="active">
+                    <i class="fas fa-coins"></i> Gestion des honoraires
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/caisse" routerLinkActive="active">
+                    <i class="fas fa-cash-register"></i> Gestion des dépenses
+                </a>
+            </li>
+            <li>
+                <a routerLink="/administrator/cabinet" routerLinkActive="active">
+                    <i class="fas fa-cogs"></i> Gestion de cabinet
+                </a>
+            </li>
+            <li>
+                <a routerLink="">
+                    <i class="fas fa-users"></i> Utilisateurs
+                </a>
+            </li>
+            <li>
+                <a routerLink="">
+                    <i class="fas fa-cogs"></i> Paramètres
+                </a>
+            </li>
         </ul>
-    </div>
-     <div id="top-header">
-        <i class="fas fa-user float-right"></i>
-        <i class="fas fa-comments float-right"></i>
-        <i id="toggle-menu" class="fas fa-bars float-left"></i>
-        <i (click)="logout()" class="fas fa-sign-out-alt float-right"></i>
-    </div>
-    <div id="main-content">
-        <router-outlet />
+    </nav>
+    <div id="content" [ngClass]="{'active': isCollapsed}">
+        <div class="top-header d-flex justify-content-between align-items-center">
+            <button (click)="toggleSidebar()" class="btn btn-light">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <i class="fas fa-user"></i>
+                <i class="fas fa-comments"></i>
+                <i (click)="logout()" class="fas fa-sign-out-alt"></i>
+            </div>
+        </div>
+        <div class="main-content">
+            <router-outlet></router-outlet>
+        </div>
     </div>
 </div>
