@@ -11,6 +11,7 @@ import { intervenantsComponent } from '../pages/admin/inventaires/inventaires.co
 import { CabinetComponent } from '../pages/admin/cabinet/cabinet.component';
 import { CompteGuestComponent } from '../pages/admin/compte-guest/compte-guest.component';
 import { AffairesSingleComponentComponent } from '../pages/admin/affaires-single-component/affaires-single-component.component';
+ import { PocesSingleComponent } from '../pages/admin/poces-single/poces-single.component';
 
 const routes: Routes = [
  
@@ -45,6 +46,10 @@ const routes: Routes = [
 {
   path:'honnoraire',
   component:HonorraireComponent
+},
+{
+  path:'poces',
+  component:PocesSingleComponent
 },
 {
   path:'audiance/:id',

@@ -208,3 +208,20 @@ input[type="file"] {
     padding: 10px;
   }
 }
+/* Button Styling */
+.btn-secondary {
+  background-color: #313e4f; 
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #efc84a;  
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .btn-secondary {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}

@@ -7,13 +7,18 @@
           </div>
         
       </div>
+      <div class="d-flex justify-content-between mb-3">
+        <div></div>
+        <button class="btn btn-secondary" (click)="goBack()">Retourner à l'affaire </button>
+      </div>
+    
       <div  class="crud-offer">
         <div class="projects mb-4">
           <div class="projects-inner">
             <header class="projects-header">
               <div>
-                <div class="title">Gestion des AUDIANCES</div>
-                <div class="count">| Audiances</div>
+                <div class="title">Gestion des AUDIENCES</div>
+                <div class="count">| Audiences</div>
                 <i class="zmdi zmdi-download"></i>
               </div>
               <div style="cursor: pointer;" (click)="openModal(addAudianceModal)"   >
@@ -27,7 +32,7 @@
                   <th>Numéro</th>
                    <th>Date</th>
                    <th>Description </th>
-                     <th>Cercle</th>
+                     <th>Tribunal</th>
                      <th>Type</th>
 
                    <th>Fichier</th>
@@ -41,7 +46,7 @@
                   <td>{{ item.numero   }}</td>
                      <td>{{ item.dateAudiance | date }}</td>
                     <td>{{ item.description }}</td>
-                     <td>{{ item.cercle.nom  }}  </td>
+                     <td>{{ item.tribunal.nom  }}  </td>
                      <td>{{item?.type}}</td>
 
                     <td><i class="fas fa-file pe-auto" (click)="openFiles(item.files)" ></i></td>
@@ -80,7 +85,7 @@
       </div>
       <ng-template #addAudianceModal let-modal>
         <div class="modal-header">
-          <h5 class="modal-title">Ajouter une nouvelle audiance</h5>
+          <h5 class="modal-title">Ajouter une nouvelle audience</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -120,11 +125,11 @@
    
            
             <div class="form-group">
-              <label for="cercles">Cercles</label>
-              <select id="cercles" class="form-control" formControlName="cercles">
-                <option *ngFor="let cercle of cercles" [value]="cercle._id">{{ cercle.nom }}</option>
+              <label for="cercles">Tribunal</label>
+              <select id="cercles" class="form-control" formControlName="tribunal">
+                <option *ngFor="let trib of tribunals" [value]="trib._id">{{ trib.nom }}</option>
               </select>
-              <div *ngIf="audianceForm.get('cercles')?.invalid && audianceForm.get('cercles')?.touched" class="text-danger">
+              <div *ngIf="audianceForm.get('tribunal')?.invalid && audianceForm.get('tribunal')?.touched" class="text-danger">
                 Cercle is required
               </div>
             </div>

@@ -32,8 +32,7 @@ export class SousAdminsComponent implements OnInit ,OnChanges  {
       email: ['', [Validators.required, Validators.email]],
       telephone1: ['', [Validators.required, Validators.pattern('^\\d{8,15}$')]], 
       telephone2: [''],
-      role: ['', [Validators.required]],
-      dateOfBirth: ['', [Validators.required]],
+       dateOfBirth: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],  
     });
   }
@@ -77,25 +76,34 @@ export class SousAdminsComponent implements OnInit ,OnChanges  {
 
   saveUser(): void {
     if (this.userForm.invalid) return;
-
-    const user = this.userForm.value;
-    this._authService.registerSousAdmin(user ,this.currentUser._id ).subscribe({ 
-       next:(value)=>{
- console.log(value,"value")
-       },error:(err)=>{ 
-         console.log(err)
-       }
-    })
-    if (user._id) {
-      const index = this.users.findIndex(u => u._id === user._id);
-      this.users[index] = { ...user };
-      this.toastr.success('Utilisateur modifié avec succès', 'Succès');
-    } else {
-      this.users.push({ ...user, _id: Date.now() });
-      this.toastr.success('Nouvel utilisateur ajouté avec succès', 'Succès');
-    }
-
-    this.modalService.dismissAll();
-    this.filterUsers();
+  
+    const user = {...this.userForm.value , role:Role.SOUSADMIN};
+     this._authService.registerSousAdmin(user, this.currentUser._id).subscribe({
+      next: (value) => {
+        console.log(value, "value");
+  
+        if (user._id) {
+          const index = this.users.findIndex(u => u._id === user._id);
+          this.users[index] = { ...user };
+          this.toastr.success('Utilisateur modifié avec succès', 'Succès');
+        } else {
+          this.users.push({ ...user, _id: Date.now() });
+          this.toastr.success('Nouvel utilisateur ajouté avec succès', 'Succès');
+        }
+  
+        // Close the modal
+        this.modalService.dismissAll();
+  
+         this.toastr.info('Les identifiants ont déjà été envoyés à l\'administrateur.', 'Informations envoyées');
+        
+        // Filter users after the operation
+        this.filterUsers();
+      },
+      error: (err) => {
+        console.log(err);
+        this.toastr.error('Une erreur s\'est produite lors de l\'enregistrement de l\'utilisateur', 'Erreur');
+      }
+    });
   }
+  
 }

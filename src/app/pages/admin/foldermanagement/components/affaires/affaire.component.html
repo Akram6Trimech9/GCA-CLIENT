@@ -208,19 +208,26 @@
               Numéro d'Affaire est requis
             </div>
           </div>
-
           <div class="form-group">
-            <label for="natureAffaire">Nature de l'Affaire</label>
-            <select formControlName="natureAffaire" class="form-control">
-              <option *ngFor="let option of natureAffaireOptions" [value]="option.value">
+            <label for="category">Category</label>
+            <select formControlName="category"   (change)="onCategoryChange($event)" class="form-control">
+              <option *ngFor="let option of categoryOption" [value]="option.value">
                 {{ option.label }}
               </option>
             </select>
           </div>
+          <div class="form-group"  >
+            <label for="natureAffaire">Nature de l'Affaire</label>
+            <select formControlName="natureAffaire" class="form-control">
+              <option *ngFor="let option of natureAffaireOption" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </select>
+          </div>
+        
 
 
-          <!-- Degre Select -->
-          <div class="form-group">
+           <div class="form-group">
             <label for="degre">Degré</label>
             <select formControlName="degre" class="form-control">
               <option *ngFor="let option of degreOptions" [value]="option.value">
@@ -242,7 +249,7 @@
 
 
           <div class="form-group"
-            *ngIf="affaireForm.get('degre')?.value==='première_instance'&& affaireForm.get('natureAffaire')?.value ==='civil' ">
+            *ngIf="affaireForm.get('degre')?.value==='première_instance'&& affaireForm.get('category')?.value ==='civil' ">
             <label for="statusClient">Status De Client</label>
             <select formControlName="statusClient" class="form-control">
               <option *ngFor="let status of statusClients" [value]="status.label">
@@ -252,7 +259,7 @@
           </div>
  
           <div class="form-group"
-            *ngIf="affaireForm.get('degre')?.value==='cassastion'&& affaireForm.get('natureAffaire')?.value ==='civil' ">
+            *ngIf="affaireForm.get('degre')?.value==='cassastion'&& affaireForm.get('category')?.value ==='civil' ">
             <label for="dateDemande">Date de la demande </label>
             <input type="date" class="form-control" id="dateDemande" formControlName="dateDemande">
 
@@ -269,7 +276,7 @@
             </ul>
           </div>
 
-          <button type="submit" class="btn btn-primary mr-2" [disabled]="affaireForm.invalid">
+          <button type="submit" class="btn btn-primary mr-2">
             {{ affaireToEdit ? 'Enregistrer les modifications' : 'Enregistrer' }}
           </button>
           <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Annuler</button>

@@ -3,7 +3,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgbCarouselModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AudianceService } from '../../../services/audiance.service';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { IAudiance } from '../../../core/models/audiance';
 import { ToastrService } from 'ngx-toastr';
 import { IUser } from '../../../core/models/user';
@@ -11,6 +11,7 @@ import { AuthService } from '../../../core/service/auth.service';
 import { CerclesService } from '../../../services/cercles.service';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { environment } from '../../../../environments/environment';
+import { AffaireService } from '../../../services/affaire.service';
 
 @Component({
   selector: 'app-audiance',
@@ -21,9 +22,10 @@ import { environment } from '../../../../environments/environment';
 })
 export class AudianceComponent implements OnInit {
   affaireId!: any;
+  folderId : any
   audiances!: IAudiance[];
   audianceForm!: FormGroup;
-  cercles !: any[];
+  tribunals !: any[];
   cities !: any[];
   typeAudiance = [{
     label: 'Première audience'
@@ -40,7 +42,9 @@ export class AudianceComponent implements OnInit {
     private fb: FormBuilder,
     private toastr: ToastrService,
     private _authService: AuthService,
-    private addressService: CerclesService
+    private affaireService :AffaireService ,
+    private addressService: CerclesService, 
+    private router : Router
   ) { }
 
 
@@ -50,7 +54,7 @@ export class AudianceComponent implements OnInit {
       date: ['', Validators.required],
       numero: ['', Validators.required],
       description: ['', Validators.required],
-      cercles: ['', Validators.required],
+      tribunal: ['', Validators.required],
       type: ['', Validators.required],
  
     });
@@ -68,9 +72,9 @@ export class AudianceComponent implements OnInit {
     });
   }
   getAddress() {
-    this.addressService.getCercles().subscribe({
+    this.addressService.getTribinaux().subscribe({
       next: (value) => {
-        this.cercles = value
+        this.tribunals = value
       }, error: (err) => {
         console.log(err)
       }
@@ -128,7 +132,7 @@ export class AudianceComponent implements OnInit {
     const formData = new FormData();
     formData.append('dateAudiance', this.audianceForm.value.date);
     formData.append('description', this.audianceForm.value.description);
-    formData.append('cercleId', this.audianceForm.value.cercles);
+    formData.append('tribunalId', this.audianceForm.value.tribunal);
     formData.append('numero', this.audianceForm.value.numero);
     formData.append('type', this.audianceForm.value.type);
 
@@ -175,8 +179,23 @@ export class AudianceComponent implements OnInit {
   openFiles(files: any) {
     files.forEach((file: any) => {
       this.files.push(`${environment.picUrl}${file}`)
-    }); // Assuming file.url contains the PDF link
-    const modalRef = this.modalService.open(this.fileModal); // Reference to the new modal
+    }); 
+    const modalRef = this.modalService.open(this.fileModal);  
   }
+   
+  goBack() {
+    this.affaireService.getAffaireById(this.affaireId).subscribe({ 
+       next:(value:any)=>{
+         if(value.data){ 
+        this.router.navigate(['/administrator/folder'], { queryParams: { folderId: value.data?.folder?._id } });
+
+        }
+
+       },error:(err)=>{ 
+  console.log(err)
+       }
+    })
+  }
+  
 
 }

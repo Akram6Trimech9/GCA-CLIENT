@@ -31,7 +31,7 @@ export class ProcesComponent implements OnInit {
   procesForm!: FormGroup;
   procesToEdit: any = null;
   aboutissementDetails: any;
-   openedFile: any;
+  openedFile: any;
   tribinaux !: any[]
   Proces !: any[]   ;
 
@@ -58,6 +58,8 @@ export class ProcesComponent implements OnInit {
       nbreTribunal: ['', Validators.required],
       tribunal: ['', Validators.required],
       year: ['', Validators.required],
+      type: ['', Validators.required],
+
      });
     this.modal = new window.bootstrap.Modal(
       document.getElementById('addProcessModal')
@@ -162,14 +164,16 @@ export class ProcesComponent implements OnInit {
     }
   }
   addNewProces() {
-    console.log(this.procesForm.value); // Log the form values
+    console.log(this.procesForm.value);  
   
     if (this.procesForm.valid && this.selectedFolder) {
       const formData = new FormData();
-      formData.append('nbreTribunal', this.procesForm.value.nbreTribunal); // Fix this line
-      formData.append('tribunal', this.procesForm.value.tribunal); // Fix this line
-      formData.append('year', this.procesForm.value.year); // Fix this line
-  
+      formData.append('nbreTribunal', this.procesForm.value.nbreTribunal);  
+      formData.append('tribunal', this.procesForm.value.tribunal);  
+      formData.append('year', this.procesForm.value.year); 
+      formData.append('type', this.procesForm.value.type);  
+      formData.append('clientId', this.selectedFolder.client);  
+
       if (this.selectedFiles) {
         formData.append('file', this.selectedFiles);
       }

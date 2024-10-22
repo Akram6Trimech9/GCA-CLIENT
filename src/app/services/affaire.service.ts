@@ -16,6 +16,10 @@ export class AffaireService {
     return this.http.get<any[]>(`${this.apiUrl}/dossier/${dossierId}`);
   }
 
+  getAffaireById(affaireId: any): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${affaireId}`);
+  }
+
    deleteAffaire(affaireId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${affaireId}`);
   }

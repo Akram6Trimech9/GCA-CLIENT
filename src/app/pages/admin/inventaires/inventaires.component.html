@@ -25,9 +25,9 @@
 </form>
  -->
  <div class="search-form ">
-  <!-- Search Inputs -->
-
-  <input class="form-control search-input" [(ngModel)]="searchName" placeholder="Rechercher par nom" />  <select class="form-control search-input" [(ngModel)]="searchType">
+ <div class="search-bar">
+   <input class="form-control search-input" [(ngModel)]="searchName" placeholder="Rechercher par nom" />
+   <select class="form-control search-input" [(ngModel)]="searchType">
     <option value="">Select Type</option>
     <option value="expert">Expert</option>
     <option value="huissiers_justices">Huissiers de Justice</option>
@@ -38,8 +38,8 @@
     <option value="medecinsdegatsphysiques">Médecins de Gâts Physiques</option>
     <option value="judiciairesfaillite">Judiciaires Faillite</option>
   </select>
-  
-  <button class=" btn search-button" (click)="onSearch()">Rechercher</button>
+   <button class=" btn search-button" (click)="onSearch()">Rechercher</button>
+</div>
   <div ngbDropdown class="d-inline-block" *ngIf="selectedintervenants.length">
     <button class="btn search-button" ngbDropdownToggle>
       Intervenants sélectionnés {{selectedintervenants.length}}

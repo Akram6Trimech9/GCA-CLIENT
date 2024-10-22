@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -31,5 +31,45 @@ export class ProcesService {
     const url = `${this.baseUrl}/proces/${procesId}`;
     return this.http.put(url, procesData);
   }
+
+
+  searchProces(
+    searchParams: { 
+      folderNumber?: string, 
+      username?: string, 
+      lastname?: string, 
+      nbreTribunal?: number, 
+      type?: string, 
+      page?: number, 
+      limit?: number 
+    }
+  ): Observable<any> {
+    let params = new HttpParams();
+    
+     if (searchParams.folderNumber) {
+      params = params.set('folderNumber', searchParams.folderNumber);
+    }
+    if (searchParams.username) {
+      params = params.set('username', searchParams.username);
+    }
+    if (searchParams.lastname) {
+      params = params.set('lastname', searchParams.lastname);
+    }
+    if (searchParams.nbreTribunal !== undefined && searchParams.nbreTribunal !== null) {
+      params = params.set('nbreTribunal', searchParams.nbreTribunal.toString());
+    }
+    if (searchParams.type) {
+      params = params.set('type', searchParams.type);
+    }
+  
+     const page = searchParams.page ?? 1;
+    const limit = searchParams.limit ?? 10;
+    params = params.set('page', page.toString());
+    params = params.set('limit', limit.toString());
+  
+    const url = `${this.baseUrl}/proces/search`;
+    return this.http.get(url, { params });
+  }
+  
   
 }

@@ -37,10 +37,15 @@ export class AffairesComponent implements OnInit {
     'En Procédure',
     'En Rétablissement'
   ];
+
   degreOptions = [
     { value: 'première_instance', label: 'Première Instance' },
     { value: 'appel', label: 'Appel' },
-    { value: 'cassastion', label: 'Cassastion' }
+    { value: 'cassastion', label: 'Cassastion' },
+    { value: 'demande de réexamen', label: 'Demande de réexamen' },
+    { value: 'oppositionPremier', label: 'opposition ( sur premiére instance )' },
+    { value: 'oppositionAppel', label: 'opposition ( sur appel )' }
+
   ];
 
   statusClients =[
@@ -48,13 +53,27 @@ export class AffairesComponent implements OnInit {
      {value :'Accusé' , label :'accuse'},
   ]
 
-  natureAffaireOptions = [
+  categoryOption = [
     { value: 'civil', label: 'Civil' },
-    { value: 'penal', label: 'Pénal' },
-    { value: 'commercial', label: 'Commercial' }
+    { value: 'pénale', label: 'Pénal' },
+    { value: 'commercial', label: 'Commercial' },
+    { value: 'tribunal', label: 'Tribunal' },
+    { value: 'immobilère', label: 'Immobilère' },
+    { value: 'militaire', label: 'Militaire' },
+    { value: 'administrative', label: 'Administrative' }
+
   ];
 
+  natureAffaireOption = [
+    { value: 'mise à jour', label: 'Mise à jour' },
+    { value: 'enregistrement facultatif', label: 'Enregistrement facultatif' },
+    { value: 'incartade', label: 'Incartade' },
+    { value: 'criminelle', label: 'Criminelle' },
+    { value: 'enfants délinquants', label: 'Enfants délinquants' },
+    { value: 'enfants-incartade', label: 'Enfants incartade' }
 
+  ];
+ 
   natureJugement = [
     { value: 'presense', label: 'Présence' },
     { value: 'absence', label: 'Absence' },
@@ -66,13 +85,32 @@ export class AffairesComponent implements OnInit {
 
   }
 
+  selectedCategory: any;
+  onCategoryChange(event: any) {
+    this.selectedCategory = event.target.value;
+    
+     if (this.selectedCategory === 'immobilère') {
+      this.natureAffaireOption = [ 
+        { value: 'mise à jour', label: 'Mise à jour' },
+        { value: 'enregistrement facultatif', label: 'Enregistrement facultatif' },
+        ]
+    } else {
+      this.natureAffaireOption =  [ 
+         { value: 'incartade', label: 'Incartade' },
+        { value: 'criminelle', label: 'Criminelle' },
+        { value: 'enfants délinquants', label: 'Enfants délinquants' },
+        { value: 'enfants-incartade', label: 'Enfants incartade' }
+        ]
+    } 
+  }
   ngOnInit(): void {
     this.affaireForm = this.fb.group({
       numeroAffaire: ['', Validators.required],
       natureAffaire: ['', Validators.required],
+      category: ['', Validators.required],
       degre: ['', Validators.required],
       opposite: ['', Validators.required],
-      statusClient: ['', Validators.required] , 
+      statusClient: [''] , 
       dateDemande: [''],
  
     });
@@ -260,7 +298,10 @@ export class AffairesComponent implements OnInit {
       formData.append('natureAffaire', this.affaireForm.value.natureAffaire);
       formData.append('degre', this.affaireForm.value.degre);
       formData.append('opposite', this.affaireForm.value.opposite);
-      formData.append('statusClient', this.affaireForm.value.statusClient);
+       formData.append('category', this.affaireForm.value.category);
+      if (this.affaireForm.value.statusClient) {
+        formData.append('statusClient', this.affaireForm.value.statusClient);
+      }
       
       if (this.affaireForm.value.dateDemande) {
         formData.append('dateDemande', this.affaireForm.value.dateDemande);
@@ -283,8 +324,20 @@ export class AffairesComponent implements OnInit {
         }
       });
     } else {
-      this.toastr.warning('Veuillez remplir tous les champs obligatoires.'); // Validation warning message
-    }
+         Object.keys(this.affaireForm.controls).forEach(key => {
+          const control = this.affaireForm.get(key);
+          if (control instanceof FormGroup) {
+            Object.keys(control.controls).forEach(subKey => {
+              const subControl = control.get(subKey);
+              if (subControl?.invalid) {
+                this.toastr.warning(`Le champ ${subKey} est requis.`); // Custom message for each field
+              }
+            });
+          } else if (control?.invalid) {
+            this.toastr.warning(`Le champ ${key} est requis.`);
+          }
+        });
+     }
   }
   getAffairesByDossierId(dossierId: number) {
     this.affaireService.fetchAffaires(dossierId).subscribe({

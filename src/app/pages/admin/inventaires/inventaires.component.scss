@@ -203,3 +203,9 @@ input[type="file"] {
     padding: 10px;
   }
 }
+
+.search-bar{
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}

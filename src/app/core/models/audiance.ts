@@ -10,6 +10,7 @@ export interface IAudiance{
     cercle?: any,
     city?: any,
     files?: any,
+    tribunal?:any;
      numero:any
 
  }

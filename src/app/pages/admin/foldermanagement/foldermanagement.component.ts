@@ -3,7 +3,7 @@ import { DossiersService } from '../../../services/dossiers.service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AffaireService } from '../../../services/affaire.service';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/service/auth.service';
 import { IUser } from '../../../core/models/user';
 import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectModule } from '@ng-select/ng-select';
@@ -33,7 +33,7 @@ declare var window: any;
   styleUrls: ['./foldermanagement.component.scss']
 })
 export class FoldermanagementComponent implements OnInit {
-  dossiers!: any[];
+  dossiers: any[] = [];
   selectedFolder: any = null;
   affaires: any[] = [];
   selectedAffaire: any = null;
@@ -75,11 +75,17 @@ export class FoldermanagementComponent implements OnInit {
     private modalService: NgbModal,
     private _procesService : ProcesService,
     private  _cabinetService :CabinetService,
-    private toastr: ToastrService
-   ) { }
+    private toastr: ToastrService,
+    private route: ActivatedRoute,
+    private router: Router
+   ) {
+
+    }
+    folderId : any
 
   ngOnInit(): void {
     this.currentUser = this._authService.getCurrentUser()
+   
     if (this.currentUser?._id) {
       this.adminId = this.currentUser?._id
       this.getClients(this.adminId)
@@ -92,6 +98,8 @@ export class FoldermanagementComponent implements OnInit {
     })
     }
     this.getFolderByAdmin();
+   
+ 
     this.initializeForms();
     this.modal = new window.bootstrap.Modal(
       document.getElementById('addAffaireModal')
@@ -144,6 +152,7 @@ export class FoldermanagementComponent implements OnInit {
     message: this.message,
   };
 
+
   this._folderService.transfertFolder(record).subscribe({
     next: (value) => {
       console.log('Dossier envoyé avec succès');
@@ -164,26 +173,49 @@ export class FoldermanagementComponent implements OnInit {
   });
 }
 
+openFolderById(folderId: any) {
+  if (!folderId) return;  
+  console.log(folderId,"ok" ,'dossiers',this.dossiers)
+  const folder = this.dossiers.find(d => d._id === folderId);
+  console.log(folder)
+  if (folder) {
+    this.selectedFolder = folder;
+    this.selectedClient = this.selectedFolder.client;
+    this.getAffairesByDossierId(folder._id);
+  } else {
+    console.error('Folder not found for ID:', folderId);
+  }
+}
 
 
   getFolderByAdmin() {
     this._folderService.getFolderByAdminId(this.adminId).subscribe({
       next: (folders) => {
         this.dossiers = folders;
-      },
+        this.checkQueryParams();
+
+       },
       error: (err) => {
         console.error(err);
       },
     });
   }
+  checkQueryParams() {
+    this.route.queryParams.subscribe((params: any) => {
+        if (params.folderId) {
+            this.folderId = params.folderId;
+            this.openFolderById(this.folderId);
+        }
+    });
+}
   stopPropagation(event: Event): void {
     event.stopPropagation();
   }
   openFolder(folder: any) {
+    this.router.navigate([], { queryParams: { folderId: folder._id } }); // Update the URL with the selected folder ID
     this.selectedFolder = folder;
-    this.selectedClient = this.selectedFolder.client
+    this.selectedClient = this.selectedFolder.client;
     this.getAffairesByDossierId(folder._id);
- 
   }
 
 

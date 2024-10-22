@@ -16,6 +16,8 @@
                   <th>Nombre de saisines au tribunal</th>
                 <th>tribunal </th>
                 <th>l'année </th>
+                <th>Type</th>
+
                 <th>Actions</th>
             </tr>
         </thead>
@@ -23,8 +25,10 @@
  
             <tr *ngFor="let item of Proces" >
                  <td>{{item.nbreTribunal}}</td>
-                <td>{{item.tribunal}}</td>
+                <td>{{item.tribunal.nom}}</td>
                 <td>{{item.year}}</td>
+                <td>{{item.type}}</td>
+
                  <td class="btns">
                     <button class="btn  btn-sm btn-action" (click)="editProces(Proces)">Modifier</button>
                     <button class="btn btn-sm btn-danger" (click)="deleteProces(5)">Supprimer</button>
@@ -85,6 +89,17 @@
             </select>
             <div *ngIf="procesForm.get('year')?.invalid && procesForm.get('year')?.touched" class="text-danger">
               L'année est requise
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select" id="type" formControlName="type">
+              <option value="plaintes">Plaintes</option>
+              <option value="procés directe">Procés Directe</option>
+              <option value="chéque">Chéque</option>
+            </select>
+            <div *ngIf="procesForm.get('type')?.invalid && procesForm.get('type')?.touched" class="text-danger">
+              Type est requis
             </div>
           </div>
           
