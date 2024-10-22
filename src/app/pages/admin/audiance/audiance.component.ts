@@ -93,14 +93,21 @@ export class AudianceComponent implements OnInit {
       },
     });
   }
-
+  editedAudience : any
   openModal(content: any, audiance?: any) {
     const modalRef = this.modalService.open(content);
 
     if (audiance) {
-      this.audianceForm.patchValue(audiance); // Set values for editing
+      this.editedAudience = audiance
+      this.audianceForm.patchValue({
+        date: this.formatDate(audiance.dateAudiance), 
+        numero: audiance.numero,
+        description: audiance.description,
+        tribunal: audiance.tribunal._id,  
+        type: audiance.type
+      });
     } else {
-      this.audianceForm.reset(); // Reset the form for a new audiance
+      this.audianceForm.reset();  
     }
     this.getAddress()
 
@@ -126,6 +133,10 @@ export class AudianceComponent implements OnInit {
     if (files.length > 0) {
       this.selectedFiles = Array.from(files);
     }
+  }
+  formatDate(date: any): string {
+    const d = new Date(date);
+    return d.toISOString().substring(0, 10);  
   }
   addAudiance(audiance: any) {
     console.log(this.affaireId, "ok")
@@ -155,15 +166,27 @@ export class AudianceComponent implements OnInit {
     });
   }
 
-  editAudiance(audiance: any) {
-    const index = this.audiances.findIndex((a) => a._id === audiance._id);
-    if (index > -1) {
-      this.audiances[index] = audiance;
-      this.toastr.success('Audiance updated successfully');
+  editAudiance( modal: any) {
+    const index = this.audiances.findIndex((a) => a._id === this.editedAudience._id);
+     if (index > -1) {
+       this.audiances[index] = this.audianceForm.value;
+         this._audianceService.updateAudience(this.editedAudience._id, this.audianceForm.value).subscribe({ 
+          next:(value)=>{  
+                console.log(value)
+
+          } , error:(err)=>{ 
+              console.log(err)
+          }
+         })
+       modal.close();
+  
+       this.toastr.success('Audience mise à jour avec succès');
+    } else {
+       this.toastr.error("Erreur lors de la mise à jour de l'audience");
     }
   }
-
-  deleteAudiance(id: String) {
+  
+   deleteAudiance(id: String) {
     this._audianceService.deleteAudience(id).subscribe({
       next: (value) => {
         this.audiances = this.audiances.filter((audiance) => audiance._id !== id);

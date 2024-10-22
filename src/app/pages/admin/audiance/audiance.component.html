@@ -52,7 +52,7 @@
                     <td><i class="fas fa-file pe-auto" (click)="openFiles(item.files)" ></i></td>
 
                     <td class="btns">
-                      <button class="btn btn-sm btn-action" >Modifier</button>
+                      <button class="btn btn-sm btn-action" (click)="openModal(editAudianceModal,item )" >Modifier</button>
                       <button *ngIf="item._id" class="btn btn-sm btn-danger" (click)="deleteAudiance(item._id)">Supprimer</button>
                     </td>
                   </tr>
@@ -147,28 +147,93 @@
         </div>
       </ng-template>
     
-       <!-- <ng-template #editAudianceModal let-modal>
+      <ng-template #editAudianceModal let-modal>
         <div class="modal-header">
-          <h5 class="modal-title">Modifier audiance</h5>
+          <h5 class="modal-title">Modifier l'audience</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form #audianceForm="ngForm">
+          <form [formGroup]="audianceForm" (ngSubmit)="editAudiance(modal)">
             <div class="form-group">
               <label for="date">Date</label>
-              <input type="date" id="date" class="form-control" [(ngModel)]="audiance.date" name="date" required />
+              <input
+                type="date"
+                id="date"
+                class="form-control"
+                formControlName="date"
+                required
+              />
+              <div *ngIf="audianceForm.get('date')?.invalid && audianceForm.get('date')?.touched" class="text-danger">
+                La date est requise.
+              </div>
             </div>
+      
+            <div class="form-group">
+              <label for="numero">Numéro</label>
+              <input
+                type="text"
+                id="numero"
+                class="form-control"
+                formControlName="numero"
+                required
+              />
+              <div *ngIf="audianceForm.get('numero')?.invalid && audianceForm.get('numero')?.touched" class="text-danger">
+                Le numéro est requis.
+              </div>
+            </div>
+      
             <div class="form-group">
               <label for="description">Description</label>
-              <input type="text" id="description" class="form-control" [(ngModel)]="audiance.description" name="description" required />
+              <input
+                type="text"
+                id="description"
+                class="form-control"
+                formControlName="description"
+                required
+              />
+              <div *ngIf="audianceForm.get('description')?.invalid && audianceForm.get('description')?.touched" class="text-danger">
+                La description est requise.
+              </div>
+            </div>
+      
+            <div class="form-group">
+              <label for="cercles">Tribunal</label>
+              <select id="cercles" class="form-control" formControlName="tribunal">
+                <option *ngFor="let trib of tribunals" [value]="trib._id">{{ trib.nom }}</option>
+              </select>
+              <div *ngIf="audianceForm.get('tribunal')?.invalid && audianceForm.get('tribunal')?.touched" class="text-danger">
+                Cercle is required
+              </div>
+            </div>
+      
+            <div class="form-group">
+              <label for="type">Type</label>
+              <input
+                type="text"
+                id="type"
+                class="form-control"
+                formControlName="type"
+                required
+              />
+              <div *ngIf="audianceForm.get('type')?.invalid && audianceForm.get('type')?.touched" class="text-danger">
+                Le type est requis.
+              </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cancel')">Annuler</button>
-          <button type="button" class="btn btn-primary" (click)="modal.close({ action: 'edit', audiance })">Modifier</button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="audianceForm.invalid"
+            (click)="editAudiance( modal)"
+          >
+            Modifier
+          </button>
         </div>
-      </ng-template> -->
+      </ng-template>
+      
       <ng-template #fileModal let-modal>
         <div class="modal-header">
           <h5 class="modal-title">View PDF Files</h5>
