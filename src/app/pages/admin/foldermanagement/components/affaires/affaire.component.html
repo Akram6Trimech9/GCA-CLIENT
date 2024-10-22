@@ -249,7 +249,7 @@
 
 
           <div class="form-group"
-            *ngIf="affaireForm.get('degre')?.value==='première_instance'&& affaireForm.get('category')?.value ==='civil' ">
+            *ngIf="(affaireForm.get('degre')?.value==='première_instance'  || affaireForm.get('degre')?.value==='appel') && affaireForm.get('category')?.value ==='civil' ">
             <label for="statusClient">Status De Client</label>
             <select formControlName="statusClient" class="form-control">
               <option *ngFor="let status of statusClients" [value]="status.label">
