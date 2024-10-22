@@ -57,8 +57,7 @@ export class AffairesComponent implements OnInit {
     { value: 'civil', label: 'Civil' },
     { value: 'pénale', label: 'Pénal' },
     { value: 'commercial', label: 'Commercial' },
-    { value: 'tribunal', label: 'Tribunal' },
-    { value: 'immobilère', label: 'Immobilère' },
+     { value: 'immobilère', label: 'Immobilère' },
     { value: 'militaire', label: 'Militaire' },
     { value: 'administrative', label: 'Administrative' }
 
