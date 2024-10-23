@@ -173,14 +173,12 @@ export class AudianceComponent implements OnInit {
   
     const formData = new FormData();
     
-    // Appending form fields
     formData.append('dateAudiance', this.audianceForm.get('date')?.value);
     formData.append('description', this.audianceForm.get('description')?.value);
     formData.append('tribunalId', this.audianceForm.get('tribunal')?.value);
     formData.append('numero', this.audianceForm.get('numero')?.value);
     formData.append('type', this.audianceForm.get('type')?.value);
   
-    // Appending files if selected
     if (this.selectedFiles.length) {
       this.selectedFiles.forEach(file => {
         formData.append('files', file);
