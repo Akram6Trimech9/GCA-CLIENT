@@ -74,7 +74,7 @@ export class AffairesComponent implements OnInit {
   ];
  
   natureJugement = [
-    { value: 'presense', label: 'Présence' },
+    { value: 'presence', label: 'Présence' },
     { value: 'absence', label: 'Absence' },
    ]
   constructor(private _justificationService: JustificationService,
