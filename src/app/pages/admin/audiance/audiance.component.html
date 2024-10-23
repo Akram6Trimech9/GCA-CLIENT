@@ -208,18 +208,13 @@
       
             <div class="form-group">
               <label for="type">Type</label>
-              <input
-                type="text"
-                id="type"
-                class="form-control"
-                formControlName="type"
-                required
-              />
+              <select id="type" class="form-control" formControlName="type">
+                <option *ngFor="let t of typeAudiance" [value]="t.label">{{ t.label }}</option>
+              </select>
               <div *ngIf="audianceForm.get('type')?.invalid && audianceForm.get('type')?.touched" class="text-danger">
-                Le type est requis.
+                type is required
               </div>
             </div>
-
             <div class="form-group">
               <label for="files">Upload Files:</label>
               <input class="form-control" id="files" type="file" (change)="onFilesSelected($event)" multiple />
