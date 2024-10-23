@@ -172,7 +172,7 @@ export class ProcesComponent implements OnInit {
       formData.append('tribunal', this.procesForm.value.tribunal);  
       formData.append('year', this.procesForm.value.year); 
       formData.append('type', this.procesForm.value.type);  
-      formData.append('clientId', this.selectedFolder.client);  
+      formData.append('clientId', this.selectedFolder.client._id);  
 
       if (this.selectedFiles) {
         formData.append('file', this.selectedFiles);

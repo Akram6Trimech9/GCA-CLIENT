@@ -51,7 +51,7 @@ export class PocesSingleComponent implements OnInit {
       limit: this.limit
     }).subscribe(response => {
       this.proces = response.data;
-      this.totalProces = response.total;
+       this.totalProces = response.totalPages;
 
        if (Object.values(this.filters.value).some(val => !!val)) {
         this.filterApplied = true; 

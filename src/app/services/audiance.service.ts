@@ -30,7 +30,7 @@ export class AudianceService {
   getAllAudiance() : Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/save`);
   }
-   updateAudience(id: number, audience: IAudiance): Observable<any> {
+   updateAudience(id: number, audience: any): Observable<any> {
     return this.http.put<any>(`${this.baseUrl}/${id}`, audience);
   }
 

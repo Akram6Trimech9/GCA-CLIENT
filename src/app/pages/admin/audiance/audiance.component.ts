@@ -165,26 +165,46 @@ export class AudianceComponent implements OnInit {
       },
     });
   }
-
-  editAudiance( modal: any) {
-    const index = this.audiances.findIndex((a) => a._id === this.editedAudience._id);
-     if (index > -1) {
-       this.audiances[index] = this.audianceForm.value;
-         this._audianceService.updateAudience(this.editedAudience._id, this.audianceForm.value).subscribe({ 
-          next:(value)=>{  
-                console.log(value)
-
-          } , error:(err)=>{ 
-              console.log(err)
-          }
-         })
-       modal.close();
-  
-       this.toastr.success('Audience mise à jour avec succès');
-    } else {
-       this.toastr.error("Erreur lors de la mise à jour de l'audience");
+  editAudiance(modal: any) {
+    if (!this.editedAudience || !this.audianceForm.valid) {
+      this.toastr.error('Invalid audience details or form data');
+      return;
     }
+  
+    const formData = new FormData();
+    
+    // Appending form fields
+    formData.append('dateAudiance', this.audianceForm.get('date')?.value);
+    formData.append('description', this.audianceForm.get('description')?.value);
+    formData.append('tribunalId', this.audianceForm.get('tribunal')?.value);
+    formData.append('numero', this.audianceForm.get('numero')?.value);
+    formData.append('type', this.audianceForm.get('type')?.value);
+  
+    // Appending files if selected
+    if (this.selectedFiles.length) {
+      this.selectedFiles.forEach(file => {
+        formData.append('files', file);
+      });
+    }
+  
+    this._audianceService.updateAudience(this.editedAudience._id, formData).subscribe({
+      next: (value: any) => {
+        const index = this.audiances.findIndex((a) => a._id === this.editedAudience._id);
+        if (index > -1) {
+          this.audiances[index] = value;  
+          this.toastr.success('Audience updated successfully');
+          modal.close();
+          this.selectedFiles = [];  
+        }
+      },
+      error: (err) => {
+        console.error('Error updating audience:', err);
+        this.toastr.error('Error updating audience');
+      }
+    });
   }
+  
+  
   
    deleteAudiance(id: String) {
     this._audianceService.deleteAudience(id).subscribe({

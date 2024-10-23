@@ -15,7 +15,7 @@
             <input id="folderNumber" formControlName="folderNumber" class="form-control" placeholder="Entrez le numéro de dossier" />
           </div>
           <div class="col-md-4">
-            <label for="nbreTribunal" class="form-label">Nombre de tribunaux</label>
+            <label for="nbreTribunal" class="form-label">Numéro d'enregistrement au tribunal</label>
             <input id="nbreTribunal" formControlName="nbreTribunal" class="form-control" placeholder="Entrez le nombre de tribunaux" />
           </div>
           <div class="col-md-4">
@@ -28,7 +28,7 @@
           
           <div class="col-md-12 mt-3 text-end">
             <button type="submit" class="btn btn-primary">Filtrer</button>
-            <button type="button"  (click)="resetFilters()" class="btn btn-secondary ms-2">Réinitialiser</button>
+            <button type="button"  (click)="resetFilters()" class="btn btn-secondary   text-danger ms-2">Réinitialiser</button>
           </div>
         </div>
       </form>
@@ -43,12 +43,14 @@
         <div *ngFor="let proc of proces" class="col-md-12">
           <div class="card mb-4">
             <div class="card-body">
-              <h5 class="card-title">{{ proc.nbreTribunal }}</h5>
-              <p><strong>Dossier:</strong> {{ proc.folder?.titleFolder }}</p>
+               <p><strong>Dossier:</strong> {{ proc.folder?.titleFolder }}</p>
               <p *ngIf="proc.client"><strong>Client:</strong> {{ proc.client.username }}</p>
               <p><strong>Numéro de dossier:</strong> {{ proc.folder?.numberFolder }}</p>
-              <p><strong>Degré:</strong> {{ proc.type }}</p>
-              <p><strong>Type de procès:</strong> {{ proc.year }}</p>
+              <p><strong>Type de procès:</strong> {{ proc.type }}</p>
+              <p><strong>Année:</strong> {{ proc.year }}</p>
+              <p><strong>Numéro d'enregistrement au tribunal:</strong> {{ proc.nbreTribunal }}</p>
+
+           
             </div>
           </div>
         </div>

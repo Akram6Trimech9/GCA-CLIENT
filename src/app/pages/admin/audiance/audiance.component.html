@@ -219,6 +219,11 @@
                 Le type est requis.
               </div>
             </div>
+
+            <div class="form-group">
+              <label for="files">Upload Files:</label>
+              <input class="form-control" id="files" type="file" (change)="onFilesSelected($event)" multiple />
+            </div>
           </form>
         </div>
         <div class="modal-footer">
