@@ -41,7 +41,7 @@ export class AffairesComponent implements OnInit {
   degreOptions = [
     { value: 'première_instance', label: 'Première Instance' },
     { value: 'appel', label: 'Appel' },
-    { value: 'cassastion', label: 'Cassastion' },
+    { value: 'cassation', label: 'Cassastion' },
     { value: 'demande de réexamen', label: 'Demande de réexamen' },
     { value: 'oppositionPremier', label: 'opposition ( sur premiére instance )' },
     { value: 'oppositionAppel', label: 'opposition ( sur appel )' }
