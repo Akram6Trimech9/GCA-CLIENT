@@ -1,6 +1,5 @@
- 
 <div id="wrapper" class="d-flex">
-    <nav id="sidebar" [ngClass]="{'active': isCollapsed}"  style="background-color: #232c38;">
+    <nav id="sidebar" [ngClass]="{'active': isCollapsed}" style="background-color: #232c38;">
         <div id="logo" class="text-center text-white py-3">
             <span>GCA</span>
         </div>
@@ -17,16 +16,14 @@
             </li>
             <li>
                 <a routerLink="/administrator/folder" routerLinkActive="active">
-                    <i class="fas fa-folder-open"></i> Gestion des dossiers
+                    <i class="fas fa-folder"></i> Gestion des dossiers
                 </a>
             </li>
-
             <li>
                 <a routerLink="/administrator/poces" routerLinkActive="active">
-                    <i class="fas fa-money-check"></i> Gestion des Pocés
+                    <i class="fas fa-file-invoice-dollar"></i> Gestion des procès
                 </a>
             </li>
-            <!-- Gestion de Procés -->
             <li>
                 <a routerLink="/administrator/rdv" routerLinkActive="active">
                     <i class="fas fa-calendar-check"></i> Gestion des rendez-vous
@@ -39,7 +36,7 @@
             </li>
             <li>
                 <a routerLink="/administrator/intervenants" routerLinkActive="active">
-                    <i class="fas fa-clipboard-list"></i> Gestion des intervenants
+                    <i class="fas fa-users"></i> Gestion des intervenants
                 </a>
             </li>
             <li>
@@ -49,17 +46,17 @@
             </li>
             <li>
                 <a routerLink="/administrator/caisse" routerLinkActive="active">
-                    <i class="fas fa-cash-register"></i> Gestion des dépenses
+                    <i class="fas fa-wallet"></i> Gestion des dépenses
                 </a>
             </li>
             <li>
                 <a routerLink="/administrator/cabinet" routerLinkActive="active">
-                    <i class="fas fa-cogs"></i> Gestion de cabinet
+                    <i class="fas fa-briefcase-medical"></i> Gestion de cabinet
                 </a>
             </li>
             <li>
-                <a routerLink="">
-                    <i class="fas fa-users"></i> Utilisateurs
+                <a routerLink="/administrator/users" routerLinkActive="active">
+                    <i class="fas fa-users-cog"></i> Gestion des utilisateurs
                 </a>
             </li>
             <li>

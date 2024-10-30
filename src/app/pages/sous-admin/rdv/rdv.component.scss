@@ -54,7 +54,8 @@ i {
   cursor: pointer;
 }
 
- .projects-table {
+/* Table Styling */
+.projects-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -89,7 +90,8 @@ i {
   color: #efc84a;
 }
 
- .btn {
+/* Buttons */
+.btn {
   background-color: #313e4f;
   color: #fff;
   border: none;
@@ -115,7 +117,8 @@ i {
   opacity: 0.9;
 }
 
- .pagination {
+/* Pagination */
+.pagination {
   justify-content: center;
   margin-top: 20px;
 }
@@ -135,7 +138,8 @@ i {
   color: #313e4f;
 }
 
- .modal-header {
+/* Modal Styling */
+.modal-header {
   background-color: #313e4f;
   color: #ffffff;
 }
@@ -180,7 +184,8 @@ input[type="file"] {
   opacity: 0.9;
 }
 
- @media screen and (max-width: 768px) {
+/* Responsive Styling */
+@media screen and (max-width: 768px) {
   .projects-header {
     flex-direction: column;
     text-align: center;
@@ -202,30 +207,4 @@ input[type="file"] {
   .modal-body {
     padding: 10px;
   }
-}
-
-.search-bar{
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-}
-.action-buttons {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.btn {
-  border: 1px solid #000;
-  background: none;
-  color: black;
-  padding: 10px 20px;
-  margin: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn:hover {
-  background-color: #f0f0f0;
 }

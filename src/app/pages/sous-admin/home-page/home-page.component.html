@@ -1,4 +1,5 @@
-<div class="container mt-5">
+<main role="main" class="container-fluid mt-4">
+
     <!-- Cabinet Info Card -->
     <div *ngIf="cabinet" class="card shadow-lg mb-5" style="background-color: #232c38; color: #fff;">
       <div class="card-header text-white" style="background-color: #ffc107;">
@@ -10,6 +11,98 @@
         <p><strong>Avocat :</strong> {{ currentUser?.username }} {{ currentUser.lastname }} </p>
       </div>
     </div>
+  <div class="row">
+    <app-delai [messages]="delais" [soundUrl]="'assets/audio.mp3'"></app-delai>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="card text-white bg-primary shadow-sm rounded">
+        <div class="card-body">
+          <h5 class="card-title">Nombre de dossiers</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <i class="zmdi zmdi-folder zmdi-hc-2x"></i>
+            <h3>{{folder}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="card text-white bg-success shadow-sm rounded">
+        <div class="card-body">
+          <h5 class="card-title">Membres de l'équipe</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <i class="zmdi zmdi-accounts zmdi-hc-2x"></i>
+            <h3>10</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="card text-white bg-warning shadow-sm rounded">
+        <div class="card-body">
+          <h5 class="card-title">Total de dépenses</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <i class="zmdi zmdi-money zmdi-hc-2x"></i>
+            <h3>{{ depense | currency:'TND' }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6 col-lg-3 mb-3">
+      <div class="card text-white bg-danger shadow-sm rounded">
+        <div class="card-body">
+          <h5 class="card-title">Nombre d'experts</h5>
+          <div class="d-flex justify-content-between align-items-center">
+            <i class="zmdi zmdi-graduate zmdi-hc-2x"></i>
+            <h3>3</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <header class="projects-header d-flex justify-content-between align-items-center  text-white p-3 rounded shadow-sm">
+    <div class="title">Calendrier : Toutes les audiences par jour cette semaine :</div>
+  </header>
+   <div class="calendar-container bg-light p-4 rounded shadow-sm">
+    <mwl-calendar-month-view
+      [viewDate]="viewDate"
+      [events]="audianceEvents"
+      [refresh]="refresh"
+      [locale]="locale" 
+      (eventClicked)="eventClicked($event, content)">
+    </mwl-calendar-month-view>
+  </div>
+
+  <div class="projects mb-4">
+    <div class="projects-inner">
+      <header class="projects-header d-flex justify-content-between align-items-center text-white p-3 rounded shadow-sm">
+        <div class="title">Personnes qui veulent vous contacter par e-mail</div>
+      </header>
+      <table class="table table-striped   mt-3">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Message</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of emails">
+            <td>{{item.email}}</td>
+            <td>{{item.message}}</td>
+            <td class="text-right">
+              <form class="form-inline">
+                <select class="form-control" (change)="onActionChange($event, item)">
+                  <option value="">Actions</option>
+                  <option value="delete">Supprimer</option>
+                  <option value="send">Envoyer</option>
+                </select>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   
     <!-- Transferred Folders Section -->
     <div class="card shadow-lg" style="background-color: #fff; color: #000;">
@@ -37,5 +130,96 @@
         </div> -->
       </div>
     </div>
-  </div>
+  </main>
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <span class="modal-title">AUDIENCE : {{selectedEvent.dateAudiance | date}}</span>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+     
+    <div class="modal-body">
+      <div class="details-container">
+        <div class="detail-item">
+          <i class="zmdi zmdi-folder"></i>
+          <div>
+            <div class="title">Numéro d'affaire</div>
+            <div class="value">{{ selectedEvent.affaires.numeroAffaire }}</div>
+          </div>
+        </div>
+        
+        <div class="detail-item">
+          <i class="zmdi zmdi-city"></i>
+          <div>
+            <div class="title">Cercle</div>
+            <div class="value">{{ selectedEvent.cercle.nom }}</div>
+          </div>
+        </div>
+  
+        <div class="detail-item">
+          <i class="zmdi zmdi-pin"></i>
+          <div>
+            <div class="title">Ville</div>
+            <div class="value">{{ selectedEvent.city.name }} - {{ selectedEvent.city.zip }}</div>
+          </div>
+        </div>
+  
+        <div class="detail-item">
+          <i class="zmdi zmdi-calendar"></i>
+          <div>
+            <div class="title">Date d'Audience</div>
+            <div class="value">{{ selectedEvent.dateAudiance | date: 'mediumDate' }}</div>
+          </div>
+        </div>
+  
+        <div class="detail-item">
+          <i class="zmdi zmdi-comment-text"></i>
+          <div>
+            <div class="title">Description</div>
+            <div class="value">{{ selectedEvent.description }}</div>
+          </div>
+        </div>
+  
+        <div class="detail-item">
+          <i class="zmdi zmdi-file"></i>
+          <div>
+            <div class="title">Fichiers</div>
+            <ul class="value">
+              <li *ngFor="let file of selectedEvent.files">
+                <a [href]="file" target="_blank">Voir le fichier</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Fermer</button>
+    </div>
+  </ng-template>
+  
+  <!-- Modal for sending email -->
+  <ng-template #emailModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Envoyer un e-mail</h5>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form (ngSubmit)="submitEmail()">
+        <div class="form-group">
+          <label for="subject">Objet</label>
+          <input type="text" id="subject" [(ngModel)]="emailSubject" name="subject" required class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="body">Message</label>
+          <textarea id="body" [(ngModel)]="emailBody" name="body" required class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+      </form>
+    </div>
+  </ng-template>
   

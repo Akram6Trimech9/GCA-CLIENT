@@ -129,6 +129,9 @@ export class AuthService {
   registerSousAdmin(registerData: FormData ,idAdmin  : any ): Observable<any> {
     return this.http.post(`${this.apiUrl}/signup/sous-admin/${idAdmin}`, registerData);
   }
+  registerClient(registerData: FormData ,idAdmin  : any ): Observable<any> {
+    return this.http.post(`${this.apiUrl}/signup/client/${idAdmin}`, registerData);
+  }
  
   getCurrentUserRole(): string | null {
     const user = this.getCurrentUser();

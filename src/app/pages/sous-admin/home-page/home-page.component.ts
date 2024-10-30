@@ -4,6 +4,17 @@ import { TransactionService } from '../../../services/transaction.service';
 import { CabinetService } from '../../../services/cabinet.service';
 import { Cabinet } from '../../../core/models/cabinet';
 import { AuthService } from '../../../core/service/auth.service';
+import { DepenseService } from '../../../services/depense.service';
+import { DossiersService } from '../../../services/dossiers.service';
+import { AudianceService } from '../../../services/audiance.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmailsService } from '../../../services/emails.service';
+import { DelaiService } from '../../../services/delai.service';
+import { CalendarEvent, CalendarModule, CalendarView } from 'angular-calendar';
+import { Subject } from 'rxjs';
+import { endOfDay, startOfDay } from 'date-fns';
+import { FormsModule } from '@angular/forms';
+import { DelaiComponent } from '../../../shared/components/delai/delai.component';
 
 
  
@@ -12,7 +23,7 @@ import { AuthService } from '../../../core/service/auth.service';
   selector: 'app-home-page',
   standalone: true,
   imports: [
-    CommonModule,
+    CommonModule ,CalendarModule , FormsModule ,DelaiComponent
   ],
   templateUrl: './home-page.component.html',
   styleUrls: ['./home-page.component.scss'], 
@@ -21,7 +32,14 @@ export class HomePageComponent implements OnInit {
 
   cabinet!: Cabinet
 
-  constructor( private _authService : AuthService ,private _transaction : TransactionService , private _cabinetService : CabinetService) {}
+  constructor( private _authService : AuthService ,private _transaction : TransactionService , private _cabinetService : CabinetService ,
+     private depenseService: DepenseService, 
+    private folderService: DossiersService, 
+    private audianceService: AudianceService,
+    private modalService: NgbModal,
+    private _emailService :EmailsService , 
+    private _delaisService : DelaiService
+  ) {}
    transactions !: any[] ;
     currentUser : any
   ngOnInit() {
@@ -43,5 +61,119 @@ export class HomePageComponent implements OnInit {
            console.log(err)
          }
        })
+       this.getFolder();
+       this.getDepense();
+       this.getAudiances();
+       this.getEmails()
+       this.getDelais()
   }
+     folder: any; 
+    depense: number = 0;
+    locale: string = 'fr';
+  emails !:any[] ;
+  delais !:any[] ;
+
+    view: CalendarView = CalendarView.Month;
+    viewDate: Date = new Date();
+    audianceEvents: CalendarEvent[] = [];
+    refresh: Subject<any> = new Subject();
+    selectedEvent: any 
+ 
+    getDelais(){
+      this._delaisService.getDelaiByAvocat(this.currentUser._id).subscribe({ 
+         next:(value)=>{ 
+          this.delais = value
+          console.log(this.delais,"delais")
+         } ,error:(err)=>{ 
+            console.log(err)
+         }
+      })
+    }
+    
+    getEmails(){
+      this._emailService.getEmailsByAvocat(this.currentUser._id).subscribe({
+         next:(value)=>{
+          this.emails= value
+         },error:(err)=>{
+            console.log(err)
+         }
+      })
+    }
+    getFolder() {
+      this.folderService.getFolderByAdminId(this.currentUser._id).subscribe({
+        next: (value) => {
+          this.folder = value.length;
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+    }
+    onActionChange(event: any, item: any) {
+      const action = event.target.value;
+      if (action === 'delete') {
+        this.deleteEmail(item);
+      } else if (action === 'send') {
+        this.openEmailModal(item.email);
+      }
+      event.target.value = ''; // Reset select
+    }
+
+    deleteEmail(item: any) {
+      // Add logic to delete email
+    }
+
+      
+    emailSubject: string = '';
+    emailBody: string = '';
+    openEmailModal(email: string) {
+      this.emailSubject = '';
+      this.emailBody = '';
+      this.modalService.open(   { ariaLabelledBy: 'modal-basic-title' });
+    }
+  
+    getDepense() {
+      this.depenseService.getTotalByAdmin(this.currentUser._id).subscribe({ 
+        next: (value) => { 
+          if (value.total) { 
+            this.depense = value.total;
+          }
+          console.log(value);
+        },
+        error: (err) => { 
+          console.log(err);
+        }
+      });
+    }
+  
+    getAudiances() {
+      this.audianceService.getAllByAdmin(this.currentUser._id).subscribe({
+        next: (audiances) => {
+          this.audianceEvents = audiances.map((audiance:any) => ({
+            start: startOfDay(new Date(audiance.dateAudiance)),
+            end: endOfDay(new Date(audiance.dateAudiance)),
+            title: audiance.description,
+            color: { primary: '#1e90ff', secondary: '#D1E8FF' }, // Customize event color
+            meta: audiance // To store extra data
+          }));
+          this.refresh.next(undefined); 
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+    }
+    eventClicked({ event }: { event: CalendarEvent }, content: any): void {
+      console.log(event.meta,"event")
+      this.selectedEvent = event.meta;
+      this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+    }
+    submitEmail() {
+      const emailData = {
+        subject: this.emailSubject,
+        body: this.emailBody
+      };
+      
+      
+    }  
 }

@@ -202,13 +202,23 @@ export class AffairesComponent implements OnInit {
     console.log(this.pdfJugement, "pdf")
   }
   justification = {
-    date: null,
     type: '',
-    copieJugement: '',
+    date: null,
+    dateInformation: null,
+    dateConvocation: null,
+    natureJugement: '',
     situationClient: '',
     avocatAssocie: '',
-    natureJugement:''
   };
+  
+  selectedDateType: string = '';
+
+  onTypeChange() {
+    this.selectedDateType = '';  
+  }
+  onDateTypeChange() {
+    // You can add any additional logic if needed
+  }
   selectedJugement: any
   onFileChangeJugement(event: any) {
     const file = event.target.files[0];

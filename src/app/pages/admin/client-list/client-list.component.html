@@ -1,0 +1,156 @@
+<div class="card mt-4">
+  <div class="card-header text-light">
+    <h5 class="mb-0">Clients</h5>
+    <button class="btn btn-sm btn-warning" (click)="openAddUserModal()">Ajouter un client</button>
+  </div>
+  <div class="card-body">
+    <div class="user-management">
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <input type="text" [(ngModel)]="searchQuery" (input)="filterUsers()" placeholder="Rechercher des clients..." class="form-control" />
+      </div>
+      
+      <!-- User List -->
+      <div class="card-body">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Téléphone</th>
+              <th>Rôle</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of filteredUsers">
+              <td>{{ user.username }} {{ user.lastname }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.telephone1 }}</td>
+              <td>{{ user.role }}</td>
+              <td>
+                <button class="btn btn-outline-warning btn-sm" (click)="openUpdateUserModal(user)">Modifier</button>
+                <button class="btn btn-outline-danger btn-sm" (click)="deleteUser(user)">Supprimer</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #addUserModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Ajouter Client</h4>
+    <button type="button" class="btn-close" aria-label="Fermer" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="addUserForm">
+      <div class="mb-3">
+        <label for="userName" class="form-label">Nom</label>
+        <input type="text" id="userName" formControlName="username" class="form-control" />
+        <div *ngIf="addUserForm.controls['username'].invalid && addUserForm.controls['username'].touched" class="text-danger">
+          Nom est requis.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="userLastname" class="form-label">Prénom</label>
+        <input type="text" id="userLastname" formControlName="lastname" class="form-control" />
+        <div *ngIf="addUserForm.controls['lastname'].invalid && addUserForm.controls['lastname'].touched" class="text-danger">
+          Prénom est requis.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="userEmail" class="form-label">Email</label>
+        <input type="email" id="userEmail" formControlName="email" class="form-control" />
+        <div *ngIf="addUserForm.controls['email'].invalid && addUserForm.controls['email'].touched" class="text-danger">
+          Email est invalide.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input type="password" id="password" formControlName="password" class="form-control" />
+        <div *ngIf="addUserForm.controls['password'].invalid && addUserForm.controls['password'].touched" class="text-danger">
+          mot de passe est invalide.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="date" class="form-label">Date de naissance</label>
+        <input type="date" id="date" formControlName="dateOfBirth" class="form-control" />
+        <div *ngIf="addUserForm.controls['dateOfBirth'].invalid && addUserForm.controls['dateOfBirth'].touched" class="text-danger">
+          Date de naissance est requise.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="telephone1" class="form-label">Téléphone 1</label>
+        <input type="text" id="telephone1" formControlName="telephone1" class="form-control" />
+        <div *ngIf="addUserForm.controls['telephone1'].invalid && addUserForm.controls['telephone1'].touched" class="text-danger">
+          Téléphone 1 est requis.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="telephone2" class="form-label">Téléphone 2</label>
+        <input type="text" id="telephone2" formControlName="telephone2" class="form-control" />
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Fermer</button>
+    <button type="button" class="btn btn-primary" (click)="saveUser()">Ajouter</button>
+  </div>
+</ng-template>
+
+<ng-template #updateUserModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Modifier Client</h4>
+    <button type="button" class="btn-close" aria-label="Fermer" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="updateUserForm">
+      <div class="mb-3">
+        <label for="userName" class="form-label">Nom</label>
+        <input type="text" id="userName" formControlName="username" class="form-control" />
+        <div *ngIf="updateUserForm.controls['username'].invalid && updateUserForm.controls['username'].touched" class="text-danger">
+          Nom est requis.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="userLastname" class="form-label">Prénom</label>
+        <input type="text" id="userLastname" formControlName="lastname" class="form-control" />
+        <div *ngIf="updateUserForm.controls['lastname'].invalid && updateUserForm.controls['lastname'].touched" class="text-danger">
+          Prénom est requis.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="userEmail" class="form-label">Email</label>
+        <input type="email" id="userEmail" formControlName="email" class="form-control" />
+        <div *ngIf="updateUserForm.controls['email'].invalid && updateUserForm.controls['email'].touched" class="text-danger">
+          Email est invalide.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="date" class="form-label">Date de naissance</label>
+        <input type="date" id="date" formControlName="dateOfBirth" class="form-control" />
+        <div *ngIf="updateUserForm.controls['dateOfBirth'].invalid && updateUserForm.controls['dateOfBirth'].touched" class="text-danger">
+          Date de naissance est requise.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="telephone1" class="form-label">Téléphone 1</label>
+        <input type="text" id="telephone1" formControlName="telephone1" class="form-control" />
+        <div *ngIf="updateUserForm.controls['telephone1'].invalid && updateUserForm.controls['telephone1'].touched" class="text-danger">
+          Téléphone 1 est requis.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="telephone2" class="form-label">Téléphone 2</label>
+        <input type="text" id="telephone2" formControlName="telephone2" class="form-control" />
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Fermer</button>
+    <button type="button" class="btn btn-primary" (click)="updateUser()">Modifier</button>
+  </div>
+</ng-template>

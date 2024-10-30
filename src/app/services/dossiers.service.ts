@@ -32,9 +32,42 @@ export class DossiersService {
   deleteDossier(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/delete/${id}`);
   }
-  getFolderByAdminId(avocatId:any): Observable<any[]> {
-    return this.http.get<any[]>(`${this.baseUrl}/avocat/${avocatId}`);
+  getFolderByAdminId(
+    avocatId: any,
+    page: number = 1,
+    limit: number = 10,
+    searchNumber?: string,
+    searchTitle?: string,
+    clientId?: any,
+    isRectified?: boolean,
+    isExecuted?: boolean
+  ): Observable<any[]> {
+    let queryParams = `?page=${page}&limit=${limit}`;
+  
+    if (searchNumber) {
+      queryParams += `&searchNumber=${searchNumber}`;
+    }
+  
+    if (searchTitle) {
+      queryParams += `&searchTitle=${searchTitle}`;
+    }
+  
+    if (clientId) {
+      queryParams += `&clientId=${clientId}`;
+    }
+  
+    if (isRectified !== undefined) {
+      queryParams += `&isRectified=${isRectified}`;
+    }
+  
+    if (isExecuted !== undefined) {
+      queryParams += `&isExecuted=${isExecuted}`;
+    }
+  
+    return this.http.get<any[]>(`${this.baseUrl}/avocat/${avocatId}${queryParams}`);
   }
+  
+  
   getFolderByClient(clientId:any): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/client/${clientId}`);
   }

@@ -1,0 +1,84 @@
+<main role="main" class="container-fluid mt-4">
+ 
+  <div class="projects mb-4">
+    <div class="projects-inner">
+      <header class="projects-header">
+        <div class="title">Gestion de rendez-vous</div>
+        <div class="count">| {{pendingRdvs.length}} Rendez-vous</div>
+        <i class="zmdi zmdi-download"></i>
+      </header>
+      <table class="projects-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+             <th>Client</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rdv of pendingRdvs">
+            <td>{{rdv.displonibilty.date | date:'yyyy-MM-dd'}}</td>
+            <td>{{rdv.reservationTime | date:'HH:mm'}}</td>
+            @if (rdv.rdvBy ==='guest') {
+              <td >{{ rdv.guest.firstName }} {{ rdv.guest.lastName }}</td>
+            }@else if (rdv.rdvBy ==='client') {
+              <td >{{ rdv.user.username }} {{ rdv.user.lastname }}</td>
+
+            }
+            <td>{{ rdv.status  }}</td>
+            <td class="btns">
+              <button  *ngIf="rdv.status === 'pending'" class="btn btn-sm btn-action " (click)="acceptRdv(rdv)">Accepter</button>
+              <button  *ngIf="rdv.status === 'pending' "  class="btn btn-sm btn-danger" (click)="rejectRdv(rdv._id)">Refuser</button>
+              <button  *ngIf="rdv.status !== 'pending'" class="btn btn-sm btn-warning" (click)="delete(rdv._id)">Supprimer</button>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <span class="page-link">Previous</span>
+          </li>
+          <li class="page-item active" aria-current="page">
+            <span class="page-link">1</span>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">2</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">3</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</main>
+
+<!-- Modale dans ng-template -->
+<ng-template #modalTemplate let-modal >
+  <div tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div   role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Créer un compte</h5>
+          <button type="button" class="close" (click)="closeModal()" aria-label="Fermer">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Pour accepter ce rendez-vous, l'invité doit d'abord créer un compte.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Fermer</button>
+          <button type="button" class="btn btn-primary" (click)="redirectToCreateAccount()">Créer un compte</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

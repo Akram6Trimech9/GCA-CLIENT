@@ -120,52 +120,67 @@
 
 <ng-template #aboutissement let-modal>
   <div class="modal-header">
-    <h5 class="modal-title"> Changer le type d'aboutissement</h5>
+    <h5 class="modal-title">Changer le type d'aboutissement</h5>
     <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
+    
+    <div class="mb-3">
+      <label for="type" class="form-label">Type d'aboutissement</label>
+      <select class="form-select" id="type" [(ngModel)]="justification.type" (change)="onTypeChange()">
+        <option *ngFor="let type of justificationTypes" [value]="type">{{ type }}</option>
+      </select>
+    </div>
 
+    <div *ngIf="justification.type === 'Jugee'" class="mb-3">
+      <label for="dateChoice" class="form-label">Choisissez le type de date</label>
+      <select class="form-select" id="dateChoice" [(ngModel)]="selectedDateType" (change)="onDateTypeChange()">
+        <option value="">Sélectionnez une option</option>
+        <option value="date">Date de jugement</option>
+        <option value="dateInformation">Date d'information</option>
+        <option value="dateConvocation">Date de convocation</option>
+      </select>
+    </div>
 
-    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+    <div *ngIf="selectedDateType === 'date'" class="mb-3">
       <label for="date" class="form-label">Date de jugement</label>
       <input type="date" class="form-control" id="date" [(ngModel)]="justification.date">
     </div>
 
-    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
-      <label for="nature" class="form-label">Nature de jugement </label>
-      <select class="form-select" id="nature" [(ngModel)]="justification.natureJugement">
-        @for (item of natureJugement; track $index) {
-        <option [value]="item.value"> {{item.label}} </option>
-
-        }
-      </select>
+    <div *ngIf="selectedDateType === 'dateInformation'" class="mb-3">
+      <label for="dateInformation" class="form-label">Date d'information</label>
+      <input type="date" class="form-control" id="dateInformation" [(ngModel)]="justification.dateInformation">
     </div>
 
-    <div class="mb-3">
-      <label for="type" class="form-label">Type d'aboutissement</label>
-      <select class="form-select" id="type" [(ngModel)]="justification.type">
-        <option *ngFor="let type of justificationTypes" [value]="type">{{ type }}</option>
+    <div *ngIf="selectedDateType === 'dateConvocation'" class="mb-3">
+      <label for="dateConvocation" class="form-label">Date de convocation</label>
+      <input type="date" class="form-control" id="dateConvocation" [(ngModel)]="justification.dateConvocation">
+    </div>
+
+    <div *ngIf="justification.type === 'Jugee'" class="mb-3">
+      <label for="nature" class="form-label">Nature de jugement</label>
+      <select class="form-select" id="nature" [(ngModel)]="justification.natureJugement">
+        <option *ngFor="let item of natureJugement" [value]="item.value">{{ item.label }}</option>
       </select>
     </div>
 
     <div class="mb-3" *ngIf="justification.type === 'Jugee'">
       <label for="copieJugement" class="form-label">Copie de Jugement</label>
       <input type="file" class="form-control" id="copieJugement" (change)="onFileChangeJugement($event)">
-
     </div>
 
     <div *ngIf="selectedJugement && justification.type === 'Jugee'">
       <p>Fichier sélectionné: {{ selectedJugement.name }}</p>
     </div>
 
-    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+    <div *ngIf="justification.type === 'Jugee'" class="mb-3">
       <label for="situationClient" class="form-label">Situation du Client</label>
       <select class="form-select" id="situationClient" [(ngModel)]="justification.situationClient">
         <option *ngFor="let status of situationClientOptions" [value]="status">{{ status }}</option>
       </select>
     </div>
 
-    <div class="mb-3" *ngIf="justification.type === 'Jugee'">
+    <div *ngIf="justification.type === 'Jugee'" class="mb-3">
       <label for="avocatAssocie" class="form-label">Avocat Associé</label>
       <input type="text" class="form-control" id="avocatAssocie" [(ngModel)]="justification.avocatAssocie">
     </div>

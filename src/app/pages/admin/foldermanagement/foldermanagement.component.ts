@@ -45,15 +45,35 @@ export class FoldermanagementComponent implements OnInit {
   selectedClient : any ;
   adminId: any;
   users: any[] = [];
-
-
+  page: number = 1;
+  limit: number = 3;
+  search: string = '';
+  status: string = '';
+  isRectified: boolean | undefined;
+  isExecuted: boolean | undefined;
+  errorMessage: string = '';
+  totalFolders: number = 0;  
   selectedFolderName: any
-
+  totalPages: number = 0;  
   onFolderSelected(folder: string) {
     this.selectedFolderName = folder;
   }
 
+  // Navigate to the next page
+  nextPage() {
+    if (this.page * this.limit < this.totalFolders) {
+      this.page++;
+      this.getFoldersByAdmin();
+    }
+  }
 
+  // Navigate to the previous page
+  previousPage() {
+    if (this.page > 1) {
+      this.page--;
+      this.getFoldersByAdmin();
+    }
+  }
 
 
 
@@ -92,14 +112,16 @@ export class FoldermanagementComponent implements OnInit {
       this._cabinetService.getCabinet(this.adminId).subscribe({ 
         next:(value)=>{
           this.sousAdmins = value.sousAdmins
+          
         },error:(err)=>{ 
            console.log(err)
         }
     })
+    this.getFoldersByAdmin();
+
     }
-    this.getFolderByAdmin();
-   
  
+  
     this.initializeForms();
     this.modal = new window.bootstrap.Modal(
       document.getElementById('addAffaireModal')
@@ -186,20 +208,101 @@ openFolderById(folderId: any) {
     console.error('Folder not found for ID:', folderId);
   }
 }
+searchNumber: any ;
+searchTitle: string =''
+clientId:any 
 
+getFoldersByAdmin(): void {
+  this._folderService.getFolderByAdminId(
+ this.currentUser._id,
+     this.page,
+    this.limit,
+    this.searchNumber,     
+    this.searchTitle,     
+    this.clientId,  
+    this.isRectified,
+    this.isExecuted
+  ).subscribe({
+    next: (response: any) => {
+      this.dossiers = response.folders;
+      this.totalFolders = response.totalItems;  
+      this.totalPages = Math.ceil(this.totalFolders / this.limit); 
+    },
+    error: (error) => {
+      this.errorMessage = 'Error fetching folders';
+      console.error(error);  
+    },
+    complete:()=>{
+      this.isLoading = false;  
 
-  getFolderByAdmin() {
-    this._folderService.getFolderByAdminId(this.adminId).subscribe({
-      next: (folders) => {
-        this.dossiers = folders;
-        this.checkQueryParams();
+    }
+  });
+}
+isLoading: boolean = false;  
+searchByTitle() {
+  this.isLoading = true;
 
-       },
-      error: (err) => {
-        console.error(err);
-      },
-    });
+ setTimeout(() => {
+  this.getFoldersByAdmin();
+
+ }, 1000);
+}
+
+searchByNumber() {
+  this.isLoading = true;
+  setTimeout(() => {
+    this.getFoldersByAdmin();
+  
+   }, 1000);
+}
+
+searchByStatus() {
+  this.isLoading = true;
+  if(this.status== 'executed' ) {
+     this.isExecuted = true
+     setTimeout(() => {
+      this.getFoldersByAdmin();
+    
+     }, 1000);
+  }else if(this.status== 'rectified' ){ 
+    this.isRectified = true
+
+    setTimeout(() => {
+      this.getFoldersByAdmin();
+    
+     }, 1000);
+  }else{ 
+    this.isRectified = false
+    this.isExecuted = false
+
+    setTimeout(() => {
+      this.getFoldersByAdmin();
+    
+     }, 1000);
   }
+}
+ 
+
+
+
+searchByClient() {
+  this.isLoading = true;
+  setTimeout(() => {
+    this.getFoldersByAdmin();
+  
+   }, 1000);
+}
+isCurrentPage(page: number): boolean {
+  return this.page === page;
+}
+
+goToPage(page: number) {
+  if (page >= 1 && page <= this.totalPages) {
+    this.page = page;
+    this.getFoldersByAdmin();
+  }
+}
+
   checkQueryParams() {
     this.route.queryParams.subscribe((params: any) => {
         if (params.folderId) {
@@ -308,7 +411,11 @@ openFolderById(folderId: any) {
   }
 
 
-
+  takeAdminToClient(){
+    this.modal.hide();
+    
+    this.router.navigateByUrl('/administrator/users')
+  }
 
 
 
