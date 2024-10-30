@@ -17,7 +17,7 @@
     </ng-template>
   </div>
 
-  <div class="search-filters mt-4">
+  <div class="search-filters mt-4" *ngIf="!selectedFolder"  >
     <div class="row">
       <div class="col-md-3">
         <input type="text" class="form-control" placeholder="Search By Title" (input)="searchByTitle()" [(ngModel)]="searchTitle">

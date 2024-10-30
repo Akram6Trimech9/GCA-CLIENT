@@ -283,6 +283,7 @@ export class AffairesComponent implements OnInit {
   updateAffaire() {
     if (this.affaireForm.valid && this.affaireToEdit) {
       const updatedAffaire = { ...this.affaireToEdit, ...this.affaireForm.value };
+      console.log(updatedAffaire)
 
       this.affaireService.updateAffaire(updatedAffaire._id, updatedAffaire).subscribe({
         next: () => {
