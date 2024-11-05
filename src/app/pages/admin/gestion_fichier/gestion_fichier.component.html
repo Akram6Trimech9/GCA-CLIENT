@@ -1,0 +1,86 @@
+<div class="file-manager container-fluid mt-4">
+  <div class="header">
+    <span class="text-white">Gestion des fichiers</span>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar d-flex align-items-center justify-content-start">
+    <button class="btn btn-icon" ngbTooltip="Créer un dossier" (click)="createFolder()">
+      <i class="fas fa-folder-plus"></i>
+    </button>
+    <button class="btn btn-icon" ngbTooltip="Télécharger un fichier" (click)="uploadFile()">
+      <i class="fas fa-upload"></i>
+    </button>
+    <button [disabled]="!selectedFolder && !selectedFile" class="btn btn-icon" ngbTooltip="Supprimer" (click)="deleteItem()">
+      <i class="fas fa-trash"></i>
+    </button>
+    <button [disabled]="!selectedFolder && !selectedFile " class="btn btn-icon" ngbTooltip="Transférer un fichier/dossier">
+      <i class="fas fa-exchange-alt"></i>
+    </button>
+  </div>
+
+  <!-- Loader Spinner -->
+  <div *ngIf="loading" class="text-center mt-3">
+    <div class="spinner-border text-primary" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Root Folders and Files -->
+  <div *ngIf="!loading" class="folders mt-3">
+    <ul class="list-unstyled">
+      <!-- Root Folders -->
+      <li *ngFor="let folder of rootFolders">
+        <div class="folder" [class.selected]="folder === selectedFolder" (click)="openFolder(folder)">
+          <i class="fas fa-folder"></i>
+          {{ folder.name }}
+        </div>
+
+        <ul *ngIf="folder.open" class="ml-4">
+          <li *ngFor="let file of folder.files">
+            <div class="file" 
+                 [class.selected]="file === selectedFile" 
+                 (click)="selectFile(file)" 
+                 (dblclick)="openFile(file)">
+              <i class="fas fa-file"></i>
+              {{ file.name }}
+            </div>
+          </li>
+
+          <ng-container *ngTemplateOutlet="recursiveFolders; context: { $implicit: folder.subFolders }"></ng-container>
+        </ul>
+      </li>
+
+      <!-- Root Files -->
+      <li *ngFor="let file of rootFiles">
+        <div class="file" 
+             [class.selected]="file === selectedFile" 
+             (click)="selectFile(file)" 
+             (dblclick)="openFile(file)">
+          <i class="fas fa-file"></i>
+          {{ file.name }}
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <ng-template #recursiveFolders let-subFolders>
+    <li *ngFor="let subFolder of subFolders">
+      <div class="folder" [class.selected]="subFolder === selectedFolder" (click)="openFolder(subFolder)">
+        <i class="fas fa-folder"></i>
+        {{ subFolder.name }}
+      </div>
+
+      <ul *ngIf="subFolder.open" class="ml-4">
+        <ng-container *ngTemplateOutlet="recursiveFolders; context: { $implicit: subFolder.subFolders }"></ng-container>
+
+        <li *ngFor="let file of subFolder.files">
+          <div class="file" [class.selected]="file === selectedFile" (click)="openFile(file)">
+            <i class="fas fa-file"></i>
+            {{ file.name }}
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ng-template>
+</div>

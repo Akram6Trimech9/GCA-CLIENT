@@ -111,7 +111,8 @@ export class AffairesComponent implements OnInit {
       opposite: ['', Validators.required],
       statusClient: [''] , 
       dateDemande: [''],
- 
+      dateInformation:[''],
+      dateConvocation:[''],
     });
     this.modal = new window.bootstrap.Modal(
       document.getElementById('addAffaireModal')
@@ -174,9 +175,28 @@ export class AffairesComponent implements OnInit {
 
   editAffaire(affaire: any) {
     this.affaireToEdit = affaire;
-    this.affaireForm.patchValue(affaire);
+  
+    console.log(affaire,"okkk")
+    // Convert date fields to 'yyyy-MM-dd' format for date inputs
+    const patchedAffaire = {
+      ...affaire,
+      dateDemande: affaire.dateDemande ? this.formatDate(affaire.dateDemande) : '',
+      dateInformation: affaire.dateInformation ? this.formatDate(affaire.dateInformation) : '',
+      dateConvocation: affaire.dateConvocation ? this.formatDate(affaire.dateConvocation) : ''
+    };
+      this.affaireForm.patchValue(patchedAffaire);
     this.modal.show();
   }
+  
+  formatDate(date: string): string {
+    const d = new Date(date);
+    const month = '' + (d.getMonth() + 1);
+    const day = '' + d.getDate();
+    const year = d.getFullYear();
+  
+    return [year, (month.length < 2 ? '0' : '') + month, (day.length < 2 ? '0' : '') + day].join('-');
+  }
+  
   cancelEdit() {
     this.affaireForm.reset();
     this.affaireToEdit = null;
@@ -192,9 +212,19 @@ export class AffairesComponent implements OnInit {
     });
   }
   aboutissementId: any;
-  openAboutissement(id: any) {
-    this.aboutissementId = id
-    this.modalService.open(this.aboutissement);
+  openAboutissement(aboutissement: any) {
+    this.aboutissementId = aboutissement._id
+    console.log(aboutissement,"aboutiissement")
+    this.justification.avocatAssocie = aboutissement.avocatAssocie
+    this.justification.type = aboutissement.type
+
+    this.justification.dateInformation = aboutissement.dateInformation ? this.formatDate(aboutissement.dateInformation) : ''
+     this.justification.natureJugement = aboutissement?.natureJugement
+    this.justification.situationClient = aboutissement?.situationClient
+    this.justification.date = aboutissement.date ? this.formatDate(aboutissement.date) : ''
+
+ 
+     this.modalService.open(this.aboutissement);
   }
   pdfJugement: any
   openPdf(url: string) {
@@ -203,10 +233,9 @@ export class AffairesComponent implements OnInit {
   }
   justification = {
     type: '',
-    date: null,
-    dateInformation: null,
-    dateConvocation: null,
-    natureJugement: '',
+    date: '',
+    dateInformation: '',
+     natureJugement: '',
     situationClient: '',
     avocatAssocie: '',
   };
@@ -237,6 +266,12 @@ export class AffairesComponent implements OnInit {
 
       this._justificationService.updateJustification(this.aboutissementId, record).subscribe({
         next: (value) => {
+
+          this.affaires.forEach(item => { 
+            if(item.aboutissement._id === this.aboutissementId) {
+                item.aboutissement = value;  
+            }
+        });
           this.toastr.success('Modification réussie');
           this.modalService.dismissAll();
         },
@@ -256,8 +291,13 @@ export class AffairesComponent implements OnInit {
       if (this.selectedJugement) {
         formData.append('file', this.selectedJugement);
       }
-      if (this.justification.situationClient) {
-        formData.append('situationClient', this.justification.situationClient);
+ 
+      if (this.justification.natureJugement) {
+        formData.append('natureJugement', this.justification.natureJugement);
+      }
+
+      if (this.justification.dateInformation) {
+        formData.append('dateInformation', this.justification.dateInformation);
       }
       if (this.justification.avocatAssocie) {
         formData.append('avocatAssocie', this.justification.avocatAssocie);
@@ -265,9 +305,16 @@ export class AffairesComponent implements OnInit {
 
       this._justificationService.updateJustification(this.aboutissementId, formData).subscribe({
         next: (value) => {
+
           this.toastr.success('Modification réussie');
           this.modalService.dismissAll();
-          console.log(value);
+           this.affaires.forEach(item => { 
+            this.affaires.forEach(item => { 
+              if(item.aboutissement._id === this.aboutissementId) {
+                  item.aboutissement = value;  
+              }
+          });
+         })
         },
         error: (err) => {
           this.toastr.error('Erreur lors de la modification');
@@ -282,25 +329,47 @@ export class AffairesComponent implements OnInit {
 
   updateAffaire() {
     if (this.affaireForm.valid && this.affaireToEdit) {
-      const updatedAffaire = { ...this.affaireToEdit, ...this.affaireForm.value };
-      console.log(updatedAffaire)
-
-      this.affaireService.updateAffaire(updatedAffaire._id, updatedAffaire).subscribe({
+      // Merge form values with the original affaire
+      const updatedAffaire = {
+        ...this.affaireToEdit,
+        ...this.affaireForm.value,
+        statusClient: this.affaireForm.value.statusClient || this.affaireToEdit.statusClient, // keep original if not updated
+        dateDemande: this.affaireForm.value.dateDemande ? new Date(this.affaireForm.value.dateDemande).toISOString() : this.affaireToEdit.dateDemande, // format or keep original
+        dateInformation: this.affaireForm.value.dateInformation ? new Date(this.affaireForm.value.dateInformation).toISOString() : this.affaireToEdit.dateInformation,
+        dateConvocation: this.affaireForm.value.dateConvocation ? new Date(this.affaireForm.value.dateConvocation).toISOString() : this.affaireToEdit.dateConvocation,
+      };
+  
+      // Log to check the updatedAffaire before sending
+      console.log('Updated Affaire:', updatedAffaire);
+  
+      // Create FormData if there's a file (for multipart form submission)
+      const formData = new FormData();
+      formData.append('affaire', JSON.stringify(updatedAffaire)); // Append affaire data as a JSON string
+      if (this.selectedFiles) {
+        formData.append('file', this.selectedFiles); // Append the selected file if any
+      }
+  
+      // Send the update request (assuming your service can handle FormData)
+      this.affaireService.updateAffaire(updatedAffaire._id, formData).subscribe({
         next: () => {
-          const index = this.affaires.findIndex((aff) => aff.id === updatedAffaire.id);
-          if (index !== -1) this.affaires[index] = updatedAffaire;
-
+          // Update the local affaires array
+          const index = this.affaires.findIndex((aff) => aff._id === updatedAffaire._id); // Make sure you're checking by _id
+          if (index !== -1) {
+            this.affaires[index] = updatedAffaire;
+          }
+  
+          // Close the modal and reset the form
           this.modal.hide();
           this.resetAffaireForm();
           this.affaireToEdit = null;
         },
         error: (err) => {
-          console.error(err);
+          console.error('Error updating affaire:', err);
         }
       });
     }
   }
-
+  
   addNewAffaire() {
     if (this.affaireForm.valid && this.selectedFolder) {
       const formData = new FormData();
@@ -315,6 +384,12 @@ export class AffairesComponent implements OnInit {
       
       if (this.affaireForm.value.dateDemande) {
         formData.append('dateDemande', this.affaireForm.value.dateDemande);
+      }
+      if (this.affaireForm.value.dateConvocation) {
+        formData.append('dateConvocation', this.affaireForm.value.dateConvocation);
+      }
+      if (this.affaireForm.value.dateInformation) {
+        formData.append('dateInformation', this.affaireForm.value.dateInformation);
       }
       
       if (this.selectedFiles) {

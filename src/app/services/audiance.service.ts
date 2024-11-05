@@ -21,7 +21,7 @@ export class AudianceService {
     return this.http.get<IAudiance[]>(url);
   }
 
-   addAudience(audience: any , adminID :Number | undefined, affaireId:Number): Observable<any> {
+   addAudience(audience: any , adminID :string | undefined, affaireId:Number): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/${adminID}/${affaireId}`, audience);
   }
 

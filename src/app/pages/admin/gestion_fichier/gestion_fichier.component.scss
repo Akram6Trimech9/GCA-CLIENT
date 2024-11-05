@@ -1,0 +1,98 @@
+.file-manager {
+  background-color: #232c38;  /* Dark background */
+  padding: 20px;
+  border-radius: 8px;
+  color: #ffffff; /* White text color */
+
+  h1 {
+    color: #ffd146; /* Yellow heading */
+  }
+
+  /* Toolbar Styling */
+  .toolbar {
+    margin-bottom: 20px;
+
+    .btn-icon {
+      background-color: transparent;
+      color: #ffd146; /* Yellow icons */
+      border: none;
+      margin-right: 10px;
+      font-size: 24px;
+
+      &:hover {
+        color: #ffffff;
+        background-color: #232c38;
+      }
+
+      i {
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Tooltip Styling */
+    [data-bs-toggle="tooltip"] {
+      &:hover {
+        color: #ffffff;
+      }
+    }
+  }
+
+  .folders {
+    list-style-type: none;
+    padding-left: 0;
+
+    .folder, .file {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background-color: #3a3f47;
+      margin-bottom: 5px;
+      cursor: pointer;
+      border-radius: 4px;
+      color: #ffffff;
+
+      i {
+        font-size: 20px;
+        margin-right: 10px;
+      }
+    }
+
+    .folder {
+      background-color: #3a3f47;  /* Folder background */
+
+      &:hover {
+        background-color: #ffd146; /* Hover color */
+        color: #232c38;  /* Text color on hover */
+      }
+    }
+
+    .file {
+      padding-left: 30px;
+      background-color: #2f343a;
+      border: 1px solid #3a3f47;
+      border-radius: 4px;
+
+      &:hover {
+        background-color: #ffd146;
+        color: #232c38;
+      }
+    }
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  background-color: #313e4f;  
+  color: #ffd146; 
+  padding: 15px;
+  border-radius: 8px;
+}
+.selected {
+  background-color: #ffd146 !important; /* Yellow background for selected items */
+  color: #232c38 !important; /* Dark text on selected */
+}
+ 

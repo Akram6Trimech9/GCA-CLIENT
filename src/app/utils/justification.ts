@@ -1,7 +1,4 @@
  export const AffaireStatus = {
-    JugementPrimaire: 'Jugement Primaire',
-    JugementAppel: 'Jugement Appel',
-    JugementPrononce: 'Jugement Prononcé',
     Jugee: 'Jugee',
     NonJugee: 'Non Jugee',
     EnAttente: 'En Attente',

@@ -27,7 +27,7 @@ export class TopHeaderComponent implements OnInit {
   availabilities: any[] = [];
   selectedAdminId!: number;
   selectedAvailabilityId!: number;
-  clientId!: Number | undefined; 
+  clientId!: string | undefined; 
   reservationTime!: string;
   successMessage!: string;
   currentUser!:IUser | null

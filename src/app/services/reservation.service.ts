@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
 export class ReservationService {
   constructor(private http: HttpClient) { }
 
-  createReservation(clientId: Number | undefined, availabilityId: number, reservationTime: string,avocatId:String ): Observable<any> {
+  createReservation(clientId: string | undefined, availabilityId: number, reservationTime: string,avocatId:String ): Observable<any> {
     return this.http.post<any>(`${environment.baseurl}/rdvs/${clientId}/${avocatId}`,{reservationTime:reservationTime,displonibilty:availabilityId});
   }
 

@@ -1,0 +1,72 @@
+.pdf-container {
+  width: 100%;  /* Full width */
+  height: 500px; /* Default height */
+  display: flex; /* Use flexbox */
+  justify-content: center; /* Center align the content */
+  align-items: center; /* Center vertically */
+}
+
+@media (max-width: 768px) {
+  .pdf-container {
+    height: 400px; /* Reduced height for smaller screens */
+  }
+}
+
+@media (max-width: 576px) {
+  .pdf-container {
+    height: 300px; /* Further reduced height for extra small screens */
+  }
+}
+
+/* Additional styles for modal */
+.modal-header {
+  background-color: #232c38; /* Dark gray background */
+  color: white; /* White text */
+}
+
+.modal-title {
+  font-size: 1.5rem; /* Larger title */
+  font-weight: bold; /* Bold title */
+}
+
+.close {
+  color: white; /* Close button color */
+  opacity: 0.8; /* Slight transparency */
+}
+
+.close:hover {
+  opacity: 1; /* Full opacity on hover */
+}
+
+.modal-body {
+  padding: 1.5rem; /* More padding */
+  border-radius: 0.5rem; /* Rounded corners */
+}
+
+.form-control {
+  border-radius: 0.5rem; /* Rounded corners */
+}
+
+.modal-footer {
+  background-color: #232c38; /* Dark gray background */
+}
+
+.btn-secondary {
+  background-color: #ffd146; /* Yellow button */
+  border: none; /* Remove border */
+  color: #232c38; /* Dark text */
+}
+
+.btn-secondary:hover {
+  background-color: #e6b733; /* Darker yellow on hover */
+}
+
+.btn-primary {
+  background-color: #232c38; /* Dark gray button */
+  border: 1px solid #ffd146; /* Yellow border */
+  color: white; /* White text */
+}
+
+.btn-primary:hover {
+  background-color: #1c2027; /* Darker gray on hover */
+}

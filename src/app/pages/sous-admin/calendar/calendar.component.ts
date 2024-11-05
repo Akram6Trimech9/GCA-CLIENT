@@ -51,7 +51,7 @@ export class CalendarComponent  implements OnInit {
       availabilityDetails: ['', Validators.required],
     });
   }
-  adminId !:Number
+  adminId !:string
   ngOnInit(): void {
   
     this.currentUser = this._authService.getCurrentUser()  

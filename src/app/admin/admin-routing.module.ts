@@ -13,6 +13,7 @@ import { CompteGuestComponent } from '../pages/admin/compte-guest/compte-guest.c
 import { AffairesSingleComponentComponent } from '../pages/admin/affaires-single-component/affaires-single-component.component';
  import { PocesSingleComponent } from '../pages/admin/poces-single/poces-single.component';
 import { ClientListComponent } from '../pages/admin/client-list/client-list.component';
+import { GestionFichierComponent } from '../pages/admin/gestion_fichier/gestion_fichier.component';
 
 const routes: Routes = [
  
@@ -67,8 +68,11 @@ const routes: Routes = [
 {
   path:'users',
   component:ClientListComponent
+} , 
+{
+  path:'filemanager',
+  component:GestionFichierComponent
 }
-
 
 // 
 ];

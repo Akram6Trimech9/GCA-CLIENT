@@ -1,0 +1,65 @@
+<div class="upload-modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Upload PDF or Image Files</h2>
+      <button type="button" class="close" aria-label="Close" (click)="closeModal()">&times;</button>
+    </div>
+  
+    <div class="modal-body">
+      <div *ngIf="loading" class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+      </div>
+      <div *ngIf="!loading">
+        <div 
+          class="drag-drop-area"
+          (dragover)="onDragOver($event)" 
+          (dragleave)="onDragLeave($event)" 
+          (drop)="onDrop($event)"
+          [class.dragging]="isDragging"
+        >
+          <p *ngIf="!selectedFiles.length">Drag and drop PDF or image files here</p>
+          <p *ngIf="selectedFiles.length">Selected files: {{ selectedFileNames }}</p>
+          <p>or</p>
+          <button (click)="fileInput.click()" class="btn btn-primary">Browse Files</button>
+        </div>
+  
+        <input 
+          type="file" 
+          #fileInput 
+          multiple 
+          accept=".pdf, image/*" 
+          (change)="onFileSelected($event)" 
+          hidden
+        />
+  
+        <div *ngIf="invalidFiles.length" class="invalid-files">
+          <p>Invalid files:</p>
+          <ul>
+            <li *ngFor="let file of invalidFiles">{{ file.name }} - Unsupported file type</li>
+          </ul>
+        </div>
+  
+        <button 
+          [disabled]="!selectedFiles.length" 
+          class="btn btn-danger mt-3" 
+          (click)="clearFiles()"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+  
+    <div class="modal-footer">
+      <button 
+        [disabled]="!selectedFiles.length || loading" 
+        class="btn btn-primary mt-3" 
+        (click)="uploadFiles()"
+      >
+        Upload Files
+      </button>
+  
+      <button type="button" class="btn btn-secondary mt-3" (click)="activeModal.dismiss()">Cancel</button>
+    </div>
+  </div>
+  

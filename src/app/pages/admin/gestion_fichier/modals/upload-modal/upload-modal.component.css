@@ -1,0 +1,103 @@
+/* Modal header */
+.modal-header {
+  background-color: #232c38; /* Dark gray background */
+  color: white; /* White text */
+  padding: 1rem;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Modal title */
+.modal-title {
+  font-size: 1.5rem; /* Larger title */
+  font-weight: bold; /* Bold title */
+}
+
+/* Close button */
+.close {
+  color: white; /* Close button color */
+  opacity: 0.8; /* Slight transparency */
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.close:hover {
+  opacity: 1; /* Full opacity on hover */
+}
+
+/* Modal body */
+.modal-body {
+  padding: 1.5rem; /* More padding */
+  border-radius: 0.5rem; /* Rounded corners */
+  background-color: #f4f4f4;
+}
+
+/* Drag-and-drop area */
+.drag-drop-area {
+  border: 2px dashed #232c38;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  color: #232c38;
+  background-color: #fff;
+  margin-bottom: 1rem;
+}
+
+.drag-drop-area.dragging {
+  background-color: #e0e0e0;
+}
+
+.invalid-files {
+  color: red;
+}
+
+/* Modal footer */
+.modal-footer {
+  background-color: #232c38; /* Dark gray background */
+  padding: 1rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  text-align: right;
+}
+
+/* Buttons */
+.btn-primary {
+  background-color: #232c38; /* Dark gray button */
+  border: 1px solid #ffd146; /* Yellow border */
+  color: white; /* White text */
+}
+
+.btn-primary:hover {
+  background-color: #1c2027; /* Darker gray on hover */
+}
+
+.btn-secondary {
+  background-color: #ffd146; /* Yellow button */
+  border: none; /* Remove border */
+  color: #232c38; /* Dark text */
+}
+
+.btn-secondary:hover {
+  background-color: #e6b733; /* Darker yellow on hover */
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}

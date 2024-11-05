@@ -30,7 +30,7 @@
         <td style="cursor: pointer;"> <i class="fas fa-coins"
             (click)="openHonorairesModal(selectedFolder.client,affaire)"></i> </td>
         <td><span (click)="openDetailsJugement(affaire.aboutissement)"> <i class="bi bi-flag mr-1"></i> </span> <span
-            class="ml-1" (click)="openAboutissement(affaire.aboutissement._id)"  > <i class="bi bi-pen "
+            class="ml-1" (click)="openAboutissement(affaire.aboutissement)"  > <i class="bi bi-pen "
               style="cursor: pointer;"></i> </span></td>
         <td style="cursor: pointer;" [routerLink]="['/administrator/audiance', affaire._id]">
           <i class="bi bi-eye"></i>
@@ -132,31 +132,18 @@
       </select>
     </div>
 
-    <div *ngIf="justification.type === 'Jugee'" class="mb-3">
-      <label for="dateChoice" class="form-label">Choisissez le type de date</label>
-      <select class="form-select" id="dateChoice" [(ngModel)]="selectedDateType" (change)="onDateTypeChange()">
-        <option value="">Sélectionnez une option</option>
-        <option value="date">Date de jugement</option>
-        <option value="dateInformation">Date d'information</option>
-        <option value="dateConvocation">Date de convocation</option>
-      </select>
-    </div>
-
-    <div *ngIf="selectedDateType === 'date'" class="mb-3">
+ 
+    <div  *ngIf="justification.type === 'Jugee'"  class="mb-3">
       <label for="date" class="form-label">Date de jugement</label>
       <input type="date" class="form-control" id="date" [(ngModel)]="justification.date">
     </div>
 
-    <div *ngIf="selectedDateType === 'dateInformation'" class="mb-3">
+    <div   *ngIf="justification.type === 'Jugee'"   class="mb-3">
       <label for="dateInformation" class="form-label">Date d'information</label>
       <input type="date" class="form-control" id="dateInformation" [(ngModel)]="justification.dateInformation">
     </div>
 
-    <div *ngIf="selectedDateType === 'dateConvocation'" class="mb-3">
-      <label for="dateConvocation" class="form-label">Date de convocation</label>
-      <input type="date" class="form-control" id="dateConvocation" [(ngModel)]="justification.dateConvocation">
-    </div>
-
+  
     <div *ngIf="justification.type === 'Jugee'" class="mb-3">
       <label for="nature" class="form-label">Nature de jugement</label>
       <select class="form-select" id="nature" [(ngModel)]="justification.natureJugement">
@@ -234,7 +221,8 @@
           <div class="form-group"  >
             <label for="natureAffaire">Nature de l'Affaire</label>
             <select formControlName="natureAffaire" class="form-control">
-              <option *ngFor="let option of natureAffaireOption" [value]="option.value">
+              <option value="">Choisissez une nature</option>
+               <option *ngFor="let option of natureAffaireOption" [value]="option.value">
                 {{ option.label }}
               </option>
             </select>
@@ -279,6 +267,18 @@
             <input type="date" class="form-control" id="dateDemande" formControlName="dateDemande">
 
           </div>
+          <div class="form-group"
+            *ngIf="affaireForm.get('category')?.value==='pénale'  ">
+            <label for="dateConvocation"> Date de convocation</label>
+            <input type="date" class="form-control" id="dateConvocation" formControlName="dateConvocation">
+
+          </div>
+          <div class="form-group"
+          *ngIf="affaireForm.get('category')?.value==='pénale'  ">
+          <label for="dateInformation">  Date de l'information  </label>
+          <input type="date" class="form-control" id="dateInformation" formControlName="dateInformation">
+
+        </div>
           <div class="form-group">
             <label for="files">Ajouter des fichiers</label>
             <input type="file" class="form-control" id="files" (change)="onFileChange($event)" multiple>
