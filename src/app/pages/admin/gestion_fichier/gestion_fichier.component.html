@@ -14,7 +14,7 @@
     <button [disabled]="!selectedFolder && !selectedFile" class="btn btn-icon" ngbTooltip="Supprimer" (click)="deleteItem()">
       <i class="fas fa-trash"></i>
     </button>
-    <button [disabled]="!selectedFolder && !selectedFile " class="btn btn-icon" ngbTooltip="Transférer un fichier/dossier">
+    <button [disabled]="!selectedFolder && !selectedFile " class="btn btn-icon" ngbTooltip="Transférer un fichier/dossier" (click)="transfert()" >
       <i class="fas fa-exchange-alt"></i>
     </button>
   </div>

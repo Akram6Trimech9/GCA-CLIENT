@@ -9,13 +9,13 @@ import { File } from '../core/models/file';
   providedIn: 'root'
 })
 export class FileService {
-  private baseUrl = `${environment.baseurl}/file` ; 
+  private baseUrl = `${environment.baseurl}/file`;
 
-  constructor(private _http : HttpClient) { }
+  constructor(private _http: HttpClient) { }
 
 
-  createFolder(folder : any) :Observable<GsFolder>{
-      return this._http.post<GsFolder>(`${this.baseUrl}/folders`,folder)
+  createFolder(folder: any): Observable<GsFolder> {
+    return this._http.post<GsFolder>(`${this.baseUrl}/folders`, folder)
   }
 
   getAllRoot(userId: string): Observable<{ folders: GsFolder[], files: File[] }> {
@@ -23,14 +23,27 @@ export class FileService {
   }
 
 
-  createFile(formdata : FormData) :Observable<GsFolder>{
-    return this._http.post<GsFolder>(`${this.baseUrl}/files`,formdata)
-}
+  createFile(formdata: FormData): Observable<GsFolder> {
+    return this._http.post<GsFolder>(`${this.baseUrl}/files`, formdata)
+  }
 
-getSubFolderAndSubFiles(folderId:any): Observable<{ folders: GsFolder[], files: File[] }>{
-  return this._http.get<{ folders: GsFolder[], files: File[] }>(`${this.baseUrl}/folder-items/${folderId}`);
+  getSubFolderAndSubFiles(folderId: any): Observable<{ folders: GsFolder[], files: File[] }> {
+    return this._http.get<{ folders: GsFolder[], files: File[] }>(`${this.baseUrl}/folder-items/${folderId}`);
 
-}
+  }
 
- 
+  transfertFolder(record: any): Observable<any> {
+    return this._http.post<any>(`${this.baseUrl}/folders/transfer`, record)
+  }
+  transfertFile(record: any): Observable<any> {
+    return this._http.post<any>(`${this.baseUrl}/files/transfer`, record)
+  }
+   deleteFolder(folderId: string): Observable<any> {
+    return this._http.delete<any>(`${this.baseUrl}/folders/${folderId}`);
+  }
+
+   deleteFile(fileId: string): Observable<any> {
+    return this._http.delete<any>(`${this.baseUrl}/files/${fileId}`);
+  }
+
 }

@@ -9,6 +9,8 @@ import { FileService } from '../../../services/file.service';
 import { UploadModalComponent } from './modals/upload-modal/upload-modal.component';
 import { PdfReaderComponent } from './modals/pdfReader/pdfReader.component';
 import { ImageReaderComponent } from './modals/imageReader/imageReader.component';
+import { TransfertFolderComponent } from './modals/transfert-folder/transfert-folder.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-gestion-fichier',
@@ -31,7 +33,8 @@ export class GestionFichierComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private _fileService: FileService,
     private modalService: NgbModal,
-    private _userService: AuthService
+    private _userService: AuthService,
+    private toastr: ToastrService 
   ) {}
 
   ngOnInit(): void {
@@ -149,57 +152,66 @@ export class GestionFichierComponent implements OnInit {
     
     modalRef.componentInstance.parentFolder = this.selectedFolder ? this.selectedFolder : null;
     modalRef.componentInstance.createdBy = this.currentUser;
-  
+
     modalRef.result.then((uploadedFiles: File[]) => {
       if (uploadedFiles && uploadedFiles.length > 0) {
-        console.log('Files uploaded:', uploadedFiles);
-        // Add the uploaded files to the selected folder or root files
+        console.log('Fichiers téléchargés :', uploadedFiles);
         if (this.selectedFolder) {
           this.selectedFolder.files = this.selectedFolder.files || [];
-          this.selectedFolder.files.push(...uploadedFiles); // Append uploaded files to the folder
+          this.selectedFolder.files.push(...uploadedFiles);
         } else {
-          this.rootFiles.push(...uploadedFiles); // Append uploaded files to the root
+          this.rootFiles.push(...uploadedFiles);
         }
-        this.cdr.markForCheck(); // Trigger change detection
+        this.toastr.success('Les fichiers ont été téléchargés avec succès !', 'Succès'); // Notification succès
+        this.cdr.markForCheck();
       }
     }).catch((error) => {
-      console.error('Modal dismissed', error);
+      console.error('Modal fermée avec erreur', error);
+      this.toastr.error('Échec du téléchargement des fichiers !', 'Erreur'); // Notification erreur
     });
   }
   
-  /**
-   * Deletes the selected item (folder or file).
-   */
+ 
   deleteItem(): void {
-    if (this.selectedFolder) {
-      // Delete the selected folder
-      if (this.selectedFolder.subFolders) {
-        // If deleting a subfolder from within a folder
+    if (this.selectedFolder &&  this.selectedFolder?._id) {
+      this._fileService.deleteFolder(this.selectedFolder?._id).subscribe({
+          next:(value)=>{
+        this.toastr.success('Le dossier a été supprimé avec succès !', 'Succès'); 
+             
+          },error:(err)=>{
+            this.toastr.error( err, 'erreur'); 
+
+          }
+
+      })
+       if (this.selectedFolder.subFolders) {
+        
         this.selectedFolder.subFolders = this.selectedFolder.subFolders.filter(subFolder => subFolder !== this.selectedFolder);
+        this.toastr.success('Le dossier a été supprimé avec succès !', 'Succès'); 
       } else {
-        // If deleting from the root folder list
         this.rootFolders = this.rootFolders.filter(folder => folder !== this.selectedFolder);
+        this.toastr.success('Le dossier a été supprimé avec succès !', 'Succès'); 
       }
-      
-      // Clear the selection after deletion
-      this.selectedFolder = null;
-    } else if (this.selectedFile) {
-      // Delete the selected file
-      if (this.selectedFolder) {
-        // If the file is inside a selected folder
-        // this.selectedFolder.files = this.selectedFolder.files?.filter(file => file !== this.selectedFile) || [];
-      } else {
-        // If the file is in the root file list
-        this.rootFiles = this.rootFiles.filter(file => file !== this.selectedFile);
-      }
-  
-      // Clear the selection after deletion
+   
+
+    } else if (this.selectedFile &&  this.selectedFile?._id) {
+      this._fileService.deleteFile(this.selectedFile?._id).subscribe({
+        next:(value)=>{
+          this.toastr.success('Le fichier a été supprimé avec succès !', 'Succès'); 
+           
+        },error:(err)=>{
+          this.toastr.error( err, 'erreur'); 
+
+        }
+
+    })
+       this.rootFiles = this.rootFiles.filter(file => file !== this.selectedFile);
+      this.toastr.success('Le fichier a été supprimé avec succès !', 'Succès'); 
       this.selectedFile = null;
     }
-  
-    // Trigger change detection
     this.cdr.markForCheck();
   }
+
     getSelectedFolderIndex(): number | null {
     return this.rootFolders.length > 0 ? 0 : null;
   }
@@ -216,4 +228,34 @@ export class GestionFichierComponent implements OnInit {
     this.selectedFile = null;
     this.cdr.markForCheck();  
   }
+
+  transfert(): void {
+    const modalRef = this.modalService.open(TransfertFolderComponent);
+  
+    if (this.selectedFile) {
+      // If a file is selected, pass the file to the modal
+      modalRef.componentInstance.file = this.selectedFile;
+      modalRef.componentInstance.selectedFolder =  null;
+
+    } else if (this.selectedFolder) {
+      // If a folder is selected, pass the folder to the modal
+      modalRef.componentInstance.file = null;
+
+      modalRef.componentInstance.selectedFolder = this.selectedFolder;
+    }
+  
+    // Pass the createdBy (current user) to the modal
+    modalRef.componentInstance.createdBy = this.currentUser;
+  
+    // Handle modal result
+    modalRef.result.then((result) => {
+      this.deselectItems()
+      console.log('Transfer successful:', result);
+      // Perform any necessary updates after the transfer
+      this.cdr.markForCheck(); // Trigger change detection
+    }).catch((error) => {
+      console.error('Modal dismissed with error:', error);
+    });
+  }
+  
 }

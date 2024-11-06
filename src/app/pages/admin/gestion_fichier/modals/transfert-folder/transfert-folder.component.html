@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <h4 class="modal-title">Transfer {{ file ? 'File' : 'Folder' }}</h4>
+    <button type="button" class="close" (click)="activeModal.dismiss('Cross click')">
+        &times;
+    </button>
+</div>
+<div class="modal-body">
+    <label for="adminSelect">Select Admin:</label>
+    <select id="adminSelect" class="form-control" [(ngModel)]="selectedUser">
+        <option *ngFor="let user of users" [ngValue]="user">{{ user.username }} {{user.lastname}}</option>
+    </select>
+
+    <div *ngIf="!users.length" class="text-danger mt-2">
+        No available admins to transfer to.
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="transfert()">Transfer</button>
+</div>
