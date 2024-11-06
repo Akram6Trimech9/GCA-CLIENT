@@ -17,10 +17,20 @@ import { RouterModule } from '@angular/router';
           <div class="notification-text-container">
             <div class="notification-text-bubble" *ngFor="let message of messages; let i = index" 
                  [@textBubbleAnimation]="i === currentMessageIndex ? 'active' : 'inactive'">
-              <span class="notification-category">Délai : {{ message.category }}</span>  
-              <span class="notification-details">Audience : {{ message.audianceId?.numero }}</span>
-              <span class="notification-details">Affaire : {{ message.affaireId?.numeroAffaire }}</span>
-              <a [routerLink]="['/administrator/audiance', message.affaireId._id]" class="notification-link">Vérifiez-le</a>
+              <span class="notification-category"> Délai : {{ message.category }}</span>  
+              @if(message.audianceId){
+                <span class="notification-details"> Audience : {{ message.audianceId?.numero }}</span>
+
+              }
+              <span class="notification-details"> Client : {{ message.clientId?.username }}  {{ message.clientId?.lastname }} </span>
+
+ 
+              @if(message.affaireId){
+                <span class="notification-details"> Affaire : {{ message.affaireId?.numeroAffaire }}</span>
+
+                <a [routerLink]="['/administrator/audiance', message.affaireId._id]" class="notification-link">Vérifiez-le</a>
+
+              }
             </div>
           </div>
           <button class="close-btn" (click)="closeNotification()">✖️</button>

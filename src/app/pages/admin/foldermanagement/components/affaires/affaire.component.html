@@ -268,7 +268,7 @@
 
           </div>
           <div class="form-group"
-            *ngIf="affaireForm.get('category')?.value==='pénale'  ">
+            *ngIf="affaireForm.get('category')?.value==='pénale' ||  affaireForm.get('degre')?.value === 'appel'  ">
             <label for="dateConvocation"> Date de convocation</label>
             <input type="date" class="form-control" id="dateConvocation" formControlName="dateConvocation">
 

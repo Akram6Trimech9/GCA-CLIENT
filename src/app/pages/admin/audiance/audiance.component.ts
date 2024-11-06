@@ -31,7 +31,7 @@ export class AudianceComponent implements OnInit {
     label: 'Première audience'
   },
   { label: 'Audience préparatoire' },
-  { label: 'Plaidoirie' }]
+  { label: 'plaidoirie' }]
   @ViewChild('fileModal') fileModal!: TemplateRef<any>;
 
   delegations !: any[]

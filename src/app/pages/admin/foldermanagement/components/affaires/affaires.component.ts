@@ -326,49 +326,92 @@ export class AffairesComponent implements OnInit {
   onFileChange(event: any) {
     this.selectedFiles = event.target.files[0]
   }
-
   updateAffaire() {
     if (this.affaireForm.valid && this.affaireToEdit) {
-      // Merge form values with the original affaire
+      // Extract form values
+      const { numeroAffaire, natureAffaire, degre, statusClient, dateDemande, dateInformation, dateConvocation } = this.affaireForm.value;
+    
+      // Check if another affaire with the same properties exists
+      const duplicateAffaire = this.affaires.some(
+        (aff) =>
+          aff._id !== this.affaireToEdit._id && // Make sure it's not the current affair being edited
+          aff.numeroAffaire === numeroAffaire &&
+          aff.natureAffaire === natureAffaire &&
+          aff.degre === degre
+      );
+    
+      if (duplicateAffaire) {
+        // Show a warning message if a duplicate is found
+        this.toastr.error('Affaire with the same details already exists.');
+        return; // Prevent the update
+      }
+    
+      // Create the updated affaire object
       const updatedAffaire = {
-        ...this.affaireToEdit,
-        ...this.affaireForm.value,
-        statusClient: this.affaireForm.value.statusClient || this.affaireToEdit.statusClient, // keep original if not updated
-        dateDemande: this.affaireForm.value.dateDemande ? new Date(this.affaireForm.value.dateDemande).toISOString() : this.affaireToEdit.dateDemande, // format or keep original
-        dateInformation: this.affaireForm.value.dateInformation ? new Date(this.affaireForm.value.dateInformation).toISOString() : this.affaireToEdit.dateInformation,
-        dateConvocation: this.affaireForm.value.dateConvocation ? new Date(this.affaireForm.value.dateConvocation).toISOString() : this.affaireToEdit.dateConvocation,
+        ...this.affaireToEdit, // Start with the existing affaire
+        numeroAffaire: numeroAffaire || this.affaireToEdit.numeroAffaire,
+        natureAffaire: natureAffaire || this.affaireToEdit.natureAffaire,
+        degre: degre || this.affaireToEdit.degre,
+        statusClient: statusClient || this.affaireToEdit.statusClient,
       };
   
-      // Log to check the updatedAffaire before sending
-      console.log('Updated Affaire:', updatedAffaire);
-  
-      // Create FormData if there's a file (for multipart form submission)
+      // Prepare FormData to send individual updates
       const formData = new FormData();
-      formData.append('affaire', JSON.stringify(updatedAffaire)); // Append affaire data as a JSON string
-      if (this.selectedFiles) {
-        formData.append('file', this.selectedFiles); // Append the selected file if any
+      formData.append('numeroAffaire', updatedAffaire.numeroAffaire);
+      formData.append('natureAffaire', updatedAffaire.natureAffaire);
+      formData.append('degre', updatedAffaire.degre);
+      formData.append('statusClient', updatedAffaire.statusClient);
+  
+      // Handle date fields with validation
+      if (dateDemande) {
+        formData.append('dateDemande', new Date(dateDemande).toISOString());
+      } else {
+        formData.append('dateDemande', this.affaireToEdit.dateDemande ? new Date(this.affaireToEdit.dateDemande).toISOString() : '');
       }
   
-      // Send the update request (assuming your service can handle FormData)
-      this.affaireService.updateAffaire(updatedAffaire._id, formData).subscribe({
+      if (dateInformation) {
+        formData.append('dateInformation', new Date(dateInformation).toISOString());
+      } else {
+        formData.append('dateInformation', this.affaireToEdit.dateInformation ? new Date(this.affaireToEdit.dateInformation).toISOString() : '');
+      }
+  
+      if (dateConvocation) {
+        formData.append('dateConvocation', new Date(dateConvocation).toISOString());
+      } else {
+        formData.append('dateConvocation', this.affaireToEdit.dateConvocation ? new Date(this.affaireToEdit.dateConvocation).toISOString() : '');
+      }
+  
+      // Append the file if selected
+      if (this.selectedFiles) {
+        formData.append('file', this.selectedFiles);
+      }
+  
+      // Log the updated form data
+      console.log('FormData:', formData);
+  
+      // Call the service to update the affaire
+      this.affaireService.updateAffaire(this.affaireToEdit._id, formData).subscribe({
         next: () => {
-          // Update the local affaires array
-          const index = this.affaires.findIndex((aff) => aff._id === updatedAffaire._id); // Make sure you're checking by _id
+          // Update the local affaires array with the updated affaire
+          const index = this.affaires.findIndex((aff) => aff._id === updatedAffaire._id);
           if (index !== -1) {
-            this.affaires[index] = updatedAffaire;
+            this.affaires[index] = { ...this.affaires[index], ...updatedAffaire }; // Merge updated affaire data
           }
   
-          // Close the modal and reset the form
+          // Close the modal and show success message
           this.modal.hide();
-          this.resetAffaireForm();
-          this.affaireToEdit = null;
+          this.toastr.success('Affaire updated successfully');
         },
         error: (err) => {
-          console.error('Error updating affaire:', err);
-        }
+          console.error(err);
+          this.toastr.error('Failed to update affaire');
+        },
       });
+    } else {
+      this.toastr.error('Please fill in all required fields.');
     }
   }
+  
   
   addNewAffaire() {
     if (this.affaireForm.valid && this.selectedFolder) {
