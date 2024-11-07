@@ -9,35 +9,33 @@ import { RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule],
   template: `
   @if(messages && messages.length){
-    <div class="notification-wrapper" *ngIf="isVisible">
-      <div class="notification-content">
-        <div class="notification-character-wrapper">
-          <img src="assets/pngegg.png" alt="Reminder Character" class="notification-character" [@characterAnimation]="characterAnimationState" />
-        </div>
-        <div class="notification-text-wrapper">
-          <div class="notification-text-container">
-            <div class="notification-text-bubble" *ngFor="let message of messages; let i = index" 
-                 [@textBubbleAnimation]="i === currentMessageIndex ? 'active' : 'inactive'">
-              <span class="notification-category"> Délai : {{ message.category }}</span>  
-              @if(message.audianceId){
-                <span class="notification-details"> Audience : {{ message.audianceId?.numero }}</span>
+    <div class="notification-wrapper" *ngIf="isVisible ">
+    <div class="notification-content">
+      <div class="notification-character-wrapper">
+        <img src="assets/pngegg.png" alt="Reminder Character" class="notification-character" [@characterAnimation]="characterAnimationState" />
+      </div>
+      <div class="notification-text-wrapper">
+        <div class="notification-text-container">
+          <div class="notification-text-bubble" *ngIf="messages[currentMessageIndex]" 
+               [@textBubbleAnimation]="'active'">
+            <span class="notification-category"> Délai : {{ messages[currentMessageIndex].category }}</span>  
+            
+            <span *ngIf="messages[currentMessageIndex].audianceId" class="notification-details">
+              Audience : {{ messages[currentMessageIndex].audianceId?.numero }}
+            </span>
+            
+            <span class="notification-details"> Client : {{ messages[currentMessageIndex].clientId?.username }} {{ messages[currentMessageIndex].clientId?.lastname }} </span>
 
-              }
-              <span class="notification-details"> Client : {{ message.clientId?.username }}  {{ message.clientId?.lastname }} </span>
-
- 
-              @if(message.affaireId){
-                <span class="notification-details"> Affaire : {{ message.affaireId?.numeroAffaire }}</span>
-
-                <a [routerLink]="['/administrator/audiance', message.affaireId._id]" class="notification-link">Vérifiez-le</a>
-
-              }
-            </div>
+            <span *ngIf="messages[currentMessageIndex].affaireId" class="notification-details">
+              Affaire : {{ messages[currentMessageIndex].affaireId?.numeroAffaire }}
+              <a [routerLink]="['/administrator/audiance', messages[currentMessageIndex].affaireId._id]" class="notification-link">Vérifiez-le</a>
+            </span>
           </div>
-          <button class="close-btn" (click)="closeNotification()">✖️</button>
         </div>
+        <button class="close-btn" (click)="closeNotification()">✖️</button>
       </div>
     </div>
+  </div>
   }
    
   `,
@@ -153,7 +151,7 @@ import { RouterModule } from '@angular/router';
       }
     }
   `],
-  animations: [
+   animations: [
     trigger('characterAnimation', [
       state('idle', style({ transform: 'translateY(0)' })),
       state('bounce', style({ transform: 'translateY(-10px)' })),
@@ -208,6 +206,6 @@ export class DelaiComponent implements OnInit {
     setTimeout(() => {
       this.currentMessageIndex = (this.currentMessageIndex + 1) % this.messages.length; 
       this.showNextMessage(); 
-    }, 3000);  
+    }, 3000);  // Show each message for 3 seconds
   }
 }

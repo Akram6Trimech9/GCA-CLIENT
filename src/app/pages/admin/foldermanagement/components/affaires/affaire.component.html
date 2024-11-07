@@ -294,7 +294,7 @@
           <button type="submit" class="btn btn-primary mr-2">
             {{ affaireToEdit ? 'Enregistrer les modifications' : 'Enregistrer' }}
           </button>
-          <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Annuler</button>
+          <button type="button" class="btn btn-secondary"   (click)="modal.dismiss('Close click')" >Annuler</button>
         </form>
       </div>
     </div>
