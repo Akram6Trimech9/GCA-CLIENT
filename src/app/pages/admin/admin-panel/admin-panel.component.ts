@@ -74,9 +74,9 @@ export class AdminPanelComponent implements OnInit {
     }
     getFolder() {
       this.folderService.getFolderByAdminId(this.currentUser._id).subscribe({
-        next: (value) => {
-          this.folder = value.length;
-        },
+        next: (value:any) => {
+          this.folder = value.totalItems;
+         },
         error: (err) => {
           console.log(err);
         }

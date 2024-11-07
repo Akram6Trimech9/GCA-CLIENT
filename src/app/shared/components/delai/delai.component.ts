@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
+  @if(messages && messages.length){
     <div class="notification-wrapper" *ngIf="isVisible">
       <div class="notification-content">
         <div class="notification-character-wrapper">
@@ -37,6 +38,8 @@ import { RouterModule } from '@angular/router';
         </div>
       </div>
     </div>
+  }
+   
   `,
   styles: [`
     .notification-wrapper {

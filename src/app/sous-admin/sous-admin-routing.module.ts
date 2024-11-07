@@ -8,6 +8,7 @@ import { CalendarComponent } from '../pages/sous-admin/calendar/calendar.compone
 import { RdvComponent } from '../pages/sous-admin/rdv/rdv.component';
 import { intervenantsComponent } from '../pages/sous-admin/inventaires/inventaires.component';
 import { HonorrairesComponent } from '../pages/admin/foldermanagement/modals/honorraires/honorraires.component';
+import { GestionFichierComponent } from '../pages/admin/gestion_fichier/gestion_fichier.component';
   
 const routes: Routes = [
   {
@@ -42,6 +43,11 @@ const routes: Routes = [
     path: 'honoraires',
     component: HonorrairesComponent
   },
+  {
+    path: 'filemanager',
+    component: GestionFichierComponent
+  },
+   
  
 ];
 
